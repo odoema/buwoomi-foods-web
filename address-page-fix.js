@@ -4,8 +4,6 @@
 (() => {
   const KEY_ADDR = 'buwoomi-checkout-address-id';
   const KEY_RETURN = 'buwoomi-checkout-address-return';
-  let locationBound = false;
-  let saveWatchBound = false;
 
   const toast = (msg) => {
     if (typeof showToast === 'function') showToast(msg);
@@ -65,6 +63,16 @@
       if (!card || card.dataset.addressFixBound === '1') return;
       card.dataset.addressFixBound = '1';
       const id = del.dataset.addressDelete;
+
+      // delivery-features.js used to append its own row here. Replace only that
+      // generated row so the address card has one clean action area.
+      card.querySelectorAll('button').forEach((button) => {
+        const text = button.textContent.trim();
+        if (text === 'Use for checkout' || text === 'Open in Google Maps' || text === '✓ Selected for checkout') {
+          button.closest('div')?.remove();
+        }
+      });
+
       const row = document.createElement('div');
       row.className = 'address-actions-fix';
 
