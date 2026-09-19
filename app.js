@@ -81,6 +81,10 @@ let MENU = [
 
 let CATEGORIES = ["Popular","Chicken","Burgers & Wraps","Beef","Veggie","Sides","Snacks","Pizza","Drinks","Desserts"];
 const CATEGORY_ICON = { Popular:"starBadge",Chicken:"drumstick","Burgers & Wraps":"burger",Beef:"steak",Veggie:"leaf",Sides:"fries",Snacks:"samosa",Pizza:"pizza",Drinks:"juice",Desserts:"cake" };
+const CATEGORY_SPRITE_POS = {
+  Popular:"0% 0%", Chicken:"25% 0%", "Burgers & Wraps":"50% 0%", Beef:"75% 0%", Veggie:"100% 0%",
+  Sides:"0% 100%", Snacks:"25% 100%", Pizza:"50% 100%", Drinks:"75% 100%", Desserts:"100% 100%"
+};
 const CATEGORY_ID_TO_NAME = { chicken:"Chicken",burgers_wraps:"Burgers & Wraps",beef:"Beef",sides:"Sides",snacks:"Snacks",pizza:"Pizza",drinks:"Drinks",desserts:"Desserts",popular:"Popular" };
 
 
