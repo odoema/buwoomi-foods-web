@@ -22,8 +22,13 @@ const sb = BACKEND_READY
     })
   : null;
 
+// Authentication emails must always return users to the live BUWOOMI FOODS site.
+// This prevents local development URLs such as http://localhost:3000 from being
+// embedded in production confirmation/recovery emails.
+const AUTH_REDIRECT_URL = "https://buwoomifoods.online/";
+
 function authRedirectUrl() {
-  return window.location.origin + "/";
+  return AUTH_REDIRECT_URL;
 }
 
 /* --------------------------------------------------------------------------
