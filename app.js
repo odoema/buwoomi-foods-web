@@ -36,6 +36,14 @@ const ICON = {
   cup: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9h11l-1 8.6a2 2 0 0 1-2 1.9H9a2 2 0 0 1-2-1.9Z"/><path d="M17 10.5h1.3a2.3 2.3 0 0 1 0 4.6H17"/><path d="M9 5.3v2M12 5.3v2M15 5.3v2"/></svg>',
   chefHat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 21h10M8 21v-6M16 21v-6M6 10.6a3.5 3.5 0 0 1 3.4-4.3 3 3 0 0 1 5.2 0A3.5 3.5 0 0 1 18 10.6c0 2-1.4 3.3-3 3.9v.5H9v-.5c-1.6-.6-3-1.9-3-3.9Z"/></svg>',
   scooter: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="2.2"/><circle cx="18" cy="18" r="2.2"/><path d="M6 18h6l2-6h4M12 12l-2-4H7"/></svg>',
+  burger: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5h16"/><path d="M5 14.5h14"/><path d="M6 7.5c1.3-2 3.3-3 6-3s4.7 1 6 3"/><path d="M5 17.5h14l-1 2H6l-1-2Z"/></svg>',
+  steak: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8c2.2-3.1 7.2-4.4 11-2.4 2.8 1.5 3.7 4.9 2.1 7.4-1.2 1.9-3.3 3-5.6 3H8.8c-2.6 0-5.8-1.8-5.1-4.7.2-1 .7-2.2 1.3-3.3Z"/><circle cx="13.8" cy="10.2" r="1.8"/><path d="M7.2 13.8h2.2"/></svg>',
+  fries: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m7 4 1 8M10 3v9M13 4v8M16 3v9M5 11h14l-1 9H6l-1-9Z"/></svg>',
+  samosa: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 17 5.9-10.2a1.3 1.3 0 0 1 2.2 0L19 17a1.2 1.2 0 0 1-1 1.8H6A1.2 1.2 0 0 1 5 17Z"/><path d="M8.2 15.8h7.6"/></svg>',
+  pizza: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5C10 3 16 3 20 5.5L12 20 4 5.5Z"/><circle cx="10" cy="9" r="1"/><circle cx="14.5" cy="12" r="1"/><circle cx="12" cy="15.5" r="1"/></svg>',
+  juice: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 4h6M12 4v3M14 3l2-2"/></svg>',
+  cake: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16v8H4z"/><path d="M4 12c0-2 2-3 4-3s4 1 4 3c0-2 2-3 4-3s4 1 4 3"/><path d="M8 6v2M12 5v2M16 6v2"/></svg>',
+  starBadge: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3Z"/></svg>',
 };
 function icon(name, cls) { return `<span class="i${cls ? " " + cls : ""}" aria-hidden="true">${ICON[name] || ""}</span>`; }
 
@@ -72,7 +80,7 @@ let MENU = [
 ];
 
 let CATEGORIES = ["Popular","Chicken","Burgers & Wraps","Beef","Veggie","Sides","Snacks","Pizza","Drinks","Desserts"];
-const CATEGORY_ICON = { Popular:"flame",Chicken:"drumstick","Burgers & Wraps":"chefHat",Beef:"beef",Veggie:"leaf",Sides:"bag",Snacks:"leaf",Pizza:"flame",Drinks:"cup",Desserts:"cup" };
+const CATEGORY_ICON = { Popular:"starBadge",Chicken:"drumstick","Burgers & Wraps":"burger",Beef:"steak",Veggie:"leaf",Sides:"fries",Snacks:"samosa",Pizza:"pizza",Drinks:"juice",Desserts:"cake" };
 const CATEGORY_ID_TO_NAME = { chicken:"Chicken",burgers_wraps:"Burgers & Wraps",beef:"Beef",sides:"Sides",snacks:"Snacks",pizza:"Pizza",drinks:"Drinks",desserts:"Desserts",popular:"Popular" };
 
 
