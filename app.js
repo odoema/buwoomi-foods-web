@@ -413,8 +413,8 @@ function profileDetailView() {
         <div class="summary">
           <h4>Add Address</h4>
           <p id="placesStatus" style="font-size:12px;color:var(--muted);margin:0 0 8px">Search a real place (Google) or type manually</p>
-          <div class="field"><label>Label</label><input id="addressLabel" placeholder="Home / Office / Acacia Mall" /></div>
-          <div class="field"><label>Delivery address</label><input id="addressLine1" placeholder="e.g. Acacia Mall, Nakasero…" autocomplete="street-address" /><button type="button" class="cta ghost" id="useLocationBtn" style="margin-top:8px">Use my current location</button><p id="locationStatus" style="font-size:12px;color:var(--muted);margin:7px 0 0">You can also pin your current location.</p></div>
+          <div class="field"><label>Label</label><input id="addressLabel" placeholder="Home / Office" /></div>
+          <div class="field"><label>Delivery address</label><input id="addressLine1" placeholder="e.g. Plot 12, Kampala Road…" autocomplete="street-address" /><button type="button" class="cta ghost" id="useLocationBtn" style="margin-top:8px">Use my current location</button><p id="locationStatus" style="font-size:12px;color:var(--muted);margin:7px 0 0">You can also pin your current location.</p></div>
           <div class="field"><label>City</label><input id="addressCity" placeholder="Kampala" value="Kampala" /></div>
           <label style="display:flex;gap:8px;align-items:center;font-size:13px;margin:10px 0"><input id="addressDefault" type="checkbox" checked /> Make default</label>
           <button class="cta" id="saveAddressBtn">Save Address</button>
