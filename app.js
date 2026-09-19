@@ -346,6 +346,12 @@ function esc(value) {
   return String(value ?? "").replace(/[&<>'"]/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
 }
 
+function foodBg(item) {
+  const url = String(item?.img || "").replace(/'/g, "%27");
+  const pos = CATEGORY_SPRITE_POS[item?.cat] || CATEGORY_SPRITE_POS.Popular || "0% 0%";
+  return "background-image:url('" + url + "'),url('assets/category-icons.webp');background-position:center," + pos + ";background-size:cover,500% 200%;background-repeat:no-repeat;";
+}
+
 function profileTitle(section) {
   return PROFILE_SECTIONS.find(([id]) => id === section)?.[1] || "Profile";
 }
@@ -533,7 +539,7 @@ function views() {
         <div class="onb-top"><button class="skip" data-go="login">Skip</button></div>
         <h1>Delicious Meals<br><span class="gold">Delivered<br>to You</span></h1>
         <p class="sub">Your favourite meals,<br>from our kitchen to your<br>doorstep.</p>
-        <div class="hero-photo" style="background-image:url('${MENU[0].img}')"></div>
+        <div class="hero-photo" style="${foodBg(MENU[0])}"></div>
         <div class="onb-foot">
           <div class="dots"><i class="dot on"></i><i class="dot"></i><i class="dot"></i></div>
           <button class="round-next" data-go="onb2" aria-label="Next">${icon("chevronRight")}</button>
@@ -601,7 +607,7 @@ function views() {
           <div class="home-search-results">
             <div class="section-h"><h4>Search results</h4><span class="result-count">${searchItems.length} ${searchItems.length === 1 ? "meal" : "meals"}</span></div>
             <div class="list home-results-list">
-              ${searchItems.map((p, i) => `<article class="row-item stagger" style="--i:${i}" data-item="${p.id}" role="button" tabindex="0"><div class="th" style="background-image:url('${p.img}')"></div><div><h5>${p.name}</h5><div class="meta">${p.desc}</div><div class="price">${ugx(p.price)}</div></div><button class="add" data-add="${p.id}" aria-label="Add ${p.name} to cart">+</button></article>`).join("") || `<div class="search-empty"><div class="empty-icon">${icon("search")}</div><h3>No meals found</h3><p>Try “chicken”, “burger”, “fries” or “pizza”.</p></div>`}
+              ${searchItems.map((p, i) => `<article class="row-item stagger" style="--i:${i}" data-item="${p.id}" role="button" tabindex="0"><div class="th" style="${foodBg(p)}"></div><div><h5>${p.name}</h5><div class="meta">${p.desc}</div><div class="price">${ugx(p.price)}</div></div><button class="add" data-add="${p.id}" aria-label="Add ${p.name} to cart">+</button></article>`).join("") || `<div class="search-empty"><div class="empty-icon">${icon("search")}</div><h3>No meals found</h3><p>Try “chicken”, “burger”, “fries” or “pizza”.</p></div>`}
             </div>
           </div>
         ` : `
@@ -610,7 +616,7 @@ function views() {
             <div class="img" style="background-image:url('${MENU[0].img}')"></div>
           </div>
           <div class="section home-category-section"><div class="section-h"><h4>Browse by category</h4><button class="link" data-go="menu">See all</button></div><div class="cat-icons">${CATEGORIES.map(c => { return `<button class="cat-icon-btn ${state.cat === c ? "on" : ""}" data-cat="${c}"><span class="circle-ic food-category-photo" style="background-image:url('assets/category-icons.webp');background-position:${CATEGORY_SPRITE_POS[c] || "0% 0%"}"></span><span>${c}</span></button>`; }).join("")}</div></div>
-          <div class="section"><div class="section-h"><h4>Today’s picks</h4><button class="link" data-go="menu">See all</button></div><div class="picks">${visiblePicks.map((p, i) => `<article class="card stagger" style="--i:${i}" data-item="${p.id}" role="button" tabindex="0"><div class="ph" style="${p.id === state.product.id ? "view-transition-name:morph-hero;" : ""}background-image:url('${p.img}')"></div><div class="body"><h5>${p.name}</h5><div class="desc">${p.desc.slice(0, 48)}${p.desc.length > 48 ? "…" : ""}</div><div class="price-row"><span class="price">${ugx(p.price)}</span><button class="add" data-add="${p.id}" aria-label="Add ${p.name} to cart">+</button></div></div></article>`).join("")}</div></div>
+          <div class="section"><div class="section-h"><h4>Today’s picks</h4><button class="link" data-go="menu">See all</button></div><div class="picks">${visiblePicks.map((p, i) => `<article class="card stagger" style="--i:${i}" data-item="${p.id}" role="button" tabindex="0"><div class="ph" style="${p.id === state.product.id ? "view-transition-name:morph-hero;" : ""}${foodBg(p)}"></div><div class="body"><h5>${p.name}</h5><div class="desc">${p.desc.slice(0, 48)}${p.desc.length > 48 ? "…" : ""}</div><div class="price-row"><span class="price">${ugx(p.price)}</span><button class="add" data-add="${p.id}" aria-label="Add ${p.name} to cart">+</button></div></div></article>`).join("")}</div></div>
           ${state.orders?.length ? (() => { const last=state.orders.find(o=>o.status!=="cancelled"); return last ? `<div class="section order-again-section"><div class="section-h"><h4>Order Again</h4><button class="link" data-go="orders">View orders</button></div><div class="order-again-card"><div class="order-again-icon">${icon("orders")}</div><div><strong>${esc(last.order_no || "Recent order")}</strong><p>${esc((last.status || "Past order").replace(/_/g," "))} · ${ugx(last.total_ugx || 0)}</p></div><button class="add" data-reorder-order="${last.id}" aria-label="Order again">+</button></div></div>` : "" })() : ""}
         `}
         ${cartCount() ? `<button class="home-cart-bar" data-go="cart"><span><strong>${cartCount()} ${cartCount() === 1 ? "item" : "items"}</strong><small>Ready in your cart</small></span><b>${ugx(cartTotals().total)}</b><span class="home-cart-action">View cart ${icon("chevronRight")}</span></button>` : ""}
@@ -693,7 +699,7 @@ function views() {
         <div class="list">
           ${state.cart.map((i, idx) => `
             <article class="cart-row stagger" style="--i:${idx}">
-              <div class="th" style="background-image:url('${i.img}')"></div>
+              <div class="th" style="${foodBg(i)}"></div>
               <div>
                 <h5>${i.name}</h5>
                 <div class="price">${ugx(i.price)}</div>
