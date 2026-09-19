@@ -2169,3 +2169,25 @@ textarea:focus {
   .app-brand-button { height: 68px; }
   .app-brand-button img { height: 68px; max-width: 285px; }
 }
+
+/* BUWOOMI 2.0 — discovery, search and cart hierarchy */
+.home-search input:focus { outline: none; border-color: var(--green-2); background: #fff; box-shadow: 0 0 0 3px rgba(46,125,50,.08); }
+.home-search-results { background: var(--bg); padding: 18px 20px 110px; min-height: 55vh; }
+.home-search-results .section-h { margin-bottom: 10px; }
+.result-count { font-size: 12px; color: var(--muted); }
+.home-results-list { padding: 0; }
+.home-results-list .row-item { margin: 8px 0; background: #fff; border-radius: 14px; box-shadow: var(--shadow); }
+.search-empty { text-align: center; padding: 52px 20px; color: var(--muted); }
+.search-empty h3 { color: var(--text); margin: 12px 0 6px; font-size: 16px; }
+.search-empty p { font-size: 13px; line-height: 1.5; }
+.empty-icon { width: 46px; height: 46px; margin: 0 auto; border-radius: 50%; background: #e8f5e9; color: var(--green); display: flex; align-items: center; justify-content: center; }
+.empty-icon .i svg { width: 21px; height: 21px; }
+.promo-kicker { display: block; color: var(--gold-light); font-size: 10px; font-weight: 700; letter-spacing: .8px; margin-bottom: 6px; }
+.home-category-section { padding-top: 2px; }
+.home-cart-bar { position: fixed; left: 12px; right: 12px; bottom: 82px; z-index: 39; min-height: 58px; border: 0; border-radius: 16px; background: var(--green-deep); color: #fff; box-shadow: 0 12px 30px rgba(7,48,25,.28); display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 12px; padding: 9px 12px 9px 15px; text-align: left; cursor: pointer; }
+.home-cart-bar strong { display: block; font-size: 13px; }
+.home-cart-bar small { display: block; color: rgba(255,255,255,.7); font-size: 10px; margin-top: 2px; }
+.home-cart-bar > b { color: var(--gold-light); font-size: 13px; white-space: nowrap; }
+.home-cart-action { display: inline-flex; align-items: center; gap: 2px; color: #fff; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.home-cart-action .i svg { width: 14px; height: 14px; }
+@media (min-width: 700px) { .home-cart-bar { left: 50%; right: auto; width: min(560px, calc(100% - 32px)); transform: translateX(-50%); } }
