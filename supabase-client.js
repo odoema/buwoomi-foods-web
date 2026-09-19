@@ -31,7 +31,8 @@ function authRedirectUrl() {
    -------------------------------------------------------------------------- */
 async function getSession() {
   if (!sb) return null;
-  const { data } = await sb.auth.getSession();
+  const { data, error } = await sb.auth.getSession();
+  if (error) throw error;
   return data.session;
 }
 
@@ -100,7 +101,8 @@ async function signIn(email, password) {
 
 async function signOut() {
   if (!sb) return;
-  await sb.auth.signOut();
+  const { error } = await sb.auth.signOut();
+  if (error) throw error;
 }
 
 /* --------------------------------------------------------------------------
