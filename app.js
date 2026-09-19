@@ -644,31 +644,32 @@ function views() {
     details: () => {
       const p = state.product;
       const liked = !!state.liked[p.id];
+      const total = detailsLineTotal();
       return `
-      <div class="details">
-        <div class="hero-big" style="view-transition-name:morph-hero;background-image:url('${p.img}')">
+      <div class="details product-details">
+        <div class="hero-big product-hero" style="view-transition-name:morph-hero;background-image:url('${p.img}')">
           <div class="abs">
             <button class="circle" data-go="${state.cameFrom}" data-back="1" aria-label="Back">${icon("back")}</button>
             <button class="circle ${liked ? "liked" : ""}" id="likeBtn" aria-label="Save to favourites" aria-pressed="${liked}">${icon("heart")}</button>
           </div>
+          <span class="hero-label">BUWOOMI FAVOURITE</span>
         </div>
-        <div class="pad">
-          <h1>${p.name}</h1>
-          <div class="price" style="font-size:18px;margin:6px 0">${ugx(p.price)}</div>
-          <p style="color:var(--muted);font-size:14px;line-height:1.5">${p.desc}</p>
-          <div class="sizes"><strong>Choose size</strong>
+        <div class="pad product-info">
+          <div class="product-title-row"><div><h1>${p.name}</h1><div class="price product-price">${ugx(p.price)}</div></div><div class="rating-pill">${icon("star")} 4.8</div></div>
+          <p class="product-desc">${p.desc}</p>
+          <div class="custom-section"><div class="custom-head"><strong>Choose size</strong><span>Required</span></div>
             <div class="size-toggle">
-              <button type="button" class="size-btn ${state.size === "Regular" ? "on" : ""}" data-sizebtn="Regular">Regular</button>
-              <button type="button" class="size-btn ${state.size === "Large" ? "on" : ""}" data-sizebtn="Large">Large&nbsp;+ UGX 4,000</button>
+              <button type="button" class="size-btn ${state.size === "Regular" ? "on" : ""}" data-sizebtn="Regular"><b>Regular</b><small>Included</small></button>
+              <button type="button" class="size-btn ${state.size === "Large" ? "on" : ""}" data-sizebtn="Large"><b>Large</b><small>+ UGX 4,000</small></button>
             </div>
           </div>
-          <div class="extras"><strong>Add extras</strong>
-            ${EXTRAS.map(x => `<label class="opt"><span>${x.label} &nbsp;+ ${ugx(x.price)}</span><input type="checkbox" data-ex="${x.id}" ${state.extras[x.id] ? "checked" : ""} /></label>`).join("")}
+          <div class="custom-section"><div class="custom-head"><strong>Make it yours</strong><span>Optional</span></div>
+            <div class="extras">${EXTRAS.map(x => `<label class="opt product-extra"><span><b>${x.label}</b><small>+${ugx(x.price)}</small></span><input type="checkbox" data-ex="${x.id}" ${state.extras[x.id] ? "checked" : ""} /></label>`).join("")}</div>
           </div>
-          <div class="qty">
-            <button data-q="-" aria-label="Decrease quantity">−</button><strong>${state.qty}</strong><button data-q="+" aria-label="Increase quantity">+</button>
+          <div class="add-panel">
+            <div class="qty product-qty"><button data-q="-" aria-label="Decrease quantity">−</button><strong>${state.qty}</strong><button data-q="+" aria-label="Increase quantity">+</button></div>
+            <button class="cta product-add" id="addCart">Add to Cart <span>· ${ugx(total)}</span></button>
           </div>
-          <button class="cta" id="addCart">Add to Cart · ${ugx(detailsLineTotal())}</button>
         </div>
       </div>`;
     },
