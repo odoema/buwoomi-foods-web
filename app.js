@@ -756,23 +756,21 @@ function views() {
       </div>`,
 
     preparing: () => `
-      <div class="page" style="background:#fff;padding-bottom:24px">
-        <div class="topbar"><button class="icon-btn" data-go="home" data-back="1">${icon("back")}</button><h2>Order Tracking</h2><span></span></div>
-        <div class="timeline">
-          <div class="tl">
-            <div class="tl-dot on">${icon("check")}</div><div><strong>Order Placed</strong><div style="font-size:12px;color:var(--muted)">Just now</div></div>
-            <div class="tl-line on"></div><div></div>
-            <div class="tl-dot gold">${icon("chefHat")}</div><div><strong>Preparing Your Meal</strong><div style="font-size:12px;color:var(--muted)">Our chefs are on it!</div></div>
-            <div class="tl-line"></div><div></div>
-            <div class="tl-dot">${icon("bag")}</div><div><strong>Out for Delivery</strong></div>
-            <div class="tl-line"></div><div></div>
-            <div class="tl-dot">${icon("home")}</div><div><strong>Delivered</strong></div>
-          </div>
+      <div class="page tracking-page">
+        <div class="topbar"><button class="icon-btn" data-go="home" data-back="1">${icon("back")}</button><h2>Track Order</h2><span></span></div>
+        <div class="tracking-hero"><div class="eta-badge">${icon("clock")} ARRIVING SOON</div><h1>Preparing your meal</h1><p>Our kitchen is getting your order ready.</p><div class="eta-card"><span>Estimated arrival</span><strong>25–35 mins</strong></div></div>
+        <div class="tracking-steps">
+          <div class="track-step done"><span>${icon("check")}</span><div><b>Order placed</b><small>We received your order</small></div></div>
+          <div class="track-line active"></div>
+          <div class="track-step current"><span>${icon("chefHat")}</span><div><b>Preparing your meal</b><small>Freshly cooked just for you</small></div></div>
+          <div class="track-line"></div>
+          <div class="track-step"><span>${icon("scooter")}</span><div><b>Out for delivery</b><small>Your rider will collect it next</small></div></div>
+          <div class="track-line"></div>
+          <div class="track-step"><span>${icon("home")}</span><div><b>Delivered</b><small>Enjoy your meal</small></div></div>
         </div>
-        <p style="text-align:center;margin-top:24px;color:var(--muted)">Freshly cooked. Just for you.</p>
-        <div style="padding:24px"><button class="cta ghost" data-go="delivery">Simulate rider pickup</button></div>
+        <div class="tracking-order"><span>Order</span><strong>${esc(state.orderNo || "BW-2026-000001")}</strong></div>
+        <div style="padding:8px 20px 24px"><button class="cta ghost" data-go="delivery">See rider tracking</button></div>
       </div>`,
-
     delivery: () => `
       <div class="page" style="padding-bottom:0;background:#fff">
         <div class="topbar"><button class="icon-btn" data-go="preparing" data-back="1">${icon("back")}</button><h2>Order Tracking</h2><span></span></div>
