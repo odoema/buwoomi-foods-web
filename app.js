@@ -1045,13 +1045,17 @@ function bind() {
     saveAddressBtn.disabled = true;
     try {
       const place = window.BuwoomiPlaces?.getPending?.() || null;
+      const addressInput = $("#addressLine1");
+      const inputLat = Number(addressInput?.dataset.latitude);
+      const inputLng = Number(addressInput?.dataset.longitude);
+      const hasInputCoords = Number.isFinite(inputLat) && Number.isFinite(inputLng);
       const saved = await window.BuwoomiBackend.saveAddress({
         label: $("#addressLabel")?.value.trim() || place?.name || "Home",
         line1: place?.formatted || line1,
         city: $("#addressCity")?.value.trim() || place?.city || "Kampala",
         isDefault: !!$("#addressDefault")?.checked,
-        latitude: place?.lat ?? null,
-        longitude: place?.lng ?? null,
+        latitude: place?.lat ?? (hasInputCoords ? inputLat : null),
+        longitude: place?.lng ?? (hasInputCoords ? inputLng : null),
       });
       if (saved?.id) {
         state.addressId = saved.id;
