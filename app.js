@@ -4,7 +4,6 @@
 
 const $ = (sel, el = document) => el.querySelector(sel);
 const screenEl = $("#screen");
-const statusBar = $("#statusBar");
 const toastEl = $("#toast");
 
 /* --------------------------------------------------------------------------
@@ -486,10 +485,6 @@ function adminSettingsView() {
 }
 
 function views() {
-  const darkStatus = state.screen === "splash";
-  statusBar.classList.toggle("light", darkStatus);
-  statusBar.style.background = darkStatus ? "var(--green-deep)" : "#fff";
-
   const morphBack = ["menu", "home"].includes(state.prevScreen) === false; // unused placeholder guard
 
   const v = {
