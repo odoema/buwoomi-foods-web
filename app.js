@@ -561,7 +561,9 @@ function views() {
       <div class="home">
         <div class="home-head">
           <div class="row-between">
-            <div class="loc">${icon("mapPin")} Kampala<br><strong>Delivering to Acacia Avenue</strong></div>
+            <div class="brand-mark" aria-label="BUWOOMI FOODS">
+              <img src="assets/logo-transparent.png" alt="BUWOOMI FOODS" style="display:block;height:44px;width:auto;max-width:190px;object-fit:contain" />
+            </div>
             <button class="icon-btn" aria-label="Notifications" id="homeNotifications">${icon("bell")}</button>
           </div>
           <div class="search">${icon("search")}<input id="homeSearch" value="${esc(state.searchQuery)}" placeholder="Search for meals, cuisine..." /></div>
