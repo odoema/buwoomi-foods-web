@@ -2447,15 +2447,56 @@ textarea:focus {
   width:100%;
   margin-top:12px;
 }
+/* Flash-screen brand mark: a true circular badge with a centred logo.
+   Keep the badge and logo dimensions explicit so neither can become oval
+   from flex sizing or inherited image rules. */
 .flash-logo-disc {
-  width:92px;
-  height:92px;
-  padding:11px;
+  width:96px !important;
+  height:96px !important;
+  min-width:96px !important;
+  min-height:96px !important;
+  flex:0 0 96px !important;
+  padding:14px !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+  border-radius:50% !important;
+  background:#fff !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  box-sizing:border-box !important;
+  overflow:hidden !important;
   box-shadow:0 8px 20px rgba(0,0,0,.10);
+}
+.flash-logo-disc img {
+  width:68px !important;
+  height:45px !important;
+  max-width:68px !important;
+  max-height:45px !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  flex:0 0 auto !important;
+  display:block !important;
+  object-fit:contain !important;
+  object-position:center center !important;
+  margin:0 !important;
 }
 @media (max-width:380px) {
   .splash-logo-disc { width:190px; height:190px; padding:20px; }
-  .flash-logo-disc { width:82px; height:82px; padding:10px; }
+  .flash-logo-disc {
+    width:88px !important;
+    height:88px !important;
+    min-width:88px !important;
+    min-height:88px !important;
+    flex-basis:88px !important;
+    padding:12px !important;
+  }
+  .flash-logo-disc img {
+    width:62px !important;
+    height:41px !important;
+    max-width:62px !important;
+    max-height:41px !important;
+  }
 }
 
 /* BUWOOMI 2.4 — maximum logo presence without increasing header height */
