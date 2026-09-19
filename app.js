@@ -227,7 +227,7 @@ function reducedMotion() {
   return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-function go(name, extra = {}, direction = "forward") {
+function go(name, extra = {}, direction = "forward", fromPopState = false) {
   const prev = state.screen;
   const isBack = direction === "back";
   const isTab = direction === "tab";
@@ -241,6 +241,18 @@ function go(name, extra = {}, direction = "forward") {
   }
 
   const fallbackPrev = state.navHistory.length ? state.navHistory[state.navHistory.length - 1] : null;
+
+  // Keep the Android/browser Back button in sync with the in-app router.
+  // We only create a new history entry for forward navigation; popstate
+  // restores an existing entry without pushing another one.
+  if (!fromPopState) {
+    try {
+      const entry = { buwoomi: true, screen: name, navHistory: state.navHistory.slice() };
+      if (isTab) history.replaceState(entry, "", location.href);
+      else if (!isBack && name !== prev) history.pushState(entry, "", location.href);
+    } catch (_) {}
+  }
+
   const apply = () => {
     Object.assign(state, extra, { screen: name, prevScreen: fallbackPrev });
     render();
@@ -305,9 +317,26 @@ function tabbar(active) {
 
 function navigateBack() {
   if (state.screen === "home") return;
+  if (history.state?.buwoomi) {
+    history.back();
+    return;
+  }
   const target = state.navHistory[state.navHistory.length - 1] || state.prevScreen || "home";
   go(target, {}, "back");
 }
+
+window.addEventListener("popstate", (event) => {
+  const s = event.state;
+  if (!s?.buwoomi) {
+    // If there is no app-owned history entry, stay inside the app rather
+    // than unexpectedly logging out or jumping into an unrelated state.
+    if (state.screen !== "home") go("home", {}, "tab", true);
+    return;
+  }
+  state.navHistory = Array.isArray(s.navHistory) ? s.navHistory.slice() : [];
+  const target = s.screen || "home";
+  go(target, {}, "back", true);
+});
 
 function bindNav() {
   document.querySelectorAll("[data-global-back]").forEach((b) => {
@@ -348,6 +377,18 @@ function bindNav() {
     };
   });
 }
+
+/* --------------------------------------------------------------------------
+   Android / browser Back history
+   -------------------------------------------------------------------------- */
+try {
+  history.replaceState(
+    { buwoomi: true, screen: state.screen, navHistory: [] },
+    "",
+    location.href
+  );
+  history.scrollRestoration = "manual";
+} catch (_) {}
 
 /* --------------------------------------------------------------------------
    Toast
@@ -558,7 +599,9 @@ function views() {
   const v = {
     splash: () => `
       <div class="splash">
-        <img src="assets/logo-on-green.png" alt="BUWOOMI FOODS LTD" width="210" height="140" />
+        <div class="splash-logo-disc" aria-label="BUWOOMI FOODS">
+          <img src="assets/logo-transparent.png" alt="BUWOOMI FOODS LTD" />
+        </div>
         <div class="tag">Good Food. Closer to You.</div>
         <div class="loader" role="status" aria-label="Loading"></div>
       </div>`,
@@ -573,7 +616,7 @@ function views() {
           <div class="dots"><i class="dot on"></i><i class="dot"></i><i class="dot"></i></div>
           <button class="round-next" data-go="onb2" aria-label="Next">${icon("chevronRight")}</button>
         </div>
-        <div class="logo-foot"><img src="assets/logo-transparent.png" alt="" /></div>
+        <div class="logo-foot"><div class="flash-logo-disc"><img src="assets/logo-transparent.png" alt="BUWOOMI FOODS" /></div></div>
       </div>`,
 
     onb2: () => `
