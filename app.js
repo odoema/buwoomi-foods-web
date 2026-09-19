@@ -676,7 +676,7 @@ function views() {
         <button class="cta" id="authSubmit" style="margin-top:16px" ${state.authBusy ? "disabled" : ""}>
           ${state.authBusy ? "Please wait…" : backendOn ? (isSignup ? "Create Account" : "Sign In") : "Continue (demo)"}
         </button>
-        ${(!isSignup && state.authError && /confirm|verify|not confirmed/i.test(state.authError)) ? `<button class="link" id="resendConfirmationBtn" style="margin-top:12px">Resend confirmation email</button>` : ""}
+        ${((!isSignup && state.authError && /confirm|verify|not confirmed/i.test(state.authError)) || (isSignup && state.authNotice)) ? `<button class="link" id="resendConfirmationBtn" style="margin-top:12px">Resend confirmation email</button>` : ""}
         <p class="or">or continue with</p>
         <div class="socials"><button id="googleAuth">${icon("google")} Google</button><button id="appleAuth">${icon("apple")} Apple</button></div>
         <p class="signup-line">${isSignup ? "Already have an account?" : "Don't have an account?"} <button class="link" id="authToggle">${isSignup ? "Sign In" : "Sign Up"}</button></p>
@@ -1507,6 +1507,26 @@ function bind() {
       render();
     }
   };
+
+  // Allow Enter to submit authentication fields just like a normal form.
+  ["authEmail", "authPassword", "authName"].forEach((id) => {
+    const input = $("#" + id);
+    if (input) input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.isComposing) {
+        e.preventDefault();
+        $("#authSubmit")?.click();
+      }
+    });
+  });
+  ["recoveryPassword", "recoveryPasswordConfirm"].forEach((id) => {
+    const input = $("#" + id);
+    if (input) input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.isComposing) {
+        e.preventDefault();
+        $("#recoverySubmit")?.click();
+      }
+    });
+  });
 
   // If checkout-flow-fix.js is active it owns #place (capture listener).
   // Keep a fallback only when the guard is missing (e.g. script blocked).
