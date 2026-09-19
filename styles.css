@@ -2340,3 +2340,33 @@ textarea:focus {
   border-radius:50% !important;
   overflow:hidden;
 }
+
+/* BUWOOMI 2.2 — persistent back navigation */
+.app-brand-header { position:relative; }
+.app-brand-back {
+  position:absolute;
+  left:14px;
+  top:50%;
+  transform:translateY(-50%);
+  width:42px;
+  height:42px;
+  border:1px solid rgba(11,77,42,.12);
+  border-radius:50%;
+  background:#fff;
+  color:var(--green);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:3;
+  box-shadow:0 4px 12px rgba(11,77,42,.08);
+}
+.app-brand-back .i svg { width:21px; height:21px; }
+.app-brand-back:active { transform:translateY(-50%) scale(.96); }
+.onb-top { position:relative; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.onb-back, .auth-back { width:42px; height:42px; border:1px solid rgba(11,77,42,.12); border-radius:50%; background:#fff; color:var(--green); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(11,77,42,.08); }
+.auth { position:relative; }
+.auth-back { margin:0 0 14px; }
+@media (max-width:380px) {
+  .app-brand-back { left:10px; width:40px; height:40px; }
+  .app-brand-button img { max-width:250px; }
+}
