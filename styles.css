@@ -2733,3 +2733,37 @@ textarea:focus {
   margin:0 !important;
   text-align:center !important;
 }
+
+
+/* Restore visible back arrows on primary app screens without bringing back redundant branding. */
+.root-topbar {
+  position: relative !important;
+  min-height: 56px;
+  display: grid !important;
+  grid-template-columns: 42px 1fr 42px !important;
+  align-items: center !important;
+  justify-content: initial !important;
+  box-sizing: border-box;
+}
+.root-topbar .root-back {
+  grid-column: 1;
+  justify-self: start;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  z-index: 2;
+}
+.root-topbar h2 {
+  grid-column: 2;
+  margin: 0 !important;
+  text-align: center !important;
+}
+.root-topbar > :last-child {
+  grid-column: 3;
+}
+.orders-screen .root-topbar {
+  justify-content: initial !important;
+}
+.orders-screen .root-topbar h2 {
+  text-align: center !important;
+}
