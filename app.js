@@ -1060,6 +1060,15 @@ function bind() {
       window.BuwoomiPlaces?.clearPending?.();
       showToast(place ? "Place saved with map pin." : "Address saved.");
       await openProfileSection("addresses");
+
+      // If checkout sent the user here to add an address, return only after
+      // the freshly saved address has been synced back into state/localStorage.
+      try {
+        if (localStorage.getItem("buwoomi-checkout-address-return") === "1" && saved?.id) {
+          localStorage.removeItem("buwoomi-checkout-address-return");
+          go("checkout", {}, "forward");
+        }
+      } catch (_) {}
     } catch (e) { saveAddressBtn.disabled = false; showToast(e.message || "Could not save address."); }
   };
 
