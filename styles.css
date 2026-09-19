@@ -2281,8 +2281,6 @@ textarea:focus {
 
 /* Real-food category navigation — photography over generic food glyphs */
 .food-category-photo { background-position:center; background-size:cover; background-repeat:no-repeat; position:relative; overflow:hidden; border:1px solid rgba(0,0,0,.06); box-shadow:0 5px 12px rgba(0,0,0,.10); color:#fff; }
-.food-category-photo:not([style*="url('http"]) { background:#eef3ef; }
-.food-category-photo:not([style*="url('http"]) svg { width:24px; height:24px; }
 .cat-icon-btn.on .food-category-photo { box-shadow:0 0 0 3px rgba(244,163,0,.28),0 6px 14px rgba(0,0,0,.12); transform:translateY(-1px); }
 .cat-icon-btn .food-category-photo { transition:transform .18s ease, box-shadow .18s ease; }
 
@@ -2332,4 +2330,13 @@ textarea:focus {
   .row-item { grid-template-columns:82px 1fr auto; gap:9px; }
   .row-item .th { width:82px; height:74px; }
   .product-info { padding-bottom:225px; }
+}
+
+/* BUWOOMI 2.1 — food category artwork must remain visible */
+.food-category-photo {
+  background-color:#eef3ef !important;
+  background-repeat:no-repeat !important;
+  background-size:500% 200% !important;
+  border-radius:50% !important;
+  overflow:hidden;
 }
