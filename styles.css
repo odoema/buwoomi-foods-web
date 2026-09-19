@@ -2245,3 +2245,36 @@ textarea:focus {
 .track-line.active { background:var(--green-2); }
 .tracking-order { margin:12px 16px 0; padding:13px 15px; border-radius:14px; background:#fff; display:flex; justify-content:space-between; align-items:center; font-size:11px; color:var(--muted); }
 .tracking-order strong { color:var(--text); font-size:12px; }
+
+/* BUWOOMI 2.0 — product customization */
+.product-details { background:#f7faf8; min-height:100%; }
+.product-hero { min-height:320px; position:relative; background-position:center; background-size:cover; }
+.product-hero:after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.18),transparent 45%,rgba(0,0,0,.2)); pointer-events:none; }
+.product-hero .abs { position:absolute; z-index:2; top:14px; left:14px; right:14px; display:flex; justify-content:space-between; }
+.hero-label { position:absolute; z-index:2; left:18px; bottom:16px; padding:7px 10px; border-radius:999px; background:rgba(255,255,255,.92); color:var(--green); font-size:9px; font-weight:800; letter-spacing:.7px; }
+.product-info { margin-top:-18px; position:relative; z-index:3; border-radius:22px 22px 0 0; background:#fff; padding-top:20px; padding-bottom:105px; }
+.product-title-row { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+.product-title-row h1 { margin:0; font-size:23px; line-height:1.12; }
+.product-price { margin-top:7px; font-size:17px; }
+.rating-pill { display:flex; align-items:center; gap:4px; padding:7px 9px; border-radius:10px; background:#fff7df; color:#9b6500; font-size:11px; font-weight:800; white-space:nowrap; }
+.rating-pill svg { width:13px; height:13px; fill:currentColor; }
+.product-desc { margin:10px 0 20px; color:var(--muted); font-size:13px; line-height:1.55; }
+.custom-section { margin-top:18px; }
+.custom-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:9px; }
+.custom-head strong { font-size:14px; }
+.custom-head span { color:var(--muted); font-size:10px; }
+.product-details .size-toggle { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.product-details .size-btn { min-height:58px; text-align:left; padding:10px 12px; border:1px solid var(--border); border-radius:13px; background:#fff; color:var(--text); }
+.product-details .size-btn.on { border:2px solid var(--green); background:#f1f8f3; }
+.product-details .size-btn b,.product-details .size-btn small { display:block; }
+.product-details .size-btn b { font-size:12px; }
+.product-details .size-btn small { margin-top:4px; color:var(--muted); font-size:10px; }
+.product-details .size-btn.on small { color:var(--green); font-weight:700; }
+.product-extra { min-height:48px; }
+.product-extra span { display:flex; flex-direction:column; gap:2px; }
+.product-extra small { color:var(--muted); font-size:10px; }
+.add-panel { position:fixed; left:50%; bottom:0; z-index:20; transform:translateX(-50%); width:min(100%,520px); box-sizing:border-box; padding:10px 16px 14px; background:rgba(255,255,255,.96); backdrop-filter:blur(10px); border-top:1px solid var(--border); display:grid; grid-template-columns:108px 1fr; gap:9px; }
+.product-qty { height:50px; box-sizing:border-box; margin:0; }
+.product-add { height:50px; margin:0; }
+.product-add span { font-weight:700; }
+@media (max-width:380px) { .product-hero { min-height:285px; } .product-title-row h1 { font-size:20px; } .add-panel { grid-template-columns:96px 1fr; padding-left:12px; padding-right:12px; } }
