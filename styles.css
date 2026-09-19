@@ -2133,3 +2133,26 @@ textarea:focus {
   .app-brand-header { min-height: 98px; }
   .app-brand-button img { height: 98px; max-width: 300px; }
 }
+
+
+/* Tighten the brand-to-hero spacing on Home */
+.app-brand-header {
+  min-height: 88px;
+  height: 88px;
+  padding-top: 0;
+}
+.app-brand-button img {
+  height: 88px;
+  max-width: 300px;
+}
+.home-head {
+  padding-top: 0 !important;
+  margin-top: -2px !important;
+}
+.home .promo {
+  margin-top: 4px !important;
+}
+@media (max-width: 380px) {
+  .app-brand-header { min-height: 84px; height: 84px; }
+  .app-brand-button img { height: 84px; max-width: 290px; }
+}
