@@ -119,7 +119,7 @@
     bindLocationButton();
     bindSavedAddressButtons();
     addReturnBanner();
-    watchSaveForCheckout();
+    // No separate save-for-checkout hook is needed here; binding must remain self-contained.
   }
 
   document.addEventListener('click', markCheckoutReturn, true);
