@@ -2214,3 +2214,11 @@ textarea:focus {
   .cart-checkout-bar .cta { width:100%; }
   .checkout-progress { padding-left:12px; padding-right:12px; gap:5px; }
 }
+
+/* BUWOOMI 2.0 — returning customer discovery */
+.order-again-section { padding-top: 18px; }
+.order-again-card { background:#fff; border:1px solid var(--border); border-radius:16px; min-height:66px; padding:10px 12px; display:grid; grid-template-columns:42px 1fr auto; align-items:center; gap:10px; box-shadow:var(--shadow); }
+.order-again-icon { width:42px; height:42px; border-radius:12px; background:#e8f5e9; color:var(--green); display:flex; align-items:center; justify-content:center; }
+.order-again-icon .i svg { width:20px; height:20px; }
+.order-again-card strong { font-size:13px; }
+.order-again-card p { margin:2px 0 0; color:var(--muted); font-size:10px; text-transform:capitalize; }
