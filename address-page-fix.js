@@ -115,26 +115,6 @@
     if (first) first.before(banner);
   }
 
-  function watchSaveForCheckout() {
-    const save = document.querySelector('#saveAddressBtn');
-    if (!save || save.dataset.addressReturnBound === '1') return;
-    save.dataset.addressReturnBound = '1';
-    save.addEventListener('click', () => {
-      if (localStorage.getItem(KEY_RETURN) !== '1') return;
-      setTimeout(async () => {
-        try {
-          const addresses = await window.BuwoomiBackend.getAddresses();
-          const latest = [...(addresses || [])].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
-          if (!latest) return;
-          localStorage.setItem(KEY_ADDR, latest.id);
-          if (typeof state !== 'undefined') state.addressId = latest.id;
-          localStorage.removeItem(KEY_RETURN);
-          if (typeof go === 'function') go('checkout', {}, 'forward');
-        } catch (_) {}
-      }, 700);
-    });
-  }
-
   function enhance() {
     bindLocationButton();
     bindSavedAddressButtons();
