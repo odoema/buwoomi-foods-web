@@ -613,7 +613,7 @@ function views() {
         ` : `
           <div class="promo">
             <div class="copy"><span class="promo-kicker">BUWOOMI FAVOURITES</span><h3>Good Food.<br>Closer to You.</h3><button class="btn" data-go="menu">Order Now</button></div>
-            <div class="img" style="background-image:url('${MENU[0].img}')"></div>
+            <div class="img" style="${foodBg(MENU[0])}"></div>
           </div>
           <div class="section home-category-section"><div class="section-h"><h4>Browse by category</h4><button class="link" data-go="menu">See all</button></div><div class="cat-icons">${CATEGORIES.map(c => { return `<button class="cat-icon-btn ${state.cat === c ? "on" : ""}" data-cat="${c}"><span class="circle-ic food-category-photo" style="background-image:url('assets/category-icons.webp');background-position:${CATEGORY_SPRITE_POS[c] || "0% 0%"}"></span><span>${c}</span></button>`; }).join("")}</div></div>
           <div class="section"><div class="section-h"><h4>Today’s picks</h4><button class="link" data-go="menu">See all</button></div><div class="picks">${visiblePicks.map((p, i) => `<article class="card stagger" style="--i:${i}" data-item="${p.id}" role="button" tabindex="0"><div class="ph" style="${p.id === state.product.id ? "view-transition-name:morph-hero;" : ""}${foodBg(p)}"></div><div class="body"><h5>${p.name}</h5><div class="desc">${p.desc.slice(0, 48)}${p.desc.length > 48 ? "…" : ""}</div><div class="price-row"><span class="price">${ugx(p.price)}</span><button class="add" data-add="${p.id}" aria-label="Add ${p.name} to cart">+</button></div></div></article>`).join("")}</div></div>
@@ -638,7 +638,7 @@ function views() {
         <div class="list">
           ${items.map((p, i) => `
             <article class="row-item stagger" style="--i:${i}" data-item="${p.id}" role="button" tabindex="0">
-              <div class="th" style="${p.id === state.product.id ? "view-transition-name:morph-hero;" : ""}background-image:url('${p.img}')"></div>
+              <div class="th" style="${p.id === state.product.id ? "view-transition-name:morph-hero;" : ""}${foodBg(p)}"></div>
               <div>
                 <h5>${p.name}</h5>
                 <div class="meta">${p.desc}</div>
@@ -657,7 +657,7 @@ function views() {
       const total = detailsLineTotal();
       return `
       <div class="details product-details">
-        <div class="hero-big product-hero" style="view-transition-name:morph-hero;background-image:url('${p.img}')">
+        <div class="hero-big product-hero" style="view-transition-name:morph-hero;${foodBg(p)}">
           <div class="abs">
             <button class="circle" data-go="${state.cameFrom}" data-back="1" aria-label="Back">${icon("back")}</button>
             <button class="circle ${liked ? "liked" : ""}" id="likeBtn" aria-label="Save to favourites" aria-pressed="${liked}">${icon("heart")}</button>
