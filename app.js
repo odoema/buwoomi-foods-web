@@ -555,13 +555,10 @@ function views() {
     home: () => `
       <div class="home">
         <div class="home-head">
-          <div class="row-between">
-            <div class="brand-mark" aria-label="BUWOOMI FOODS">
-              <img src="assets/logo-transparent.png" alt="BUWOOMI FOODS" style="display:block;height:82px;width:auto;max-width:300px;object-fit:contain" />
-            </div>
+          <div class="home-search-row">
+            <div class="search">${icon("search")}<input id="homeSearch" value="${esc(state.searchQuery)}" placeholder="Search for meals, cuisine..." /></div>
             <button class="icon-btn" aria-label="Notifications" id="homeNotifications">${icon("bell")}</button>
           </div>
-          <div class="search">${icon("search")}<input id="homeSearch" value="${esc(state.searchQuery)}" placeholder="Search for meals, cuisine..." /></div>
         </div>
         <div class="promo">
           <div class="copy">
@@ -829,7 +826,17 @@ function views() {
     adminSettings: () => adminSettingsView(),
   };
 
-  return (v[state.screen] || v.home)();
+  const content = (v[state.screen] || v.home)();
+  const appScreens = ["home","menu","orders","cart","profile","profileDetail","details","checkout","confirmed","preparing","delivery","delivered","adminMenu","adminOrders","adminSettings"];
+  if (!appScreens.includes(state.screen)) return content;
+  return `<div class="app-shell">
+    <header class="app-brand-header">
+      <button class="app-brand-button" data-go="home" aria-label="Go to BUWOOMI FOODS home">
+        <img src="assets/logo-transparent.png" alt="BUWOOMI FOODS" />
+      </button>
+    </header>
+    ${content}
+  </div>`;
 }
 
 function filterByCat(cat) {
@@ -1164,10 +1171,14 @@ function bind() {
     homeSearch.onkeydown=e=>{
       if(e.key==="Enter"){
         e.preventDefault();
+        e.stopPropagation();
         state.menuTab="All";
         go("menu");
       }
     };
+    homeSearch.onclick=e=>e.stopPropagation();
+    homeSearch.onmousedown=e=>e.stopPropagation();
+    homeSearch.ontouchstart=e=>e.stopPropagation();
   }
 
   const menuSearchInput=$("#menuSearchInput");
