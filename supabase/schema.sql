@@ -21,11 +21,12 @@ create table if not exists public.profiles (
 alter table public.profiles enable row level security;
 
 create policy "profiles_select_own" on public.profiles
-  for select using (auth.uid() = id);
+  for select to authenticated
+  using ((select auth.uid()) = id);
 create policy "profiles_update_own" on public.profiles
-  for update using (auth.uid() = id);
-create policy "profiles_insert_own" on public.profiles
-  for insert with check (auth.uid() = id);
+  for update to authenticated
+  using ((select auth.uid()) = id)
+  with check ((select auth.uid()) = id);
 
 -- auto-create a profile row whenever someone signs up
 create or replace function public.handle_new_user()
@@ -36,7 +37,7 @@ begin
   on conflict (id) do nothing;
   return new;
 end;
-$$ language plpgsql security definer set search_path = public;
+$ language plpgsql security definer set search_path = '';
 
 drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
@@ -238,16 +239,30 @@ create index if not exists idx_notifications_user on public.notifications(user_i
 create index if not exists idx_order_items_menu_item on public.order_items(menu_item_id);
 create index if not exists idx_orders_delivery_address on public.orders(delivery_address_id);
 
--- This trigger is server-side only and should not be exposed as an RPC.
-revoke execute on function public.handle_new_user() from anon, authenticated;
+-- Profile creation is server-side only. Clients must not insert profiles or
+-- call the trigger function directly.
+revoke insert on table public.profiles from anon, authenticated;
+revoke update on table public.profiles from anon, authenticated;
+grant update (full_name, phone, avatar_url) on table public.profiles to authenticated;
+revoke execute on function public.handle_new_user() from public;
+grant execute on function public.handle_new_user() to postgres;
 
 -- ---------------------------------------------------------------------------
 -- Production operations hardening / admin controls
 -- ---------------------------------------------------------------------------
 create or replace function public.is_admin()
-returns boolean language sql stable security definer set search_path = public
-as $$ select exists (select 1 from public.profiles where id = auth.uid() and is_admin = true); $$;
-revoke execute on function public.is_admin() from anon;
+returns boolean
+language sql
+stable
+security definer
+set search_path = ''
+as $ select exists (
+  select 1
+  from public.profiles
+  where id = (select auth.uid())
+    and is_admin = true
+); $;
+revoke execute on function public.is_admin() from public;
 grant execute on function public.is_admin() to authenticated;
 
 -- Admin catalog/order/settings policies are applied in the production migrations.
@@ -274,3 +289,5 @@ create index if not exists idx_orders_status_placed on public.orders(status, pla
 -- Customer order placement is handled atomically and server-side by
 -- public.place_order_secure(jsonb,text,uuid), which recalculates menu prices,
 -- extras, delivery fee and minimum order before inserting the order.
+revoke execute on function public.place_order_secure(jsonb, text, uuid) from public;
+grant execute on function public.place_order_secure(jsonb, text, uuid) to authenticated;
