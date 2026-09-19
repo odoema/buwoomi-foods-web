@@ -1,4 +1,4 @@
-/* BUWOOMI UI fix v5 — photo icons, logo offset, keep cat-strip scroll */
+/* BUWOOMI UI fix v6 — photo icons, logo offset, cat scroll, header notification */
 (function () {
   const PHOTOS = {
     popular: 'https://images.pexels.com/photos/1639562/pexels-photo-1639562.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop',
@@ -13,6 +13,9 @@
     drinks: 'https://images.pexels.com/photos/2789328/pexels-photo-2789328.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop',
     desserts: 'https://images.pexels.com/photos/291528/pexels-photo-291528.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop'
   };
+
+  const BELL_SVG =
+    '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10a6 6 0 1 1 12 0c0 4 1.5 5.5 1.5 5.5H4.5S6 14 6 10Z"/><path d="M10.3 19a1.8 1.8 0 0 0 3.4 0"/></svg>';
 
   let lockY = null;
   let lockUntil = 0;
@@ -30,6 +33,7 @@
       'min-height:108px!important;',
       'height:auto!important;',
       'align-items:flex-end!important;',
+      'position:relative!important;',
       '}',
       '.app-brand-button{',
       'margin-top:6px!important;',
@@ -37,6 +41,47 @@
       '.app-brand-button img{',
       'margin-top:4px!important;',
       '}',
+
+      /* Notification — top-right of brand header (mobile-friendly) */
+      '.bw-header-notify{',
+      'position:absolute!important;',
+      'right:14px!important;',
+      'top:50%!important;',
+      'transform:translateY(-40%)!important;',
+      'width:42px!important;',
+      'height:42px!important;',
+      'border-radius:50%!important;',
+      'border:1px solid rgba(11,77,42,.12)!important;',
+      'background:#fff!important;',
+      'color:#0B4D2A!important;',
+      'display:flex!important;',
+      'align-items:center!important;',
+      'justify-content:center!important;',
+      'box-shadow:0 4px 12px rgba(11,77,42,.08)!important;',
+      'cursor:pointer!important;',
+      'z-index:5!important;',
+      'padding:0!important;',
+      '}',
+      '.bw-header-notify:active{transform:translateY(-40%) scale(.96)!important;}',
+      '.bw-header-notify svg{width:22px!important;height:22px!important;display:block!important;}',
+      '.bw-header-notify .bw-badge{',
+      'position:absolute!important;',
+      'top:6px!important;',
+      'right:6px!important;',
+      'width:9px!important;',
+      'height:9px!important;',
+      'border-radius:50%!important;',
+      'background:#E53935!important;',
+      'border:1.5px solid #fff!important;',
+      '}',
+      /* Hide the old bell beside the search field on home */
+      '.home-search-row > #homeNotifications,',
+      '.home-search-row > .icon-btn[aria-label="Notifications"]{',
+      'display:none!important;',
+      '}',
+      /* Give search full width now that bell is gone from the row */
+      '.home-search-row .home-search{flex:1!important;width:100%!important;}',
+
       /* Category photo circles */
       '.cat-icon-btn .circle-ic.bw-photo-cat{',
       'width:56px!important;height:56px!important;min-width:56px!important;min-height:56px!important;',
@@ -55,7 +100,6 @@
       '}',
       '.cat-icon-btn{width:64px!important;flex-shrink:0!important;}',
       '.cat-icon-btn .food-category-photo{background-image:none!important;transform:none!important;}',
-      /* Prevent selected state from shifting the row */
       '.cat-icon-btn .circle-ic{transform:none!important;}',
       '.cat-icon-btn.on .circle-ic{transform:none!important;}'
     ].join('');
@@ -92,13 +136,58 @@
     strip.scrollLeft = lockCatX;
   }
 
+  function placeNotification() {
+    const header = document.querySelector('.app-brand-header.is-home, .app-brand-header');
+    if (!header) return;
+
+    // Only show on home brand header (not secondary/back screens)
+    const isHome =
+      header.classList.contains('is-home') ||
+      !!document.querySelector('.home');
+    let btn = header.querySelector('.bw-header-notify');
+
+    if (!isHome) {
+      if (btn) btn.remove();
+      return;
+    }
+
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'bw-header-notify';
+      btn.setAttribute('aria-label', 'Notifications');
+      btn.id = 'bwHeaderNotifications';
+      btn.innerHTML = BELL_SVG + '<span class="bw-badge" aria-hidden="true"></span>';
+      header.appendChild(btn);
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        // Prefer the app's own handler path
+        if (typeof openProfileSection === 'function') {
+          openProfileSection('notifications');
+          return;
+        }
+        if (typeof go === 'function') {
+          go('profileDetail', { profileSection: 'notifications' });
+          return;
+        }
+        const legacy = document.getElementById('homeNotifications');
+        if (legacy) legacy.click();
+      });
+    }
+  }
+
   function fillIcons() {
     injectCss();
+    placeNotification();
     const strip = catStrip();
-    const prevX = strip ? strip.scrollLeft : (lockCatX != null ? lockCatX : 0);
+    const prevX = strip ? strip.scrollLeft : lockCatX != null ? lockCatX : 0;
 
     document.querySelectorAll('.cat-icon-btn').forEach((btn) => {
-      const raw = btn.getAttribute('data-cat') || (btn.querySelector('span:last-child') || {}).textContent || '';
+      const raw =
+        btn.getAttribute('data-cat') ||
+        (btn.querySelector('span:last-child') || {}).textContent ||
+        '';
       const url = photoFor(raw);
       let circle = btn.querySelector('.circle-ic');
       if (!circle) {
@@ -116,7 +205,6 @@
       circle.dataset.bwPhoto = url;
     });
 
-    // Restore horizontal position so the row does not jump to the start
     if (strip) {
       const x = lockCatX != null ? lockCatX : prevX;
       strip.scrollLeft = x;
@@ -161,14 +249,12 @@
       );
       if (!t) return;
       if (t.closest('[data-go]') && !t.hasAttribute('data-cat') && !t.hasAttribute('data-mtab')) return;
-      // Always remember where the category strip is before re-render
       saveCatScroll();
       armScrollLock();
     },
     true
   );
 
-  // Remember strip position while user scrolls it
   document.addEventListener(
     'scroll',
     (e) => {
