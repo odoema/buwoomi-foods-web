@@ -68,7 +68,7 @@ let MENU = [
   { id:"icecream",name:"Ice Cream",price:6000,cat:"Desserts",popular:false,desc:"Two scoops of creamy ice cream.",img:"https://images.pexels.com/photos/27756720/pexels-photo-27756720.jpeg?auto=compress&cs=tinysrgb&w=900" },
   { id:"cake",name:"Chocolate Cake",price:8000,cat:"Desserts",popular:false,desc:"Moist chocolate cake slice with rich chocolate frosting.",img:"https://images.pexels.com/photos/1028711/pexels-photo-1028711.jpeg?auto=compress&cs=tinysrgb&w=900" },
   { id:"rolex",name:"Chicken Rolex",price:12000,cat:"Snacks",popular:true,desc:"Chapati rolled with egg, chicken strips, fresh vegetables and house sauce.",img:"https://upload.wikimedia.org/wikipedia/commons/3/3a/ROLEX2.jpg" },
-  { id:"veggieburger",name:"Veggie Burger",price:12000,cat:"Veggie",popular:false,desc:"Crispy vegetable patty with lettuce, tomato and house sauce in a toasted bun.",img:"https://images.unsplash.com/photo-1520072959219-c595dc870360?w=800&q=80" },
+  { id:"veggieburger",name:"Veggie Burger",price:12000,cat:"Veggie",popular:false,desc:"Crispy vegetable patty with lettuce, tomato and house sauce in a toasted bun.",img:"https://images.pexels.com/photos/19709551/pexels-photo-19709551.jpeg?auto=compress&cs=tinysrgb&w=900" },
 ];
 
 let CATEGORIES = ["Popular","Chicken","Burgers & Wraps","Beef","Veggie","Sides","Snacks","Pizza","Drinks","Desserts"];
