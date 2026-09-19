@@ -581,46 +581,37 @@ function views() {
       </div>`;
     },
 
-    home: () => `
+    home: () => {
+      const q = state.searchQuery.trim().toLowerCase();
+      const searchItems = q ? MENU.filter(p => `${p.name} ${p.desc} ${p.cat}`.toLowerCase().includes(q)) : [];
+      const visiblePicks = filterByCat(state.cat).slice(0, 4);
+      return `
       <div class="home">
         <div class="home-head">
           <div class="home-search-row">
-            <div class="search">${icon("search")}<input id="homeSearch" type="search" autocomplete="off" enterkeyhint="search" value="${esc(state.searchQuery)}" placeholder="Search for meals, cuisine..." /></div>
+            <div class="search home-search">${icon("search")}<input id="homeSearch" type="search" autocomplete="off" enterkeyhint="search" value="${esc(state.searchQuery)}" placeholder="What are you craving today?" /></div>
             <button class="icon-btn" aria-label="Notifications" id="homeNotifications">${icon("bell")}</button>
           </div>
         </div>
-        <div class="promo">
-          <div class="copy">
-            <h3>Good Food.<br>Closer to You.</h3>
-            <button class="btn" data-go="menu">Order Now</button>
+        ${q ? `
+          <div class="home-search-results">
+            <div class="section-h"><h4>Search results</h4><span class="result-count">${searchItems.length} ${searchItems.length === 1 ? "meal" : "meals"}</span></div>
+            <div class="list home-results-list">
+              ${searchItems.map((p, i) => `<article class="row-item stagger" style="--i:${i}" data-item="${p.id}" role="button" tabindex="0"><div class="th" style="background-image:url('${p.img}')"></div><div><h5>${p.name}</h5><div class="meta">${p.desc}</div><div class="price">${ugx(p.price)}</div></div><button class="add" data-add="${p.id}" aria-label="Add ${p.name} to cart">+</button></article>`).join("") || `<div class="search-empty"><div class="empty-icon">${icon("search")}</div><h3>No meals found</h3><p>Try “chicken”, “burger”, “fries” or “pizza”.</p></div>`}
+            </div>
           </div>
-          <div class="img" style="background-image:url('${MENU[0].img}')"></div>
-        </div>
-        <div class="section">
-          <div class="cat-icons">
-            ${CATEGORIES.map(c => `
-              <button class="cat-icon-btn ${state.cat === c ? "on" : ""}" data-cat="${c}">
-                <span class="circle-ic">${icon(CATEGORY_ICON[c])}</span><span>${c}</span>
-              </button>`).join("")}
+        ` : `
+          <div class="promo">
+            <div class="copy"><span class="promo-kicker">BUWOOMI FAVOURITES</span><h3>Good Food.<br>Closer to You.</h3><button class="btn" data-go="menu">Order Now</button></div>
+            <div class="img" style="background-image:url('${MENU[0].img}')"></div>
           </div>
-        </div>
-        <div class="section">
-          <div class="section-h"><h4>Today's Picks</h4><button class="link" data-go="menu">See All</button></div>
-          <div class="picks">
-            ${filterByCat(state.cat).slice(0, 4).map((p, i) => `
-              <article class="card stagger" style="--i:${i}" data-item="${p.id}" role="button" tabindex="0">
-                <div class="ph" style="${p.id === state.product.id ? "view-transition-name:morph-hero;" : ""}background-image:url('${p.img}')"></div>
-                <div class="body">
-                  <h5>${p.name}</h5>
-                  <div class="desc">${p.desc.slice(0, 26)}…</div>
-                  <div class="price-row"><span class="price">${ugx(p.price)}</span>
-                  <button class="add" data-add="${p.id}" aria-label="Add ${p.name} to cart">+</button></div>
-                </div>
-              </article>`).join("") || `<p style="color:var(--muted);font-size:13px;padding:12px 0">No picks in this category yet.</p>`}
-          </div>
-        </div>
+          <div class="section home-category-section"><div class="section-h"><h4>Browse by category</h4><button class="link" data-go="menu">See all</button></div><div class="cat-icons">${CATEGORIES.map(c => `<button class="cat-icon-btn ${state.cat === c ? "on" : ""}" data-cat="${c}"><span class="circle-ic">${icon(CATEGORY_ICON[c])}</span><span>${c}</span></button>`).join("")}</div></div>
+          <div class="section"><div class="section-h"><h4>Today’s picks</h4><button class="link" data-go="menu">See all</button></div><div class="picks">${visiblePicks.map((p, i) => `<article class="card stagger" style="--i:${i}" data-item="${p.id}" role="button" tabindex="0"><div class="ph" style="${p.id === state.product.id ? "view-transition-name:morph-hero;" : ""}background-image:url('${p.img}')"></div><div class="body"><h5>${p.name}</h5><div class="desc">${p.desc.slice(0, 48)}${p.desc.length > 48 ? "…" : ""}</div><div class="price-row"><span class="price">${ugx(p.price)}</span><button class="add" data-add="${p.id}" aria-label="Add ${p.name} to cart">+</button></div></div></article>`).join("")}</div></div>
+        `}
+        ${cartCount() ? `<button class="home-cart-bar" data-go="cart"><span><strong>${cartCount()} ${cartCount() === 1 ? "item" : "items"}</strong><small>Ready in your cart</small></span><b>${ugx(cartTotals().total)}</b><span class="home-cart-action">View cart ${icon("chevronRight")}</span></button>` : ""}
         ${tabbar("home")}
-      </div>`,
+      </div>`;
+    },
 
     menu: () => {
       const baseItems = state.menuTab === "All" ? MENU : filterByCat(state.menuTab);
