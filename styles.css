@@ -2020,3 +2020,39 @@ textarea:focus {
 .pac-item-query {
   font-weight: 600;
 }
+
+/* Home header brand sizing — make the mobile logo clearly prominent */
+.home-head .row-between {
+  min-height: 104px;
+}
+
+.home-head .brand-mark {
+  min-height: 104px;
+  display: flex;
+  align-items: center;
+  overflow: visible;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.home-head .brand-mark img {
+  height: 96px !important;
+  width: auto !important;
+  max-width: 320px !important;
+  object-fit: contain;
+  transform: scale(1.12);
+  transform-origin: left center;
+}
+
+@media (max-width: 380px) {
+  .home-head .row-between,
+  .home-head .brand-mark {
+    min-height: 98px;
+  }
+
+  .home-head .brand-mark img {
+    height: 90px !important;
+    max-width: 285px !important;
+    transform: scale(1.1);
+  }
+}
