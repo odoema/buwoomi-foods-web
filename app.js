@@ -81,7 +81,7 @@ async function syncMenuFromBackend() {
       window.BuwoomiBackend.fetchCategories(),
       window.BuwoomiBackend.fetchSettings(),
     ]);
-    if (categories && categories.length) { CATEGORIES = ["Popular", ...categories.sort((a,b)=>a.sort_order-b.sort_order).map(c=>c.name)]; CATEGORIES.forEach(c=>{ if(!CATEGORY_ICON[c]) CATEGORY_ICON[c]="leaf"; }); }
+    if (categories && categories.length) { CATEGORIES = ["Popular", ...categories.sort((a,b)=>a.sort_order-b.sort_order).map(c=>c.name).filter(name => name !== "Popular")]; CATEGORIES.forEach(c=>{ if(!CATEGORY_ICON[c]) CATEGORY_ICON[c]="leaf"; }); }
     if (settings) state.settings = settings;
     if (items && items.length) {
       const catMap = Object.fromEntries((categories||[]).map(c=>[c.id,c.name]));
