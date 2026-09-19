@@ -2532,3 +2532,27 @@ textarea:focus {
 @media (prefers-reduced-motion:reduce) {
   .cat-icon-btn .circle-ic.category-icon-circle { animation:none !important; }
 }
+
+
+/* FINAL CATEGORY ARTWORK — generated food images, not the old line icons */
+.cat-icon-btn .food-category-photo {
+  width:52px !important;
+  height:52px !important;
+  min-width:52px !important;
+  min-height:52px !important;
+  border-radius:50% !important;
+  background-color:#eef3ef !important;
+  background-repeat:no-repeat !important;
+  background-size:500% 200% !important;
+  border:1px solid rgba(11,77,42,.08) !important;
+  box-shadow:0 7px 16px rgba(11,77,42,.12);
+  display:block !important;
+  overflow:hidden !important;
+  animation:bw-food-float 3.6s ease-in-out infinite !important;
+  transform:none !important;
+}
+.cat-icon-btn.on .food-category-photo {
+  background-color:#eef3ef !important;
+  outline:2px solid var(--green) !important;
+  outline-offset:2px !important;
+}
