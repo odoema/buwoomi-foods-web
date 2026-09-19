@@ -181,6 +181,8 @@ const state = {
   authMode: "signin",
   authError: null,
   authBusy: false,
+  authPendingEmail: "",
+  authNotice: null,
   session: null,
   orders: [],
   profileSection: null,
@@ -647,21 +649,34 @@ function views() {
 
     login: () => {
       const isSignup = state.authMode === "signup";
+      const isRecovery = state.authMode === "recovery";
       const backendOn = !!(window.BuwoomiBackend && window.BuwoomiBackend.ready);
+      if (isRecovery) return '<div class="auth">' +
+        '<button class="auth-back icon-btn" id="recoveryBack" aria-label="Back">' + icon("back") + '</button>' +
+        '<img class="logo" src="assets/logo-transparent.png" alt="BUWOOMI FOODS LTD" />' +
+        '<h2>Set a new password</h2>' +
+        '<p class="lead">Choose a new password for your BUWOOMI account.</p>' +
+        '<div class="field"><label>New Password</label><input id="recoveryPassword" type="password" autocomplete="new-password" placeholder="At least 8 characters" /></div>' +
+        '<div class="field"><label>Confirm Password</label><input id="recoveryPasswordConfirm" type="password" autocomplete="new-password" placeholder="Repeat your new password" /></div>' +
+        (state.authError ? '<p style="color:var(--danger);font-size:13px;margin-top:8px">' + esc(state.authError) + '</p>' : '') +
+        '<button class="cta" id="recoverySubmit" style="margin-top:16px" ' + (state.authBusy ? 'disabled' : '') + '>' + (state.authBusy ? 'Saving…' : 'Update Password') + '</button>' +
+        '</div>';
       return `
       <div class="auth">
         <button class="auth-back icon-btn" data-go="onb3" data-back="1" aria-label="Back">${icon("back")}</button>
         <img class="logo" src="assets/logo-transparent.png" alt="BUWOOMI FOODS LTD" />
         <h2>${isSignup ? "Create Account" : "Welcome Back!"}</h2>
         <p class="lead">${backendOn ? (isSignup ? "Sign up to get started" : "Sign in to continue") : "Demo mode — no backend connected yet"}</p>
-        ${isSignup ? `<div class="field"><label>Full Name</label><input id="authName" placeholder="Your name" /></div>` : ""}
-        <div class="field"><label>Email</label><input id="authEmail" type="email" placeholder="you@email.com" /></div>
-        <div class="field"><label>Password</label><input id="authPassword" type="password" placeholder="••••••••" /></div>
+        ${isSignup ? `<div class="field"><label>Full Name</label><input id="authName" autocomplete="name" placeholder="Your name" /></div>` : ""}
+        <div class="field"><label>Email</label><input id="authEmail" type="email" autocomplete="email" placeholder="you@email.com" value="${esc(state.authPendingEmail || "")}" /></div>
+        <div class="field"><label>Password</label><input id="authPassword" type="password" autocomplete="${isSignup ? "new-password" : "current-password"}" placeholder="${isSignup ? "At least 8 characters" : "Your password"}" /></div>
         ${!isSignup ? `<div class="row-between"><span></span><button class="link" id="forgotPasswordBtn">Forgot password?</button></div>` : ""}
-        ${state.authError ? `<p style="color:var(--danger);font-size:13px;margin-top:8px">${state.authError}</p>` : ""}
+        ${state.authError ? `<p style="color:var(--danger);font-size:13px;margin-top:8px">${esc(state.authError)}</p>` : ""}
+        ${state.authNotice ? `<div class="summary" style="margin-top:10px"><p style="margin:0;color:var(--muted);font-size:13px">${esc(state.authNotice)}</p></div>` : ""}
         <button class="cta" id="authSubmit" style="margin-top:16px" ${state.authBusy ? "disabled" : ""}>
-          ${state.authBusy ? "Please wait…" : backendOn ? (isSignup ? "Sign Up" : "Sign In") : "Continue (demo)"}
+          ${state.authBusy ? "Please wait…" : backendOn ? (isSignup ? "Create Account" : "Sign In") : "Continue (demo)"}
         </button>
+        ${(!isSignup && state.authError && /confirm|verify|not confirmed/i.test(state.authError)) ? `<button class="link" id="resendConfirmationBtn" style="margin-top:12px">Resend confirmation email</button>` : ""}
         <p class="or">or continue with</p>
         <div class="socials"><button id="googleAuth">${icon("google")} Google</button><button id="appleAuth">${icon("apple")} Apple</button></div>
         <p class="signup-line">${isSignup ? "Already have an account?" : "Don't have an account?"} <button class="link" id="authToggle">${isSignup ? "Sign In" : "Sign Up"}</button></p>
@@ -1292,7 +1307,29 @@ function bind() {
   if (saveProfileBtn) saveProfileBtn.onclick = async () => { try { state.profile = await window.BuwoomiBackend.updateProfile({ full_name: $("#profileName")?.value.trim() || null, phone: $("#profilePhone")?.value.trim() || null }); state.profileEditOpen=false; render(); showToast("Profile updated."); } catch(e){showToast(e.message||"Could not update profile.");} };
 
   const forgotPasswordBtn = $("#forgotPasswordBtn");
-  if (forgotPasswordBtn) forgotPasswordBtn.onclick = async () => { const email=$("#authEmail")?.value.trim(); if(!email) return showToast("Enter your email first."); try { await window.BuwoomiBackend.resetPassword(email); showToast("Password reset email sent."); } catch(e){showToast(e.message||"Could not send reset email.");} };
+  if (forgotPasswordBtn) forgotPasswordBtn.onclick = async () => {
+    const email = ($("#authEmail")?.value || "").trim().toLowerCase();
+    if (!email) return showToast("Enter your email first.");
+    state.authPendingEmail = email;
+    try {
+      await window.BuwoomiBackend.resetPassword(email);
+      showToast("If that email has an account, a password reset link has been sent.");
+    } catch (e) {
+      showToast(e.message || "Could not send reset email.");
+    }
+  };
+
+  const resendConfirmationBtn = $("#resendConfirmationBtn");
+  if (resendConfirmationBtn) resendConfirmationBtn.onclick = async () => {
+    const email = ($("#authEmail")?.value || state.authPendingEmail || "").trim().toLowerCase();
+    if (!email) return showToast("Enter your email first.");
+    try {
+      await window.BuwoomiBackend.resendSignupConfirmation(email);
+      showToast("Confirmation email sent. Check your inbox.");
+    } catch (e) {
+      showToast(e.message || "Could not resend confirmation email.");
+    }
+  };
   const homeNotifications=$("#homeNotifications");
   if(homeNotifications) homeNotifications.onclick=()=>openProfileSection("notifications");
   const homeSearch=$("#homeSearch");
@@ -1362,7 +1399,49 @@ function bind() {
   if (authToggle) authToggle.onclick = () => {
     state.authMode = state.authMode === "signup" ? "signin" : "signup";
     state.authError = null;
+    state.authNotice = null;
     render();
+  };
+
+  const recoveryBack = $("#recoveryBack");
+  if (recoveryBack) recoveryBack.onclick = () => {
+    state.authMode = "signin";
+    state.authError = null;
+    state.authBusy = false;
+    render();
+  };
+
+  const recoverySubmit = $("#recoverySubmit");
+  if (recoverySubmit) recoverySubmit.onclick = async () => {
+    const password = $("#recoveryPassword")?.value || "";
+    const confirm = $("#recoveryPasswordConfirm")?.value || "";
+    if (password.length < 8) {
+      state.authError = "Use a password with at least 8 characters.";
+      render();
+      return;
+    }
+    if (password !== confirm) {
+      state.authError = "The passwords do not match.";
+      render();
+      return;
+    }
+    state.authBusy = true;
+    state.authError = null;
+    render();
+    try {
+      await window.BuwoomiBackend.updatePassword(password);
+      await window.BuwoomiBackend.signOut();
+      state.session = null;
+      state.authBusy = false;
+      state.authMode = "signin";
+      state.authNotice = "Your password was updated. Sign in with your new password.";
+      state.authPendingEmail = "";
+      go("login", {}, "tab");
+    } catch (e) {
+      state.authBusy = false;
+      state.authError = e.message || "Could not update your password.";
+      render();
+    }
   };
 
   const authSubmit = $("#authSubmit");
@@ -1370,29 +1449,56 @@ function bind() {
     const backendOn = !!(window.BuwoomiBackend && window.BuwoomiBackend.ready);
     if (!backendOn) { go("home"); return; }
 
-    const email = ($("#authEmail")?.value || "").trim();
+    const email = ($("#authEmail")?.value || "").trim().toLowerCase();
     const password = $("#authPassword")?.value || "";
-    const fullName = $("#authName")?.value || "";
-    if (!email || !password) { state.authError = "Enter your email and password."; render(); return; }
+    const fullName = ($("#authName")?.value || "").trim();
 
-    state.authBusy = true; state.authError = null; render();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      state.authError = "Enter a valid email address.";
+      render();
+      return;
+    }
+    if (password.length < 8) {
+      state.authError = "Use a password with at least 8 characters.";
+      render();
+      return;
+    }
+    if (state.authMode === "signup" && !fullName) {
+      state.authError = "Enter your full name.";
+      render();
+      return;
+    }
+
+    state.authPendingEmail = email;
+    state.authBusy = true;
+    state.authError = null;
+    state.authNotice = null;
+    render();
     try {
-      const result = state.authMode === "signup"
+      const mode = state.authMode;
+      const result = mode === "signup"
         ? await window.BuwoomiBackend.signUp(email, password, fullName)
         : await window.BuwoomiBackend.signIn(email, password);
       state.session = result.session || null;
       state.authBusy = false;
-      if (state.authMode === "signup" && !result.session) {
-        state.authError = "Account created. Check your email to confirm your account, then sign in.";
+
+      if (mode === "signup" && !result.session) {
+        state.authNotice = "Account created. Check your email and click the confirmation link before signing in.";
         render();
         return;
       }
-      // Load profile + addresses immediately so checkout works on first try
+
+      state.authMode = "signin";
       try { await syncOrdersFromBackend(); } catch (_) {}
       go("home", {}, "forward");
     } catch (e) {
       state.authBusy = false;
-      state.authError = e.message || "Something went wrong. Try again.";
+      const msg = String(e?.message || e || "");
+      state.authError = /email not confirmed|not confirmed/i.test(msg)
+        ? "Please confirm your email address before signing in."
+        : /invalid login credentials/i.test(msg)
+          ? "Email or password is incorrect."
+          : msg || "Something went wrong. Try again.";
       render();
     }
   };
@@ -1479,11 +1585,61 @@ styleTag.textContent = `.i svg{width:20px;height:20px;display:block}
 document.head.appendChild(styleTag);
 
 /* --------------------------------------------------------------------------
+   Supabase auth lifecycle
+   -------------------------------------------------------------------------- */
+function setupAuthStateListener() {
+  const backend = window.BuwoomiBackend;
+  if (!backend?.ready || typeof backend.onAuthStateChange !== "function") return;
+  try {
+    backend.onAuthStateChange((event, session) => {
+      if (session) state.session = session;
+
+      if (event === "SIGNED_OUT") {
+        state.session = null;
+        state.orders = [];
+        state.profile = null;
+        state.profileData = { addresses: [], payments: [], favorites: [], notifications: [], orders: [] };
+        state.navHistory = [];
+        state.authMode = "signin";
+        state.authBusy = false;
+        if (state.screen !== "login") go("login", {}, "tab");
+        else render();
+        return;
+      }
+
+      if (event === "PASSWORD_RECOVERY") {
+        state.authMode = "recovery";
+        state.authBusy = false;
+        state.authError = null;
+        state.authNotice = null;
+        go("login", {}, "tab");
+        return;
+      }
+
+      if ((event === "SIGNED_IN" || event === "INITIAL_SESSION") && session) {
+        state.session = session;
+        if (state.screen === "login" && state.authMode !== "recovery") {
+          state.authMode = "signin";
+          state.authError = null;
+          state.authNotice = null;
+          syncOrdersFromBackend().finally(() => go("home", {}, "tab"));
+        } else {
+          render();
+        }
+      }
+    });
+  } catch (e) {
+    console.warn("Auth listener setup skipped:", e.message);
+  }
+}
+
+/* --------------------------------------------------------------------------
    Boot — restore session, then splash → onboarding → login OR straight home
    -------------------------------------------------------------------------- */
 
 render();
 syncMenuFromBackend();
+setupAuthStateListener();
 
 (async () => {
   try {
