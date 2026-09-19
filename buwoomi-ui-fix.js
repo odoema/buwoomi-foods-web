@@ -1,18 +1,6 @@
-/* BUWOOMI UI fix v3 — force category icons + scroll lock */
+/* BUWOOMI UI fix v4 — photo category icons + scroll lock */
 (function () {
-  const SVGS = {
-    popular: '<svg viewBox="0 0 24 24" width="26" height="26" fill="#F4A300"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3Z"/></svg>',
-    chicken: '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#0B4D2A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 4.2c3 .2 5.8 3 5.6 6-.1 1.9-1.2 3.1-2.5 4.1l-3.8 3.8a2.6 2.6 0 1 1-3.7-3.7l3.8-3.8c1-1.3 2.2-2.4 2.1-4.3-.1-1.1-.7-2.1-1.5-2.1Z"/><circle cx="6.8" cy="17.2" r="2.4"/></svg>',
-    'burgers & wraps': '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#0B4D2A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5h16"/><path d="M5 14.5h14"/><path d="M6 7.5c1.3-2 3.3-3 6-3s4.7 1 6 3"/><path d="M5 17.5h14l-1 2H6l-1-2Z"/></svg>',
-    burgers: '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#0B4D2A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5h16"/><path d="M5 14.5h14"/><path d="M6 7.5c1.3-2 3.3-3 6-3s4.7 1 6 3"/><path d="M5 17.5h14l-1 2H6l-1-2Z"/></svg>',
-    beef: '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#0B4D2A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8c2.2-3.1 7.2-4.4 11-2.4 2.8 1.5 3.7 4.9 2.1 7.4-1.2 1.9-3.3 3-5.6 3H8.8c-2.6 0-5.8-1.8-5.1-4.7.2-1 .7-2.2 1.3-3.3Z"/><circle cx="13.8" cy="10.2" r="1.8"/></svg>',
-    veggie: '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#2E7D32" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19c8 0 14-6 14-14-8 0-14 6-14 14Z"/><path d="M5 19c2-4.2 5-7.2 9-9.2"/></svg>',
-    sides: '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#0B4D2A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m7 4 1 8M10 3v9M13 4v8M16 3v9M5 11h14l-1 9H6l-1-9Z"/></svg>',
-    snacks: '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#0B4D2A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 17 5.9-10.2a1.3 1.3 0 0 1 2.2 0L19 17a1.2 1.2 0 0 1-1 1.8H6A1.2 1.2 0 0 1 5 17Z"/><path d="M8.2 15.8h7.6"/></svg>',
-    pizza: '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#0B4D2A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5C10 3 16 3 20 5.5L12 20 4 5.5Z"/><circle cx="10" cy="9" r="1" fill="#0B4D2A"/><circle cx="14.5" cy="12" r="1" fill="#0B4D2A"/><circle cx="12" cy="15.5" r="1" fill="#0B4D2A"/></svg>',
-    drinks: '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#0B4D2A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 4h6M12 4v3"/></svg>',
-    desserts: '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#0B4D2A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16v8H4z"/><path d="M4 12c0-2 2-3 4-3s4 1 4 3c0-2 2-3 4-3s4 1 4 3"/><path d="M8 6v2M12 5v2M16 6v2"/></svg>'
-  };
+  const PHOTOS = {'popular': 'https://images.pexels.com/photos/1639562/pexels-photo-1639562.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop', 'chicken': 'https://images.pexels.com/photos/2338407/pexels-photo-2338407.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop', 'beef': 'https://images.pexels.com/photos/3535380/pexels-photo-3535380.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop', 'burgers & wraps': 'https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop', 'burgers': 'https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop', 'sides': 'https://images.pexels.com/photos/1583884/pexels-photo-1583884.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop', 'veggie': 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop', 'snacks': 'https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop', 'pizza': 'https://images.pexels.com/photos/2147491/pexels-photo-2147491.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop', 'drinks': 'https://images.pexels.com/photos/2789328/pexels-photo-2789328.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop', 'desserts': 'https://images.pexels.com/photos/291528/pexels-photo-291528.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop'};
 
   let lockY = null;
   let lockUntil = 0;
@@ -22,25 +10,19 @@
     const style = document.createElement("style");
     style.id = "bw-cat-icon-css";
     style.textContent = [
-      ".cat-icon-btn .circle-ic.category-icon-circle{",
-      "width:52px!important;height:52px!important;min-width:52px!important;min-height:52px!important;",
-      "border-radius:50%!important;background:#eef3ef!important;",
-      "display:flex!important;align-items:center!important;justify-content:center!important;",
-      "border:1px solid rgba(11,77,42,.1)!important;box-shadow:0 6px 14px rgba(11,77,42,.1)!important;",
-      "background-image:none!important;overflow:visible!important;",
+      ".cat-icon-btn .circle-ic.bw-photo-cat{",
+      "width:56px!important;height:56px!important;min-width:56px!important;min-height:56px!important;",
+      "border-radius:50%!important;",
+      "background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important;",
+      "border:2px solid #fff!important;",
+      "box-shadow:0 6px 16px rgba(11,77,42,.14)!important;",
+      "display:block!important;overflow:hidden!important;",
+      "background-color:#eef3ef!important;",
       "}",
-      ".cat-icon-btn.on .circle-ic.category-icon-circle{",
-      "background:#0B4D2A!important;outline:2px solid #0B4D2A;outline-offset:2px;",
+      ".cat-icon-btn.on .circle-ic.bw-photo-cat{",
+      "box-shadow:0 0 0 3px #0B4D2A,0 8px 18px rgba(11,77,42,.2)!important;",
       "}",
-      ".cat-icon-btn.on .circle-ic.category-icon-circle svg{stroke:#fff!important;}",
-      ".cat-icon-btn.on .circle-ic.category-icon-circle svg[fill='#F4A300']{fill:#F4A300!important;}",
-      ".cat-icon-btn .circle-ic.category-icon-circle .i{",
-      "display:flex!important;align-items:center!important;justify-content:center!important;",
-      "width:26px!important;height:26px!important;",
-      "}",
-      ".cat-icon-btn .circle-ic.category-icon-circle svg{",
-      "width:26px!important;height:26px!important;display:block!important;",
-      "}",
+      ".cat-icon-btn{width:64px!important;}",
       ".cat-icon-btn .food-category-photo{background-image:none!important;}"
     ].join("");
     document.head.appendChild(style);
@@ -51,39 +33,34 @@
   }
 
   function normalize(name) {
-    return String(name || "")
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g, " ");
+    return String(name || "").trim().toLowerCase().replace(/\s+/g, " ");
+  }
+
+  function photoFor(name) {
+    const key = normalize(name);
+    if (PHOTOS[key]) return PHOTOS[key];
+    if (key.indexOf("burger") !== -1 || key.indexOf("wrap") !== -1) return PHOTOS["burgers & wraps"];
+    return PHOTOS.veggie;
   }
 
   function fillIcons() {
     injectCss();
     document.querySelectorAll(".cat-icon-btn").forEach((btn) => {
       const raw = btn.getAttribute("data-cat") || (btn.querySelector("span:last-child") || {}).textContent || "";
-      const key = normalize(raw);
-      let svg = SVGS[key];
-      if (!svg && key.indexOf("burger") !== -1) svg = SVGS["burgers & wraps"];
-      if (!svg && key.indexOf("wrap") !== -1) svg = SVGS["burgers & wraps"];
-      if (!svg) svg = SVGS.veggie;
-
+      const url = photoFor(raw);
       let circle = btn.querySelector(".circle-ic");
       if (!circle) {
         circle = document.createElement("span");
-        circle.className = "circle-ic category-icon-circle";
+        circle.className = "circle-ic bw-photo-cat";
         btn.insertBefore(circle, btn.firstChild);
       }
-
-      circle.className = "circle-ic category-icon-circle";
+      circle.className = "circle-ic bw-photo-cat";
+      circle.innerHTML = "";
       circle.removeAttribute("style");
-      circle.style.cssText =
-        "width:52px;height:52px;min-width:52px;min-height:52px;border-radius:50%;" +
-        "display:flex;align-items:center;justify-content:center;" +
-        "background:#eef3ef;background-image:none;overflow:visible;";
-
-      if (circle.dataset.bwIcon === key && circle.querySelector("svg")) return;
-      circle.dataset.bwIcon = key;
-      circle.innerHTML = '<span class="i" style="display:flex;align-items:center;justify-content:center;width:26px;height:26px">' + svg + "</span>";
+      circle.style.backgroundImage = "url('" + url + "')";
+      circle.style.backgroundSize = "cover";
+      circle.style.backgroundPosition = "center";
+      circle.dataset.bwPhoto = url;
     });
   }
 
@@ -132,9 +109,7 @@
       const y = preserveScroll && s ? s.scrollTop : lockY;
       const ae = document.activeElement;
       if (ae && s && s.contains(ae) && ae !== document.body) {
-        try {
-          ae.blur();
-        } catch (err) {}
+        try { ae.blur(); } catch (err) {}
       }
       if (preserveScroll && s) {
         lockY = s.scrollTop;
@@ -167,9 +142,7 @@
 
   const id = setInterval(() => {
     fillIcons();
-    if (patchRender()) {
-      /* keep filling a bit longer for async home render */
-    }
+    patchRender();
   }, 200);
   setTimeout(() => clearInterval(id), 15000);
 
