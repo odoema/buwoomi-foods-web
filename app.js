@@ -975,8 +975,13 @@ function bind() {
     };
   });
 
-  document.querySelectorAll("[data-mtab]").forEach((b) => { b.onclick = () => { state.menuTab = b.dataset.mtab; render(); }; });
-  document.querySelectorAll("[data-cat]").forEach((b) => { b.onclick = () => { state.cat = b.dataset.cat; render(); }; });
+  document.querySelectorAll("[data-mtab]").forEach((b) => { b.onclick = () => { state.menuTab = b.dataset.mtab; render(true); }; });
+  document.querySelectorAll("[data-cat]").forEach((b) => { b.onclick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    state.cat = b.dataset.cat;
+    render(true);
+  }; });
   document.querySelectorAll("[data-pay]").forEach((b) => { b.onclick = () => { state.pay = b.dataset.pay; render(); }; });
   document.querySelectorAll("[data-sizebtn]").forEach((b) => { b.onclick = () => { state.size = b.dataset.sizebtn; render(); }; });
   document.querySelectorAll("[data-ex]").forEach((b) => { b.onchange = () => { state.extras[b.dataset.ex] = b.checked; render(); }; });
@@ -1347,12 +1352,13 @@ function bind() {
 /* --------------------------------------------------------------------------
    Render loop
    -------------------------------------------------------------------------- */
-function render() {
+function render(preserveScroll = false) {
   if (!screenEl) return;
+  const previousScrollTop = preserveScroll ? screenEl.scrollTop : 0;
   try {
     screenEl.innerHTML = views();
     bind();
-    screenEl.scrollTop = 0;
+    screenEl.scrollTop = preserveScroll ? previousScrollTop : 0;
     if (state.bumpBadge) { requestAnimationFrame(() => { state.bumpBadge = false; }); }
   } catch (e) {
     console.error("BUWOOMI render error:", e);
