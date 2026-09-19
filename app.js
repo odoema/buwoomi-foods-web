@@ -1187,7 +1187,17 @@ function bind() {
   if(homeNotifications) homeNotifications.onclick=()=>openProfileSection("notifications");
   const homeSearch=$("#homeSearch");
   if(homeSearch) {
-    homeSearch.oninput=()=>{ state.searchQuery=homeSearch.value; };
+    homeSearch.oninput=()=>{
+      state.searchQuery=homeSearch.value;
+      render();
+      requestAnimationFrame(()=>{
+        const input=$("#homeSearch");
+        if(input){
+          input.focus();
+          input.setSelectionRange(input.value.length,input.value.length);
+        }
+      });
+    };
     homeSearch.onkeydown=e=>{
       e.stopPropagation();
       if(e.key==="Enter") e.preventDefault();
