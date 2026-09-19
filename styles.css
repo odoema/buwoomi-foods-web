@@ -2290,7 +2290,7 @@ textarea:focus {
 .app-brand-header { justify-content:center; }
 .app-brand-button { justify-content:center; }
 .splash-brand { justify-content:center; align-items:center; }
-.food-category-photo { width:52px !important; height:52px !important; border-radius:50% !important; }
+.food-category-photo { width:52px !important; height:52px !important; border-radius:50% !important; background-size:500% 200%; background-repeat:no-repeat; }
 .cat-icon-btn { width:62px; }
 .cat-icon-btn .circle-ic { animation:bw-food-float 3.6s ease-in-out infinite; will-change:transform; }
 .cat-icon-btn:nth-child(2) .circle-ic { animation-delay:-.4s; }
