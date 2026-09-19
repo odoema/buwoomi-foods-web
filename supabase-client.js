@@ -76,7 +76,7 @@ function onAuthStateChange(callback) {
 
 async function signInOAuth(provider) {
   if (!sb) throw new Error("Backend not configured");
-  const { data, error } = await sb.auth.signInWithOAuth({ provider, options: { redirectTo: window.location.origin } });
+  const { data, error } = await sb.auth.signInWithOAuth({ provider, options: { redirectTo: authRedirectUrl() } });
   if (error) throw error; return data;
 }
 
