@@ -268,6 +268,19 @@ grant execute on function public.is_admin() to authenticated;
 -- Admin catalog/order/settings policies are applied in the production migrations.
 -- See the Supabase migration history for the canonical deployed policy definitions.
 
+-- Production migrations may add trigger-only SECURITY DEFINER helpers. Keep them
+-- non-callable through the Data API while preserving trigger execution.
+do $
+begin
+  if to_regprocedure('public.guard_customer_order_update()') is not null then
+    revoke execute on function public.guard_customer_order_update() from public;
+  end if;
+  if to_regprocedure('public.place_order_secure_v2(jsonb,text,uuid,timestamptz)') is not null then
+    revoke execute on function public.place_order_secure_v2(jsonb,text,uuid,timestamptz) from public;
+    grant execute on function public.place_order_secure_v2(jsonb,text,uuid,timestamptz) to authenticated;
+  end if;
+end $;
+
 create table if not exists public.app_settings (
   id text primary key default 'default',
   delivery_fee_ugx integer not null default 5000,
