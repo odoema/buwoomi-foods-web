@@ -1,0 +1,14 @@
+{
+  "name": "BUWOOMI FOODS",
+  "short_name": "BUWOOMI",
+  "description": "Good Food. Closer to You. — customer ordering and delivery app.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0B4D2A",
+  "theme_color": "#0B4D2A",
+  "icons": [
+    { "src": "assets/favicons/favicon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/favicons/favicon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/favicons/favicon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
