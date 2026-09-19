@@ -2278,3 +2278,10 @@ textarea:focus {
 .product-add { height:50px; margin:0; }
 .product-add span { font-weight:700; }
 @media (max-width:380px) { .product-hero { min-height:285px; } .product-title-row h1 { font-size:20px; } .add-panel { grid-template-columns:96px 1fr; padding-left:12px; padding-right:12px; } }
+
+/* Real-food category navigation — photography over generic food glyphs */
+.food-category-photo { background-position:center; background-size:cover; background-repeat:no-repeat; position:relative; overflow:hidden; border:1px solid rgba(0,0,0,.06); box-shadow:0 5px 12px rgba(0,0,0,.10); color:#fff; }
+.food-category-photo:not([style*="url('http"]) { background:#eef3ef; }
+.food-category-photo:not([style*="url('http"]) svg { width:24px; height:24px; }
+.cat-icon-btn.on .food-category-photo { box-shadow:0 0 0 3px rgba(244,163,0,.28),0 6px 14px rgba(0,0,0,.12); transform:translateY(-1px); }
+.cat-icon-btn .food-category-photo { transition:transform .18s ease, box-shadow .18s ease; }
