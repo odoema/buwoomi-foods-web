@@ -1159,7 +1159,40 @@ function bind() {
   const homeNotifications=$("#homeNotifications");
   if(homeNotifications) homeNotifications.onclick=()=>openProfileSection("notifications");
   const homeSearch=$("#homeSearch");
-  if(homeSearch) { homeSearch.oninput=()=>{state.searchQuery=homeSearch.value; if(state.searchQuery.trim()) { state.menuTab="All"; go("menu"); } }; homeSearch.onkeydown=e=>{if(e.key==='Enter'){state.menuTab='All';go('menu');}}; }
+  if(homeSearch) {
+    homeSearch.oninput=()=>{ state.searchQuery=homeSearch.value; };
+    homeSearch.onkeydown=e=>{
+      if(e.key==="Enter"){
+        e.preventDefault();
+        state.menuTab="All";
+        go("menu");
+      }
+    };
+  }
+
+  const menuSearchInput=$("#menuSearchInput");
+  if(menuSearchInput) {
+    menuSearchInput.oninput=()=>{
+      state.searchQuery=menuSearchInput.value;
+      state.menuTab="All";
+      render();
+      requestAnimationFrame(()=>{
+        const input=$("#menuSearchInput");
+        if(input){
+          input.focus();
+          input.setSelectionRange(input.value.length,input.value.length);
+        }
+      });
+    };
+    menuSearchInput.onkeydown=e=>{
+      if(e.key==="Escape"){
+        e.preventDefault();
+        state.searchQuery="";
+        render();
+        requestAnimationFrame(()=>$("#menuSearchInput")?.focus());
+      }
+    };
+  }
 
 
   const submitRating=$("#submitRating");
