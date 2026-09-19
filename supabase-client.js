@@ -194,16 +194,37 @@ async function fetchExtras() {
 /* --------------------------------------------------------------------------
    Profile data
    -------------------------------------------------------------------------- */
+function normalizeAddress(row) {
+  if (!row) return null;
+  return {
+    ...row,
+    id: row.id,
+    label: row.label || row.name || "Home",
+    line1: row.line1 || row.address || row.address_line1 || "",
+    city: row.city || "Kampala",
+    is_default: row.is_default ?? row.isDefault ?? false,
+    isDefault: row.isDefault ?? row.is_default ?? false,
+    latitude: row.latitude ?? row.lat ?? null,
+    longitude: row.longitude ?? row.lng ?? null,
+  };
+}
+
 async function fetchAddresses() {
   if (window.BuwoomiApi && window.BuwoomiApi.enabled()) {
-    return window.BuwoomiApi.addresses();
+    const rows = await window.BuwoomiApi.addresses();
+    return Array.isArray(rows) ? rows.map(normalizeAddress).filter(Boolean) : [];
   }
   if (!sb) return null;
   const session = await getSession();
   if (!session) return [];
-  const { data, error } = await sb.from("addresses").select("*").order("is_default", { ascending: false }).order("created_at", { ascending: false });
+  const { data, error } = await sb
+    .from("addresses")
+    .select("*")
+    .eq("user_id", session.user.id)
+    .order("is_default", { ascending: false })
+    .order("created_at", { ascending: false });
   if (error) throw error;
-  return data || [];
+  return Array.isArray(data) ? data.map(normalizeAddress).filter(Boolean) : [];
 }
 
 async function saveAddress({ id, label, line1, city, isDefault, latitude, longitude }) {
