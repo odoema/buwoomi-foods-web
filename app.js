@@ -118,7 +118,7 @@ async function syncOrdersFromBackend() {
     ]);
     if (profile) state.profile = profile;
     if (orders) state.orders = orders;
-    if (addresses) { state.profileData.addresses = addresses; state.addressId = addresses.find((a) => a.is_default)?.id || null; }
+    if (Array.isArray(addresses)) { state.profileData.addresses = addresses; state.addressId = addresses.find((a) => a.is_default || a.isDefault)?.id || null; }
     if (favorites) state.liked = Object.fromEntries(favorites.map((f) => [f.menu_item_id, true]));
     render();
   } catch (e) {
@@ -326,8 +326,9 @@ async function openProfileSection(section) {
   try {
     if (!backend || !backend.ready) return;
     if (section === "addresses") {
-      state.profileData.addresses = await backend.fetchAddresses() || [];
-      state.addressId = state.profileData.addresses.find((a) => a.is_default)?.id || state.addressId || null;
+      const addresses = await backend.fetchAddresses();
+      state.profileData.addresses = Array.isArray(addresses) ? addresses : [];
+      state.addressId = state.profileData.addresses.find((a) => a.is_default || a.isDefault)?.id || state.addressId || null;
     } else if (section === "payments") {
       state.profileData.payments = await backend.fetchSavedPaymentMethods() || [];
     } else if (section === "favorites") {
@@ -402,10 +403,10 @@ function profileDetailView() {
     body = `
       <div class="section">
         ${rows.length ? rows.map(a => `<div class="summary" style="margin:10px 0">
-          <div class="sr"><strong>${esc(a.label)}</strong>${a.is_default ? `<span style="color:var(--green);font-size:12px">Default</span>` : ""}</div>
-          <p style="margin:8px 0;color:var(--muted)">${esc(a.line1)}<br>${esc(a.city)}</p>
+          <div class="sr"><strong>${esc(a.label || "Home")}</strong>${(a.is_default || a.isDefault) ? `<span style="color:var(--green);font-size:12px">Default</span>` : ""}</div>
+          <p style="margin:8px 0;color:var(--muted)">${esc(a.line1 || a.address || "")}<br>${esc(a.city || "Kampala")}</p>
           <div style="display:flex;gap:8px">
-            ${!a.is_default ? `<button class="cta ghost" style="flex:1;margin:0" data-address-default="${a.id}">Make Default</button>` : ""}
+            ${!(a.is_default || a.isDefault) ? `<button class="cta ghost" style="flex:1;margin:0" data-address-default="${a.id}">Make Default</button>` : ""}
             <button class="cta ghost" style="flex:1;margin:0" data-address-delete="${a.id}">Delete</button>
           </div>
         </div>`).join("") : `<div class="empty"><h3>No saved addresses</h3><p>Add one for faster checkout.</p></div>`}
