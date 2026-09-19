@@ -2082,3 +2082,54 @@ textarea:focus {
   outline: none;
   border-color: var(--green-2);
 }
+
+
+/* Persistent BUWOOMI brand header on every customer app screen */
+.app-shell {
+  min-height: 100%;
+}
+.app-brand-header {
+  min-height: 104px;
+  padding: 4px 16px 0;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  overflow: visible;
+  position: relative;
+  z-index: 2;
+}
+.app-brand-button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+.app-brand-button img {
+  display: block;
+  height: 104px;
+  width: auto;
+  max-width: 330px;
+  object-fit: contain;
+}
+.app-brand-button:focus-visible {
+  outline: 2px solid var(--green-2);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+.home-search-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.home-search-row .search {
+  flex: 1;
+}
+@media (max-width: 380px) {
+  .app-brand-header { min-height: 98px; }
+  .app-brand-button img { height: 98px; max-width: 300px; }
+}
