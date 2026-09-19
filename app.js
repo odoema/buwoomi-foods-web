@@ -46,7 +46,7 @@ let MENU = [
   { id:"gcb",name:"Fried Chicken (3 pcs)",price:18000,cat:"Chicken",popular:true,desc:"Crispy golden chicken pieces, seasoned and fried fresh.",img:"https://images.unsplash.com/photo-1562967916-eb82221dfb92?w=800&q=80" },
   { id:"cb",name:"Chicken Burger",price:15000,cat:"Chicken",popular:true,desc:"Crispy chicken fillet, lettuce and house mayo in a soft bun.",img:"https://images.unsplash.com/photo-1615297928064-24977384d0a8?w=800&q=80" },
   { id:"cw",name:"Chicken Wings",price:16000,cat:"Chicken",popular:true,desc:"Six crispy chicken wings tossed in your choice of house sauce.",img:"https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=800&q=80" },
-  { id:"bs",name:"Classic Beef Burger",price:16000,cat:"Burgers & Wraps",popular:true,desc:"Juicy beef patty, lettuce, tomato, onion and house sauce.",img:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=80" },
+  { id:"bs",name:"Classic Beef Burger",price:16000,cat:"Beef",popular:true,desc:"Juicy beef patty, lettuce, tomato, onion and house sauce.",img:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=80" },
   { id:"ff",name:"Fish Fingers",price:14000,cat:"Snacks",popular:false,desc:"Crispy fish fingers served with fries and a tangy dipping sauce.",img:"https://images.unsplash.com/photo-1544943910-4c1e1f6e0c8b?w=800&q=80" },
   { id:"vp",name:"Veggie Wrap",price:14000,cat:"Burgers & Wraps",popular:false,desc:"Fresh vegetables, lettuce, cheese and house sauce in a toasted wrap.",img:"https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=800&q=80" },
   { id:"fj",name:"Fresh Juice",price:5000,cat:"Drinks",popular:false,desc:"Fresh seasonal fruit juice, chilled and made to order.",img:"https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=800&q=80" },
@@ -55,7 +55,7 @@ let MENU = [
   { id:"strips",name:"Chicken Strips",price:16000,cat:"Chicken",popular:false,desc:"Crispy chicken strips served with a dipping sauce.",img:"https://images.unsplash.com/photo-1562967916-eb82221dfb92?w=800&q=80" },
   { id:"cheeseburger",name:"Cheese Burger",price:18000,cat:"Burgers & Wraps",popular:true,desc:"Classic beef burger topped with melted cheese, lettuce and house sauce.",img:"https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?w=800&q=80" },
   { id:"chickenwrap",name:"Chicken Wrap",price:15000,cat:"Burgers & Wraps",popular:true,desc:"Grilled chicken, fresh salad and garlic mayo wrapped in a soft tortilla.",img:"https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=800&q=80" },
-  { id:"beefwrap",name:"Beef Wrap",price:16000,cat:"Burgers & Wraps",popular:false,desc:"Seasoned beef strips, fresh vegetables and house sauce in a warm tortilla.",img:"https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=800&q=80" },
+  { id:"beefwrap",name:"Beef Wrap",price:16000,cat:"Beef",popular:false,desc:"Seasoned beef strips, fresh vegetables and house sauce in a warm tortilla.",img:"https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=800&q=80" },
   { id:"fries",name:"French Fries",price:7000,cat:"Sides",popular:true,desc:"Crispy golden fries, lightly salted and served hot.",img:"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=800&q=80" },
   { id:"loadedfries",name:"Loaded Fries",price:12000,cat:"Sides",popular:true,desc:"Crispy fries topped with chicken, cheese and house sauce.",img:"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=800&q=80" },
   { id:"coleslaw",name:"Creamy Coleslaw",price:5000,cat:"Sides",popular:false,desc:"Fresh cabbage and carrot slaw in a creamy dressing.",img:"https://images.unsplash.com/photo-1625938145744-e380515399b7?w=800&q=80" },
@@ -68,10 +68,11 @@ let MENU = [
   { id:"icecream",name:"Ice Cream",price:6000,cat:"Desserts",popular:false,desc:"Two scoops of creamy ice cream.",img:"https://images.unsplash.com/photo-1563805042-7684c019e11b?w=800&q=80" },
   { id:"cake",name:"Chocolate Cake",price:8000,cat:"Desserts",popular:false,desc:"Moist chocolate cake slice with rich chocolate frosting.",img:"https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&q=80" },
   { id:"rolex",name:"Chicken Rolex",price:12000,cat:"Snacks",popular:true,desc:"Chapati rolled with egg, chicken strips, fresh vegetables and house sauce.",img:"https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=800&q=80" },
+  { id:"veggieburger",name:"Veggie Burger",price:12000,cat:"Veggie",popular:false,desc:"Crispy vegetable patty with lettuce, tomato and house sauce in a toasted bun.",img:"https://images.unsplash.com/photo-1520072959219-c595dc870360?w=800&q=80" },
 ];
 
-let CATEGORIES = ["Popular","Chicken","Burgers & Wraps","Beef","Sides","Snacks","Pizza","Drinks","Desserts"];
-const CATEGORY_ICON = { Popular:"flame",Chicken:"drumstick","Burgers & Wraps":"chefHat",Beef:"beef",Sides:"bag",Snacks:"leaf",Pizza:"flame",Drinks:"cup",Desserts:"cup" };
+let CATEGORIES = ["Popular","Chicken","Burgers & Wraps","Beef","Veggie","Sides","Snacks","Pizza","Drinks","Desserts"];
+const CATEGORY_ICON = { Popular:"flame",Chicken:"drumstick","Burgers & Wraps":"chefHat",Beef:"beef",Veggie:"leaf",Sides:"bag",Snacks:"leaf",Pizza:"flame",Drinks:"cup",Desserts:"cup" };
 const CATEGORY_ID_TO_NAME = { chicken:"Chicken",burgers_wraps:"Burgers & Wraps",beef:"Beef",sides:"Sides",snacks:"Snacks",pizza:"Pizza",drinks:"Drinks",desserts:"Desserts",popular:"Popular" };
 
 
