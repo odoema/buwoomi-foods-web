@@ -2486,3 +2486,49 @@ textarea:focus {
   outline:2px solid var(--green);
   outline-offset:2px;
 }
+
+
+/* BUWOOMI 2.5 — category icons sit visibly on the floating circles */
+.cat-icon-btn .circle-ic.category-icon-circle {
+  width:52px !important;
+  height:52px !important;
+  border-radius:50% !important;
+  background:#eef3ef !important;
+  color:var(--green) !important;
+  border:1px solid rgba(11,77,42,.08);
+  box-shadow:0 7px 16px rgba(11,77,42,.12);
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  position:relative;
+  z-index:2;
+  animation:bw-food-float 3.6s ease-in-out infinite !important;
+  will-change:transform;
+}
+.cat-icon-btn .category-icon-circle .i,
+.cat-icon-btn .category-icon-circle .i svg {
+  width:25px;
+  height:25px;
+  display:block;
+}
+.cat-icon-btn.on .circle-ic.category-icon-circle {
+  background:var(--green) !important;
+  color:#fff !important;
+  box-shadow:0 0 0 3px rgba(244,163,0,.20),0 8px 18px rgba(11,77,42,.16);
+}
+.cat-icon-btn:nth-child(2) .category-icon-circle { animation-delay:-.4s !important; }
+.cat-icon-btn:nth-child(3) .category-icon-circle { animation-delay:-.8s !important; }
+.cat-icon-btn:nth-child(4) .category-icon-circle { animation-delay:-1.2s !important; }
+.cat-icon-btn:nth-child(5) .category-icon-circle { animation-delay:-1.6s !important; }
+.cat-icon-btn:nth-child(6) .category-icon-circle { animation-delay:-2s !important; }
+.cat-icon-btn:nth-child(7) .category-icon-circle { animation-delay:-2.4s !important; }
+.cat-icon-btn:nth-child(8) .category-icon-circle { animation-delay:-2.8s !important; }
+.cat-icon-btn:nth-child(9) .category-icon-circle { animation-delay:-3.2s !important; }
+.cat-icon-btn:hover .category-icon-circle,
+.cat-icon-btn:focus-visible .category-icon-circle {
+  animation-play-state:paused !important;
+  transform:scale(1.08);
+}
+@media (prefers-reduced-motion:reduce) {
+  .cat-icon-btn .circle-ic.category-icon-circle { animation:none !important; }
+}
