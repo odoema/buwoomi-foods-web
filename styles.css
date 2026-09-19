@@ -2312,3 +2312,24 @@ textarea:focus {
 @media (prefers-reduced-motion:reduce) {
   .cat-icon-btn .circle-ic { animation:none; }
 }
+
+/* BUWOOMI 2.0 — food-first menu polish */
+.menu-search .search { border:1px solid var(--border); transition:box-shadow .2s ease,border-color .2s ease,transform .2s ease; }
+.menu-search .search:focus-within { border-color:rgba(11,77,42,.28); box-shadow:0 6px 18px rgba(11,77,42,.08); transform:translateY(-1px); }
+.row-item { grid-template-columns:96px 1fr auto; padding:10px; border:1px solid rgba(0,0,0,.035); }
+.row-item .th { width:96px; height:82px; border-radius:15px; box-shadow:0 5px 12px rgba(0,0,0,.09); transition:transform .22s var(--ease),box-shadow .22s var(--ease); }
+.row-item:hover .th { transform:scale(1.025); box-shadow:0 8px 16px rgba(0,0,0,.12); }
+.row-item .add { width:38px; height:38px; border-radius:50%; font-size:22px; box-shadow:0 4px 10px rgba(11,77,42,.16); transition:transform .18s var(--ease),box-shadow .18s ease; }
+.row-item .add:hover { transform:scale(1.08); }
+.cat-icons { gap:14px; padding-top:5px; }
+.cat-icon-btn .circle-ic { flex-shrink:0; }
+.cat-icon-btn.on .food-category-photo { outline:2px solid var(--green); outline-offset:2px; }
+.product-info { padding-bottom:220px; }
+.product-details .extras { padding-bottom:18px; }
+.center-page img[alt=""] { display:block; margin-left:auto !important; margin-right:auto !important; }
+.confirmed-brand { width:190px; max-width:60%; height:auto; margin:0 auto 18px; display:block; animation:bw-splash-in 600ms var(--ease-spring) both; }
+@media (max-width:380px) {
+  .row-item { grid-template-columns:82px 1fr auto; gap:9px; }
+  .row-item .th { width:82px; height:74px; }
+  .product-info { padding-bottom:225px; }
+}
