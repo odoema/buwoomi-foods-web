@@ -556,7 +556,7 @@ function views() {
       <div class="home">
         <div class="home-head">
           <div class="home-search-row">
-            <div class="search">${icon("search")}<input id="homeSearch" value="${esc(state.searchQuery)}" placeholder="Search for meals, cuisine..." /></div>
+            <div class="search">${icon("search")}<input id="homeSearch" type="search" autocomplete="off" enterkeyhint="search" value="${esc(state.searchQuery)}" placeholder="Search for meals, cuisine..." /></div>
             <button class="icon-btn" aria-label="Notifications" id="homeNotifications">${icon("bell")}</button>
           </div>
         </div>
@@ -1169,12 +1169,8 @@ function bind() {
   if(homeSearch) {
     homeSearch.oninput=()=>{ state.searchQuery=homeSearch.value; };
     homeSearch.onkeydown=e=>{
-      if(e.key==="Enter"){
-        e.preventDefault();
-        e.stopPropagation();
-        state.menuTab="All";
-        go("menu");
-      }
+      e.stopPropagation();
+      if(e.key==="Enter") e.preventDefault();
     };
     homeSearch.onclick=e=>e.stopPropagation();
     homeSearch.onmousedown=e=>e.stopPropagation();
