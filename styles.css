@@ -82,54 +82,6 @@ button:not(:disabled):active {
   transform: translateZ(0);
 }
 
-.notch {
-  position: absolute;
-  top: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 26px;
-  background: #111;
-  border-radius: 16px;
-  z-index: 20;
-}
-
-.status-bar {
-  height: 48px;
-  padding: 14px 26px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text);
-  position: relative;
-  z-index: 5;
-}
-
-.status-bar.light { color: #fff; }
-
-.sb-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.sb-icons {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.sb-icons svg {
-  fill: currentColor;
-  display: block;
-}
-
-.sb-signal { width: 15px; height: 10px; }
-.sb-wifi { width: 14px; height: 10px; }
-.sb-battery { width: 21px; height: 10px; }
-
 .jumps-fab {
   display: none;
   background: none;
@@ -1713,26 +1665,12 @@ textarea:focus {
     height: 100dvh;
   }
 
-  .notch {
-    display: none;
-  }
-
-  .status-bar {
-    height: 48px;
-    padding-top: max(14px, env(safe-area-inset-top));
-  }
-
   .screen {
-    height: calc(100% - 48px);
+    height: 100%;
   }
 }
 
 @media (min-width: 901px) {
-  .notch,
-  .status-bar {
-    display: none;
-  }
-
   .screen {
     height: 100%;
   }
