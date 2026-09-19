@@ -81,6 +81,10 @@ let MENU = [
 
 let CATEGORIES = ["Popular","Chicken","Burgers & Wraps","Beef","Veggie","Sides","Snacks","Pizza","Drinks","Desserts"];
 const CATEGORY_ICON = { Popular:"starBadge",Chicken:"drumstick","Burgers & Wraps":"burger",Beef:"steak",Veggie:"leaf",Sides:"fries",Snacks:"samosa",Pizza:"pizza",Drinks:"juice",Desserts:"cake" };
+const CATEGORY_SPRITE_POS = {
+  Popular:"0% 0%", Chicken:"25% 0%", "Burgers & Wraps":"50% 0%", Beef:"75% 0%", Veggie:"100% 0%",
+  Sides:"0% 100%", Snacks:"25% 100%", Pizza:"50% 100%", Drinks:"75% 100%", Desserts:"100% 100%"
+};
 const CATEGORY_ID_TO_NAME = { chicken:"Chicken",burgers_wraps:"Burgers & Wraps",beef:"Beef",sides:"Sides",snacks:"Snacks",pizza:"Pizza",drinks:"Drinks",desserts:"Desserts",popular:"Popular" };
 
 
@@ -605,7 +609,7 @@ function views() {
             <div class="copy"><span class="promo-kicker">BUWOOMI FAVOURITES</span><h3>Good Food.<br>Closer to You.</h3><button class="btn" data-go="menu">Order Now</button></div>
             <div class="img" style="background-image:url('${MENU[0].img}')"></div>
           </div>
-          <div class="section home-category-section"><div class="section-h"><h4>Browse by category</h4><button class="link" data-go="menu">See all</button></div><div class="cat-icons">${CATEGORIES.map(c => { const cp = c === "Popular" ? MENU[0] : MENU.find(p => p.cat === c); return `<button class="cat-icon-btn ${state.cat === c ? "on" : ""}" data-cat="${c}"><span class="circle-ic food-category-photo" style="background-image:url('${cp?.img || ""}')">${!cp ? icon(CATEGORY_ICON[c]) : ""}</span><span>${c}</span></button>`; }).join("")}</div></div>
+          <div class="section home-category-section"><div class="section-h"><h4>Browse by category</h4><button class="link" data-go="<span class="circle-ic food-category-photo" style="background-image:url('assets/category-icons.webp');background-position:${CATEGORY_SPRITE_POS[c] || "0% 0%"}"></span>== c); return `<button class="cat-icon-btn ${state.cat === c ? "on" : ""}" data-cat="${c}"><span class="circle-ic food-category-photo" style="background-image:url('${cp?.img || ""}')">${!cp ? icon(CATEGORY_ICON[c]) : ""}</span><span>${c}</span></button>`; }).join("")}</div></div>
           <div class="section"><div class="section-h"><h4>Today’s picks</h4><button class="link" data-go="menu">See all</button></div><div class="picks">${visiblePicks.map((p, i) => `<article class="card stagger" style="--i:${i}" data-item="${p.id}" role="button" tabindex="0"><div class="ph" style="${p.id === state.product.id ? "view-transition-name:morph-hero;" : ""}background-image:url('${p.img}')"></div><div class="body"><h5>${p.name}</h5><div class="desc">${p.desc.slice(0, 48)}${p.desc.length > 48 ? "…" : ""}</div><div class="price-row"><span class="price">${ugx(p.price)}</span><button class="add" data-add="${p.id}" aria-label="Add ${p.name} to cart">+</button></div></div></article>`).join("")}</div></div>
           ${state.orders?.length ? (() => { const last=state.orders.find(o=>o.status!=="cancelled"); return last ? `<div class="section order-again-section"><div class="section-h"><h4>Order Again</h4><button class="link" data-go="orders">View orders</button></div><div class="order-again-card"><div class="order-again-icon">${icon("orders")}</div><div><strong>${esc(last.order_no || "Recent order")}</strong><p>${esc((last.status || "Past order").replace(/_/g," "))} · ${ugx(last.total_ugx || 0)}</p></div><button class="add" data-reorder-order="${last.id}" aria-label="Order again">+</button></div></div>` : "" })() : ""}
         `}
