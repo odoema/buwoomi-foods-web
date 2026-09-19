@@ -748,6 +748,7 @@ function views() {
 
     confirmed: () => `
       <div class="center-page">
+        <img class="confirmed-brand" src="assets/logo-transparent.png" alt="BUWOOMI FOODS" />
         <div class="check-wrap"><div class="burst-ring"></div><div class="check">${icon("check")}</div></div>
         <h2>Order Confirmed!</h2>
         <p style="color:var(--muted);margin:10px 0 16px">Thank you for your order.<br>We're preparing your meal.</p>
