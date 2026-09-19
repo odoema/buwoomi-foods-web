@@ -13,8 +13,18 @@ const BACKEND_READY =
   typeof window.supabase.createClient === "function";
 
 const sb = BACKEND_READY
-  ? window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY)
+  ? window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+      },
+    })
   : null;
+
+function authRedirectUrl() {
+  return window.location.origin + "/";
+}
 
 /* --------------------------------------------------------------------------
    Auth
@@ -28,11 +38,39 @@ async function getSession() {
 async function signUp(email, password, fullName) {
   if (!sb) throw new Error("Backend not configured");
   const { data, error } = await sb.auth.signUp({
-    email,
+    email: String(email || "").trim().toLowerCase(),
     password,
-    options: { data: { full_name: fullName || "" } },
+    options: {
+      data: { full_name: String(fullName || "").trim() },
+      emailRedirectTo: authRedirectUrl(),
+    },
   });
   if (error) throw error;
+  return data;
+}
+
+async function resendSignupConfirmation(email) {
+  if (!sb) throw new Error("Backend not configured");
+  const normalized = String(email || "").trim().toLowerCase();
+  if (!normalized) throw new Error("Enter your email first.");
+  const { error } = await sb.auth.resend({
+    type: "signup",
+    email: normalized,
+    options: { emailRedirectTo: authRedirectUrl() },
+  });
+  if (error) throw error;
+}
+
+async function updatePassword(password) {
+  if (!sb) throw new Error("Backend not configured");
+  const { data, error } = await sb.auth.updateUser({ password });
+  if (error) throw error;
+  return data;
+}
+
+function onAuthStateChange(callback) {
+  if (!sb) return { subscription: { unsubscribe() {} } };
+  const { data } = sb.auth.onAuthStateChange(callback);
   return data;
 }
 
@@ -44,13 +82,18 @@ async function signInOAuth(provider) {
 
 async function resetPassword(email) {
   if (!sb) throw new Error("Backend not configured");
-  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin });
+  const normalized = String(email || "").trim().toLowerCase();
+  if (!normalized) throw new Error("Enter your email first.");
+  const { error } = await sb.auth.resetPasswordForEmail(normalized, { redirectTo: authRedirectUrl() });
   if (error) throw error;
 }
 
 async function signIn(email, password) {
   if (!sb) throw new Error("Backend not configured");
-  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  const { data, error } = await sb.auth.signInWithPassword({
+    email: String(email || "").trim().toLowerCase(),
+    password,
+  });
   if (error) throw error;
   return data;
 }
@@ -456,10 +499,13 @@ window.BuwoomiBackend = {
   saveExtra,
   deleteExtra,
   signUp,
+  resendSignupConfirmation,
+  updatePassword,
   signIn,
   resetPassword,
   signInOAuth,
   signOut,
+  onAuthStateChange,
   updateProfile,
   fetchCategories,
   saveCategory,
