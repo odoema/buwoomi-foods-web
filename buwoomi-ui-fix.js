@@ -1,4 +1,4 @@
-/* BUWOOMI UI fix v6 — photo icons, logo offset, cat scroll, header notification */
+/* BUWOOMI UI fix v7 — photo icons, logo, cat scroll, notify, smart extras */
 (function () {
   const PHOTOS = {
     popular: 'https://images.pexels.com/photos/1639562/pexels-photo-1639562.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop',
@@ -17,91 +17,92 @@
   const BELL_SVG =
     '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10a6 6 0 1 1 12 0c0 4 1.5 5.5 1.5 5.5H4.5S6 14 6 10Z"/><path d="M10.3 19a1.8 1.8 0 0 0 3.4 0"/></svg>';
 
+  /* ---- Category-aware extras (UGX) ---- */
+  const ALL_EXTRAS = {
+    chicken: { id: 'chicken', label: 'Extra Chicken', price: 5000 },
+    beef: { id: 'beef', label: 'Extra Beef', price: 6000 },
+    cheese: { id: 'cheese', label: 'Extra Cheese', price: 3000 },
+    avo: { id: 'avo', label: 'Avocado', price: 2500 },
+    sauce: { id: 'sauce', label: 'Extra Sauce', price: 1500 },
+    chili: { id: 'chili', label: 'Chili / Hot Sauce', price: 1000 },
+    bacon: { id: 'bacon', label: 'Crispy Bacon', price: 4000 },
+    onion: { id: 'onion', label: 'Caramelised Onion', price: 1500 },
+    egg: { id: 'egg', label: 'Fried Egg', price: 2000 },
+    olives: { id: 'olives', label: 'Olives', price: 2000 },
+    pepperoni: { id: 'pepperoni', label: 'Extra Pepperoni', price: 4000 },
+    ice: { id: 'ice', label: 'Extra Ice', price: 0 },
+    lemon: { id: 'lemon', label: 'Lemon Slice', price: 500 },
+    sugar: { id: 'sugar', label: 'Less Sugar', price: 0 },
+    cream: { id: 'cream', label: 'Whipped Cream', price: 2000 },
+    choc: { id: 'choc', label: 'Chocolate Drizzle', price: 1500 },
+    scoop: { id: 'scoop', label: 'Ice Cream Scoop', price: 3000 },
+    dip: { id: 'dip', label: 'Dipping Sauce', price: 1500 }
+  };
+
+  const EXTRAS_BY_CAT = {
+    chicken: ['chicken', 'cheese', 'sauce', 'chili'],
+    beef: ['beef', 'cheese', 'onion', 'sauce', 'chili'],
+    'burgers & wraps': ['cheese', 'bacon', 'avo', 'egg', 'sauce', 'chili'],
+    sides: ['cheese', 'sauce', 'chili', 'dip'],
+    veggie: ['avo', 'cheese', 'sauce', 'onion'],
+    snacks: ['dip', 'sauce', 'chili'],
+    pizza: ['cheese', 'pepperoni', 'olives', 'chili', 'onion'],
+    drinks: ['ice', 'lemon', 'sugar'],
+    desserts: ['cream', 'choc', 'scoop'],
+    popular: ['cheese', 'sauce', 'chili', 'avo']
+  };
+
+  // Categories that should not show meal size (Regular/Large)
+  const NO_SIZE_CATS = { drinks: true, desserts: true };
+
   let lockY = null;
   let lockUntil = 0;
   let lockCatX = null;
+
+  function ugxFmt(n) {
+    if (typeof ugx === 'function') return ugx(n);
+    return 'UGX ' + Number(n || 0).toLocaleString();
+  }
 
   function injectCss() {
     if (document.getElementById('bw-cat-icon-css')) return;
     const style = document.createElement('style');
     style.id = 'bw-cat-icon-css';
     style.textContent = [
-      /* Logo: nudge down without changing side padding */
-      '.app-brand-header{',
-      'padding-top:22px!important;',
-      'padding-bottom:6px!important;',
-      'min-height:108px!important;',
-      'height:auto!important;',
-      'align-items:flex-end!important;',
-      'position:relative!important;',
-      '}',
-      '.app-brand-button{',
-      'margin-top:6px!important;',
-      '}',
-      '.app-brand-button img{',
-      'margin-top:4px!important;',
-      '}',
-
-      /* Notification — top-right of brand header (mobile-friendly) */
-      '.bw-header-notify{',
-      'position:absolute!important;',
-      'right:14px!important;',
-      'top:50%!important;',
-      'transform:translateY(-40%)!important;',
-      'width:42px!important;',
-      'height:42px!important;',
-      'border-radius:50%!important;',
-      'border:1px solid rgba(11,77,42,.12)!important;',
-      'background:#fff!important;',
-      'color:#0B4D2A!important;',
-      'display:flex!important;',
-      'align-items:center!important;',
-      'justify-content:center!important;',
-      'box-shadow:0 4px 12px rgba(11,77,42,.08)!important;',
-      'cursor:pointer!important;',
-      'z-index:5!important;',
-      'padding:0!important;',
-      '}',
+      '.app-brand-header{padding-top:22px!important;padding-bottom:6px!important;min-height:108px!important;height:auto!important;align-items:flex-end!important;position:relative!important;}',
+      '.app-brand-button{margin-top:6px!important;}',
+      '.app-brand-button img{margin-top:4px!important;}',
+      '.bw-header-notify{position:absolute!important;right:14px!important;top:50%!important;transform:translateY(-40%)!important;width:42px!important;height:42px!important;border-radius:50%!important;border:1px solid rgba(11,77,42,.12)!important;background:#fff!important;color:#0B4D2A!important;display:flex!important;align-items:center!important;justify-content:center!important;box-shadow:0 4px 12px rgba(11,77,42,.08)!important;cursor:pointer!important;z-index:5!important;padding:0!important;}',
       '.bw-header-notify:active{transform:translateY(-40%) scale(.96)!important;}',
       '.bw-header-notify svg{width:22px!important;height:22px!important;display:block!important;}',
-      '.bw-header-notify .bw-badge{',
-      'position:absolute!important;',
-      'top:6px!important;',
-      'right:6px!important;',
-      'width:9px!important;',
-      'height:9px!important;',
-      'border-radius:50%!important;',
-      'background:#E53935!important;',
-      'border:1.5px solid #fff!important;',
-      '}',
-      /* Hide the old bell beside the search field on home */
-      '.home-search-row > #homeNotifications,',
-      '.home-search-row > .icon-btn[aria-label="Notifications"]{',
-      'display:none!important;',
-      '}',
-      /* Give search full width now that bell is gone from the row */
+      '.bw-header-notify .bw-badge{position:absolute!important;top:6px!important;right:6px!important;width:9px!important;height:9px!important;border-radius:50%!important;background:#E53935!important;border:1.5px solid #fff!important;}',
+      '.home-search-row > #homeNotifications,.home-search-row > .icon-btn[aria-label="Notifications"]{display:none!important;}',
       '.home-search-row .home-search{flex:1!important;width:100%!important;}',
-
-      /* Category photo circles */
-      '.cat-icon-btn .circle-ic.bw-photo-cat{',
-      'width:56px!important;height:56px!important;min-width:56px!important;min-height:56px!important;',
-      'border-radius:50%!important;',
-      'background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important;',
-      'border:2px solid #fff!important;',
-      'box-shadow:0 6px 16px rgba(11,77,42,.14)!important;',
-      'display:block!important;overflow:hidden!important;',
-      'background-color:#eef3ef!important;',
-      'transform:none!important;',
-      'animation:none!important;',
-      '}',
-      '.cat-icon-btn.on .circle-ic.bw-photo-cat{',
-      'box-shadow:0 0 0 3px #0B4D2A,0 8px 18px rgba(11,77,42,.2)!important;',
-      'transform:none!important;',
-      '}',
+      '.cat-icon-btn .circle-ic.bw-photo-cat{width:56px!important;height:56px!important;min-width:56px!important;min-height:56px!important;border-radius:50%!important;background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important;border:2px solid #fff!important;box-shadow:0 6px 16px rgba(11,77,42,.14)!important;display:block!important;overflow:hidden!important;background-color:#eef3ef!important;transform:none!important;animation:none!important;}',
+      '.cat-icon-btn.on .circle-ic.bw-photo-cat{box-shadow:0 0 0 3px #0B4D2A,0 8px 18px rgba(11,77,42,.2)!important;transform:none!important;}',
       '.cat-icon-btn{width:64px!important;flex-shrink:0!important;}',
       '.cat-icon-btn .food-category-photo{background-image:none!important;transform:none!important;}',
-      '.cat-icon-btn .circle-ic{transform:none!important;}',
-      '.cat-icon-btn.on .circle-ic{transform:none!important;}'
+      '.cat-icon-btn .circle-ic,.cat-icon-btn.on .circle-ic{transform:none!important;}',
+
+      /* Space below extras so they are not crushed by the add panel */
+      '.product-info .custom-section{margin-bottom:8px!important;}',
+      '.product-info .extras{',
+      'display:flex!important;flex-direction:column!important;gap:10px!important;',
+      'margin-bottom:28px!important;',
+      'padding-bottom:12px!important;',
+      '}',
+      '.product-info .product-extra, .product-info .opt.product-extra{',
+      'padding:12px 14px!important;',
+      'border-radius:12px!important;',
+      '}',
+      '.product-info .add-panel{',
+      'margin-top:8px!important;',
+      'padding-top:16px!important;',
+      '}',
+      /* Breathing room at bottom of product sheet */
+      '.product-details .product-info{',
+      'padding-bottom:140px!important;',
+      '}'
     ].join('');
     document.head.appendChild(style);
   }
@@ -125,6 +126,128 @@
     return PHOTOS.veggie;
   }
 
+  function productCategory(p) {
+    if (!p) return 'popular';
+    const cat = normalize(p.cat || p.category || '');
+    if (EXTRAS_BY_CAT[cat]) return cat;
+    // Heuristic from name for drinks/desserts
+    const n = normalize(p.name || '');
+    if (/juice|soda|drink|cola|water|smoothie|shake|milk|tea|coffee|fanta|sprite/.test(n)) return 'drinks';
+    if (/cake|dessert|ice cream|brownie|cookie|pastry|sweet/.test(n)) return 'desserts';
+    if (/pizza/.test(n)) return 'pizza';
+    if (/burger|wrap/.test(n)) return 'burgers & wraps';
+    if (/chicken|wing|nugget|drum/.test(n)) return 'chicken';
+    if (/beef|steak/.test(n)) return 'beef';
+    if (/fries|side|coleslaw|salad/.test(n)) return 'sides';
+    if (/samosa|spring|snack|finger/.test(n)) return 'snacks';
+    return cat || 'popular';
+  }
+
+  function extrasForProduct(p) {
+    const cat = productCategory(p);
+    const ids = EXTRAS_BY_CAT[cat] || EXTRAS_BY_CAT.popular;
+    return ids.map((id) => ALL_EXTRAS[id]).filter(Boolean);
+  }
+
+  function syncGlobalExtras(list) {
+    // Keep app pricing helpers in sync with the active product's extras
+    try {
+      if (typeof EXTRAS !== 'undefined') {
+        EXTRAS.length = 0;
+        list.forEach((x) => EXTRAS.push(x));
+      } else {
+        window.EXTRAS = list.slice();
+      }
+    } catch (e) {
+      window.EXTRAS = list.slice();
+    }
+  }
+
+  function applySmartExtras() {
+    if (!document.querySelector('.product-details, .details.product-details')) return;
+    const p = (typeof state !== 'undefined' && state.product) || window.state?.product;
+    if (!p) return;
+
+    const list = extrasForProduct(p);
+    syncGlobalExtras(list);
+
+    // Hide size for drinks/desserts
+    const cat = productCategory(p);
+    const sizeSection = document.querySelector('.product-info .custom-section');
+    // first custom-section is size, second is extras — mark by heading text
+    document.querySelectorAll('.product-info .custom-section').forEach((sec) => {
+      const head = (sec.querySelector('.custom-head strong') || {}).textContent || '';
+      if (/size/i.test(head)) {
+        if (NO_SIZE_CATS[cat]) {
+          sec.style.display = 'none';
+          if (typeof state !== 'undefined') state.size = 'Regular';
+        } else {
+          sec.style.display = '';
+        }
+      }
+      if (/make it yours|extras|optional/i.test(head) || sec.querySelector('.extras')) {
+        const box = sec.querySelector('.extras') || sec;
+        // Rebuild extras list
+        let extrasEl = sec.querySelector('.extras');
+        if (!extrasEl) {
+          extrasEl = document.createElement('div');
+          extrasEl.className = 'extras';
+          sec.appendChild(extrasEl);
+        }
+        const selected = (typeof state !== 'undefined' && state.extras) || {};
+        extrasEl.innerHTML = list
+          .map((x) => {
+            const checked = selected[x.id] ? 'checked' : '';
+            const priceLabel = x.price > 0 ? '+' + ugxFmt(x.price) : 'Free';
+            return (
+              '<label class="opt product-extra"><span><b>' +
+              x.label +
+              '</b><small>' +
+              priceLabel +
+              '</small></span><input type="checkbox" data-ex="' +
+              x.id +
+              '" ' +
+              checked +
+              ' /></label>'
+            );
+          })
+          .join('');
+
+        // Wire checkboxes to state + re-render total
+        extrasEl.querySelectorAll('[data-ex]').forEach((input) => {
+          input.onchange = () => {
+            if (typeof state === 'undefined') return;
+            state.extras[input.dataset.ex] = input.checked;
+            // Drop extras that are no longer relevant
+            Object.keys(state.extras).forEach((k) => {
+              if (!list.find((x) => x.id === k)) delete state.extras[k];
+            });
+            if (typeof render === 'function') render(true);
+          };
+        });
+
+        // Update section title for drinks/desserts
+        const strong = sec.querySelector('.custom-head strong');
+        if (strong) {
+          if (cat === 'drinks') strong.textContent = 'Drink options';
+          else if (cat === 'desserts') strong.textContent = 'Sweet add-ons';
+          else strong.textContent = 'Make it yours';
+        }
+      }
+    });
+
+    // Refresh add-to-cart total label if helper exists
+    try {
+      const totalBtn = document.getElementById('addCart');
+      if (totalBtn && typeof detailsLineTotal === 'function') {
+        const t = detailsLineTotal();
+        const span = totalBtn.querySelector('span');
+        if (span) span.textContent = '· ' + ugxFmt(t);
+        else totalBtn.innerHTML = 'Add to Cart <span>· ' + ugxFmt(t) + '</span>';
+      }
+    } catch (e) {}
+  }
+
   function saveCatScroll() {
     const strip = catStrip();
     if (strip) lockCatX = strip.scrollLeft;
@@ -137,20 +260,14 @@
   }
 
   function placeNotification() {
-    const header = document.querySelector('.app-brand-header.is-home, .app-brand-header');
+    const header = document.querySelector('.app-brand-header');
     if (!header) return;
-
-    // Only show on home brand header (not secondary/back screens)
-    const isHome =
-      header.classList.contains('is-home') ||
-      !!document.querySelector('.home');
+    const isHome = header.classList.contains('is-home') || !!document.querySelector('.home');
     let btn = header.querySelector('.bw-header-notify');
-
     if (!isHome) {
       if (btn) btn.remove();
       return;
     }
-
     if (!btn) {
       btn = document.createElement('button');
       btn.type = 'button';
@@ -162,17 +279,12 @@
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        // Prefer the app's own handler path
-        if (typeof openProfileSection === 'function') {
-          openProfileSection('notifications');
-          return;
+        if (typeof openProfileSection === 'function') openProfileSection('notifications');
+        else if (typeof go === 'function') go('profileDetail', { profileSection: 'notifications' });
+        else {
+          const legacy = document.getElementById('homeNotifications');
+          if (legacy) legacy.click();
         }
-        if (typeof go === 'function') {
-          go('profileDetail', { profileSection: 'notifications' });
-          return;
-        }
-        const legacy = document.getElementById('homeNotifications');
-        if (legacy) legacy.click();
       });
     }
   }
@@ -180,6 +292,7 @@
   function fillIcons() {
     injectCss();
     placeNotification();
+    applySmartExtras();
     const strip = catStrip();
     const prevX = strip ? strip.scrollLeft : lockCatX != null ? lockCatX : 0;
 
@@ -311,7 +424,24 @@
     return true;
   }
 
+  // Expand default EXTRAS once when app is ready (fallback before product-specific filter)
+  function seedExtras() {
+    try {
+      const expanded = [
+        ALL_EXTRAS.chicken,
+        ALL_EXTRAS.cheese,
+        ALL_EXTRAS.avo,
+        ALL_EXTRAS.sauce,
+        ALL_EXTRAS.chili,
+        ALL_EXTRAS.bacon,
+        ALL_EXTRAS.dip
+      ];
+      syncGlobalExtras(expanded);
+    } catch (e) {}
+  }
+
   const id = setInterval(() => {
+    seedExtras();
     fillIcons();
     patchRender();
   }, 200);
@@ -324,6 +454,7 @@
 
   function watch() {
     injectCss();
+    seedExtras();
     const s = screenEl();
     if (s) obs.observe(s, { childList: true, subtree: true });
     fillIcons();
