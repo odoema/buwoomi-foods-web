@@ -201,6 +201,7 @@ const state = {
   orderTab: "active",
   profileEditOpen: false,
   navHistory: [],
+  authRedirectError: false,
 };
 
 try {
@@ -1620,6 +1621,7 @@ function inspectAuthRedirectError() {
     const code = params.get("error_code") || "";
     const description = params.get("error_description") || "";
     if (!code && !description) return;
+    state.authRedirectError = true;
     state.authMode = "signin";
     state.authError = code === "otp_expired"
       ? "That confirmation or recovery link has expired. Request a new one."
@@ -1710,6 +1712,10 @@ setupAuthStateListener();
   // Brief splash, then route correctly
   setTimeout(() => {
     if (state.screen !== "splash") return;
+    if (state.authRedirectError) {
+      go("login", {}, "fade");
+      return;
+    }
     if (restored) {
       go("home", {}, "fade");
     } else {
