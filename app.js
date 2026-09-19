@@ -602,7 +602,8 @@ function views() {
       const items = q ? baseItems.filter(p => `${p.name} ${p.desc} ${p.cat}`.toLowerCase().includes(q)) : baseItems;
       return `
       <div class="page">
-        <div class="topbar"><h2>Menu</h2><button class="icon-btn" aria-label="Search" id="menuSearchToggle">${icon("search")}</button></div>
+        <div class="topbar"><h2>Menu</h2></div>
+        <div class="menu-search"><div class="search">${icon("search")}<input id="menuSearchInput" value="${esc(state.searchQuery)}" placeholder="Search for meals, cuisine..." /></div></div>
         <div class="section"><div class="cats">
           ${["All", ...CATEGORIES].map(c => `<button class="chip ${state.menuTab === c ? "on" : ""}" data-mtab="${c}">${c}</button>`).join("")}
         </div></div>
@@ -1159,8 +1160,7 @@ function bind() {
   if(homeNotifications) homeNotifications.onclick=()=>openProfileSection("notifications");
   const homeSearch=$("#homeSearch");
   if(homeSearch) { homeSearch.oninput=()=>{state.searchQuery=homeSearch.value; if(state.searchQuery.trim()) { state.menuTab="All"; go("menu"); } }; homeSearch.onkeydown=e=>{if(e.key==='Enter'){state.menuTab='All';go('menu');}}; }
-  const menuSearchToggle=$("#menuSearchToggle");
-  if(menuSearchToggle) menuSearchToggle.onclick=()=>{ const q=prompt("Search meals",state.searchQuery); if(q!==null){state.searchQuery=q;render();} };
+
 
   const submitRating=$("#submitRating");
   if(submitRating) submitRating.onclick=async()=>{ try { if(state.orderId && window.BuwoomiBackend?.ready) await window.BuwoomiBackend.saveOrderRating(state.orderId,state.rating,$("#ratingComment")?.value.trim()); showToast("Thanks for rating your order."); go("home",{},"back"); } catch(e){showToast(e.message||"Could not save rating.");} };
