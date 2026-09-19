@@ -2135,15 +2135,27 @@ textarea:focus {
 }
 
 
-/* Tighten the brand-to-hero spacing on Home */
+/* Balanced logo header: equal vertical breathing room above and below the mark */
 .app-brand-header {
-  min-height: 88px;
-  height: 88px;
-  padding-top: 0;
+  min-height: 92px;
+  height: 92px;
+  box-sizing: border-box;
+  padding: 10px 16px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+}
+.app-brand-button {
+  height: 72px;
+  display: flex;
+  align-items: center;
 }
 .app-brand-button img {
-  height: 88px;
+  display: block;
+  height: 72px;
   max-width: 300px;
+  width: auto;
+  object-fit: contain;
 }
 .home-head {
   padding-top: 0 !important;
@@ -2153,6 +2165,7 @@ textarea:focus {
   margin-top: 4px !important;
 }
 @media (max-width: 380px) {
-  .app-brand-header { min-height: 84px; height: 84px; }
-  .app-brand-button img { height: 84px; max-width: 290px; }
+  .app-brand-header { min-height: 88px; height: 88px; padding: 10px 14px; }
+  .app-brand-button { height: 68px; }
+  .app-brand-button img { height: 68px; max-width: 285px; }
 }
