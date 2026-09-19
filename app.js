@@ -1350,7 +1350,7 @@ function render() {
     if (state.bumpBadge) { requestAnimationFrame(() => { state.bumpBadge = false; }); }
   } catch (e) {
     console.error("BUWOOMI render error:", e);
-    screenEl.innerHTML = \`
+    screenEl.innerHTML = `
       <div style="min-height:100%;display:flex;align-items:center;justify-content:center;padding:28px;background:#f7f8f5">
         <div style="max-width:420px;background:#fff;border:1px solid #e7ece8;border-radius:18px;padding:24px;box-shadow:0 10px 30px rgba(11,77,42,.08);text-align:center">
           <img src="assets/logo-transparent.png" alt="BUWOOMI FOODS" style="width:190px;max-width:80%;margin:0 auto 18px">
@@ -1358,7 +1358,7 @@ function render() {
           <p style="color:#6b756e;font-size:13px;line-height:1.55">We hit a temporary loading problem. Please refresh this page.</p>
           <button onclick="location.reload()" style="margin-top:16px;border:0;border-radius:12px;background:#0b4d2a;color:#fff;padding:12px 18px;font:600 14px Poppins,system-ui,sans-serif">Refresh</button>
         </div>
-      </div>\`;
+      </div>`;
   }
 }
 
