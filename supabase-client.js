@@ -8,7 +8,9 @@
 const BACKEND_READY =
   typeof window.SUPABASE_URL === "string" &&
   typeof window.SUPABASE_ANON_KEY === "string" &&
-  window.SUPABASE_ANON_KEY !== "PASTE-YOUR-ANON-PUBLIC-KEY-HERE";
+  window.SUPABASE_ANON_KEY !== "PASTE-YOUR-ANON-PUBLIC-KEY-HERE" &&
+  !!window.supabase &&
+  typeof window.supabase.createClient === "function";
 
 const sb = BACKEND_READY
   ? window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY)
