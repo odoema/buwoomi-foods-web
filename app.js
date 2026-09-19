@@ -198,6 +198,7 @@ const state = {
   searchQuery: "",
   orderTab: "active",
   profileEditOpen: false,
+  navHistory: [],
 };
 
 try {
@@ -228,8 +229,20 @@ function reducedMotion() {
 
 function go(name, extra = {}, direction = "forward") {
   const prev = state.screen;
+  const isBack = direction === "back";
+  const isTab = direction === "tab";
+
+  if (isTab) {
+    state.navHistory = [];
+  } else if (isBack) {
+    if (state.navHistory.length) state.navHistory.pop();
+  } else if (name !== prev) {
+    state.navHistory.push(prev);
+  }
+
+  const fallbackPrev = state.navHistory.length ? state.navHistory[state.navHistory.length - 1] : null;
   const apply = () => {
-    Object.assign(state, extra, { screen: name, prevScreen: prev });
+    Object.assign(state, extra, { screen: name, prevScreen: fallbackPrev });
     render();
     if (name === "orders" || name === "profile") syncOrdersFromBackend();
     if (name === "checkout") ensureCheckoutReady();
@@ -290,7 +303,21 @@ function tabbar(active) {
   ).join("")}</nav>`;
 }
 
+function navigateBack() {
+  if (state.screen === "home") return;
+  const target = state.navHistory[state.navHistory.length - 1] || state.prevScreen || "home";
+  go(target, {}, "back");
+}
+
 function bindNav() {
+  document.querySelectorAll("[data-global-back]").forEach((b) => {
+    b.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      navigateBack();
+    };
+  });
+
   document.querySelectorAll("[data-go]").forEach((b) => {
     b.onclick = async () => {
       let id = b.dataset.go;
@@ -309,12 +336,14 @@ function bindNav() {
         }
       }
 
-      const dir = tabIds.includes(id)
-        ? "fade"
-        : b.classList.contains("icon-btn") || b.dataset.back
-          ? "back"
-          : "forward";
-      if (tabIds.includes(id)) state.nav = id;
+      const dir = b.dataset.homeRoot
+        ? "tab"
+        : tabIds.includes(id)
+          ? "tab"
+          : b.classList.contains("icon-btn") || b.dataset.back
+            ? "back"
+            : "forward";
+      if (tabIds.includes(id) || b.dataset.homeRoot) state.nav = id;
       go(id, {}, dir);
     };
   });
@@ -494,7 +523,7 @@ function profileDetailView() {
   } else {
     body = `<div class="section"><div class="summary"><h3>About BUWOOMI</h3><p style="margin:10px 0;color:var(--muted)">Fresh food, delivered around Kampala.</p><p style="color:var(--muted);font-size:13px">BUWOOMI connects customers to the menu, ordering, delivery and account tools in one place.</p></div></div>`;
   }
-  return `<div class="page"><div class="topbar"><button class="icon-btn" data-go="profile" data-back="1">${icon("back")}</button><h2>${esc(title)}</h2><span></span></div>${body}</div>`;
+  return `<div class="page"><div class="topbar"><h2>${esc(title)}</h2><span></span></div>${body}</div>`;
 }
 
 /* --------------------------------------------------------------------------
@@ -536,7 +565,7 @@ function views() {
 
     onb1: () => `
       <div class="onb">
-        <div class="onb-top"><button class="skip" data-go="login">Skip</button></div>
+        <div class="onb-top"><button class="onb-back icon-btn" data-go="splash" data-back="1" aria-label="Back">${icon("back")}</button><button class="skip" data-go="login">Skip</button></div>
         <h1>Delicious Meals<br><span class="gold">Delivered<br>to You</span></h1>
         <p class="sub">Your favourite meals,<br>from our kitchen to your<br>doorstep.</p>
         <div class="hero-photo" style="${foodBg(MENU[0])}"></div>
@@ -549,7 +578,7 @@ function views() {
 
     onb2: () => `
       <div class="onb">
-        <div class="onb-top"><button class="skip" data-go="login">Skip</button></div>
+        <div class="onb-top"><button class="onb-back icon-btn" data-go="onb1" data-back="1" aria-label="Back">${icon("back")}</button><button class="skip" data-go="login">Skip</button></div>
         <h1>Fresh<br>Quality.<br><span class="gold">Convenient</span></h1>
         <p class="sub">Real ingredients.<br>Great taste. Always.</p>
         <div class="hero-photo" style="background-image:url('https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800&q=80')"></div>
@@ -562,7 +591,7 @@ function views() {
 
     onb3: () => `
       <div class="onb">
-        <div class="onb-top"><button class="skip" data-go="login">Skip</button></div>
+        <div class="onb-top"><button class="onb-back icon-btn" data-go="onb2" data-back="1" aria-label="Back">${icon("back")}</button><button class="skip" data-go="login">Skip</button></div>
         <h1>Good Food.<br><span class="gold">Closer to You.</span></h1>
         <p class="sub">Order. Relax.<br>We'll take care of the rest.</p>
         <div class="hero-photo" style="background-image:url('https://images.unsplash.com/photo-1526367790999-0150786686a2?w=800&q=80')"></div>
@@ -574,6 +603,7 @@ function views() {
       const backendOn = !!(window.BuwoomiBackend && window.BuwoomiBackend.ready);
       return `
       <div class="auth">
+        <button class="auth-back icon-btn" data-go="onb3" data-back="1" aria-label="Back">${icon("back")}</button>
         <img class="logo" src="assets/logo-transparent.png" alt="BUWOOMI FOODS LTD" />
         <h2>${isSignup ? "Create Account" : "Welcome Back!"}</h2>
         <p class="lead">${backendOn ? (isSignup ? "Sign up to get started" : "Sign in to continue") : "Demo mode — no backend connected yet"}</p>
@@ -659,7 +689,7 @@ function views() {
       <div class="details product-details">
         <div class="hero-big product-hero" style="view-transition-name:morph-hero;${foodBg(p)}">
           <div class="abs">
-            <button class="circle" data-go="${state.cameFrom}" data-back="1" aria-label="Back">${icon("back")}</button>
+            <span></span>
             <button class="circle ${liked ? "liked" : ""}" id="likeBtn" aria-label="Save to favourites" aria-pressed="${liked}">${icon("heart")}</button>
           </div>
           <span class="hero-label">BUWOOMI FAVOURITE</span>
@@ -864,7 +894,10 @@ function views() {
   if (!appScreens.includes(state.screen)) return content;
   return `<div class="app-shell">
     <header class="app-brand-header">
-      <button class="app-brand-button" data-go="home" aria-label="Go to BUWOOMI FOODS home">
+      <button class="app-brand-back" data-global-back aria-label="Go back">
+        ${icon("back")}
+      </button>
+      <button class="app-brand-button" data-go="home" data-home-root aria-label="Go to BUWOOMI FOODS home">
         <img src="assets/logo-transparent.png" alt="BUWOOMI FOODS" />
       </button>
     </header>
@@ -1255,10 +1288,12 @@ function bind() {
 
   const logoutBtn = $("#logoutBtn");
   if (logoutBtn) logoutBtn.onclick = async () => {
+    if (!window.confirm("Log out of BUWOOMI FOODS?")) return;
     if (window.BuwoomiBackend) await window.BuwoomiBackend.signOut();
     state.session = null;
     state.orders = [];
-    go("login", {}, "back");
+    state.navHistory = [];
+    go("login", {}, "tab");
   };
 
   const googleAuth=$("#googleAuth"); if(googleAuth) googleAuth.onclick=async()=>{try{await window.BuwoomiBackend.signInOAuth("google");}catch(e){showToast(e.message||"Google sign-in is unavailable.");}};
