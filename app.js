@@ -636,7 +636,7 @@ function views() {
           <div class="dots"><i class="dot"></i><i class="dot on"></i><i class="dot"></i></div>
           <button class="round-next" data-go="onb3" aria-label="Next">${icon("chevronRight")}</button>
         </div>
-        <div class="logo-foot"><img src="assets/logo-transparent.png" width="720" height="480" alt="" /></div>
+        <div class="logo-foot"><div class="flash-logo-disc"><img src="assets/logo-transparent.png" width="720" height="480" alt="BUWOOMI FOODS" /></div></div>
       </div>`,
 
     onb3: () => `
