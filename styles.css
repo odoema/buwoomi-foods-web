@@ -2428,3 +2428,52 @@ textarea:focus {
   .splash-logo-disc { width:190px; height:190px; padding:20px; }
   .flash-logo-disc { width:82px; height:82px; padding:10px; }
 }
+
+/* BUWOOMI 2.4 — maximum logo presence without increasing header height */
+.app-brand-header {
+  min-height:92px !important;
+  height:92px !important;
+  padding:2px 16px !important;
+  box-sizing:border-box !important;
+}
+.app-brand-button {
+  height:88px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+.app-brand-button img {
+  height:88px !important;
+  max-width:330px !important;
+  width:auto !important;
+  object-fit:contain !important;
+  display:block !important;
+}
+.app-brand-header .app-brand-back {
+  left:12px;
+  z-index:5;
+}
+@media (max-width:380px) {
+  .app-brand-header {
+    min-height:88px !important;
+    height:88px !important;
+    padding:1px 12px !important;
+  }
+  .app-brand-button {
+    height:84px !important;
+  }
+  .app-brand-button img {
+    height:84px !important;
+    max-width:285px !important;
+  }
+}
+
+/* Category artwork fallback: the generated artwork is preferred, with a real matching food photo underneath. */
+.food-category-photo {
+  background-color:#eef3ef !important;
+  background-repeat:no-repeat !important;
+  background-position:center,center !important;
+  background-size:500% 200%,cover !important;
+  border-radius:50% !important;
+  border:1px solid rgba(0,0,0,.06);
+}
