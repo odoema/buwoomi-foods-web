@@ -712,7 +712,7 @@ function views() {
       const items = q ? baseItems.filter(p => `${p.name} ${p.desc} ${p.cat}`.toLowerCase().includes(q)) : baseItems;
       return `
       <div class="page">
-        <div class="topbar"><h2>Menu</h2></div>
+        <div class="topbar root-topbar"><button class="icon-btn root-back" data-global-back aria-label="Go back">${icon("back")}</button><h2>Menu</h2><span></span></div>
         <div class="menu-search"><div class="search">${icon("search")}<input id="menuSearchInput" value="${esc(state.searchQuery)}" placeholder="Search for meals, cuisine..." /></div></div>
         <div class="section"><div class="cats">
           ${["All", ...CATEGORIES].map(c => `<button class="chip ${state.menuTab === c ? "on" : ""}" data-mtab="${c}">${c}</button>`).join("")}
@@ -768,7 +768,7 @@ function views() {
 
     cart: () => {
       if (!state.cart.length) {
-        return `<div class="page"><div class="topbar"><h2>Your Cart</h2></div>
+        return `<div class="page"><div class="topbar root-topbar"><button class="icon-btn root-back" data-global-back aria-label="Go back">${icon("back")}</button><h2>Your Cart</h2><span></span></div>
           <div class="empty">${icon("bag")}<h3>Your cart is waiting for something delicious.</h3>
           <p>Browse the menu and add a favourite meal.</p>
           <button class="cta" style="margin-top:18px;max-width:220px" data-go="menu">Browse Menu</button></div>
@@ -777,7 +777,7 @@ function views() {
       const t = cartTotals();
       return `
       <div class="page">
-        <div class="topbar"><h2>Your Cart</h2><button class="link" id="clear">Clear</button></div>
+        <div class="topbar root-topbar"><button class="icon-btn root-back" data-global-back aria-label="Go back">${icon("back")}</button><h2>Your Cart</h2><button class="link" id="clear">Clear</button></div>
         <div class="list">
           ${state.cart.map((i, idx) => `
             <article class="cart-row stagger" style="--i:${idx}">
@@ -906,7 +906,7 @@ function views() {
 
     orders: () => `
       <div class="page">
-        <div class="topbar"><h2>Orders</h2></div>
+        <div class="topbar root-topbar"><button class="icon-btn root-back" data-global-back aria-label="Go back">${icon("back")}</button><h2>Orders</h2><span></span></div>
         <div class="section"><div class="cats">
           <button class="chip ${state.orderTab === "active" ? "on" : ""}" data-customer-ordertab="active">Active</button><button class="chip ${state.orderTab === "past" ? "on" : ""}" data-customer-ordertab="past">Past</button>
         </div></div>
@@ -919,6 +919,7 @@ function views() {
       const initial = (email || "G").charAt(0).toUpperCase();
       return `
       <div class="page">
+        <div class="topbar root-topbar"><button class="icon-btn root-back" data-global-back aria-label="Go back">${icon("back")}</button><h2>Profile</h2><span></span></div>
         <div class="profile-head">
           <div class="big-av">${initial}</div>
           <h3>${esc(state.profile?.full_name || email || "Guest")}</h3>
