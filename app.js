@@ -414,7 +414,7 @@ function profileDetailView() {
           <h4>Add Address</h4>
           <p id="placesStatus" style="font-size:12px;color:var(--muted);margin:0 0 8px">Search a real place (Google) or type manually</p>
           <div class="field"><label>Label</label><input id="addressLabel" placeholder="Home / Office / Acacia Mall" /></div>
-          <div class="field"><label>Search place or address</label><input id="addressLine1" placeholder="Type place name — e.g. Acacia Mall, Nakasero…" autocomplete="off" /></div>
+          <div class="field"><label>Delivery address</label><input id="addressLine1" placeholder="e.g. Acacia Mall, Nakasero…" autocomplete="street-address" /><button type="button" class="cta ghost" id="useLocationBtn" style="margin-top:8px">Use my current location</button><p id="locationStatus" style="font-size:12px;color:var(--muted);margin:7px 0 0">You can also pin your current location.</p></div>
           <div class="field"><label>City</label><input id="addressCity" placeholder="Kampala" value="Kampala" /></div>
           <label style="display:flex;gap:8px;align-items:center;font-size:13px;margin:10px 0"><input id="addressDefault" type="checkbox" checked /> Make default</label>
           <button class="cta" id="saveAddressBtn">Save Address</button>
@@ -1038,6 +1038,34 @@ function bind() {
       } catch (e) { showToast(e.message || "Could not delete address."); }
     };
   });
+
+  const useLocationBtn = $("#useLocationBtn");
+  if (useLocationBtn) useLocationBtn.onclick = async () => {
+    const input = $("#addressLine1");
+    const label = $("#addressLabel");
+    const city = $("#addressCity");
+    const status = $("#locationStatus");
+    useLocationBtn.disabled = true;
+    useLocationBtn.textContent = "Finding you…";
+    if (status) status.textContent = "Requesting your browser location…";
+    try {
+      if (!navigator.geolocation) throw new Error("Location is not supported by this browser.");
+      const pos = await new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 12000, maximumAge: 30000 }));
+      const lat = Number(pos.coords.latitude.toFixed(6));
+      const lng = Number(pos.coords.longitude.toFixed(6));
+      if (input) { input.value = `Pinned location (${lat}, ${lng})`; input.dataset.latitude = String(lat); input.dataset.longitude = String(lng); }
+      if (label && !label.value.trim()) label.value = "Current Location";
+      if (city && !city.value.trim()) city.value = "Kampala";
+      if (status) status.textContent = `Location pinned at ${lat}, ${lng}. Tap Save Address to keep it.`;
+      showToast("Current location added.");
+    } catch (e) {
+      if (status) status.textContent = e.message || "Could not get your location.";
+      showToast(e.message || "Could not get your location.");
+    } finally {
+      useLocationBtn.disabled = false;
+      useLocationBtn.textContent = "Use my current location";
+    }
+  };
 
   const saveAddressBtn = $("#saveAddressBtn");
   if (saveAddressBtn) saveAddressBtn.onclick = async () => {
