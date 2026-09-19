@@ -2468,12 +2468,21 @@ textarea:focus {
   }
 }
 
-/* Category artwork fallback: the generated artwork is preferred, with a real matching food photo underneath. */
+/* Category artwork: preserve each category's exact sprite position. */
 .food-category-photo {
   background-color:#eef3ef !important;
   background-repeat:no-repeat !important;
-  background-position:center,center !important;
-  background-size:500% 200%,cover !important;
+  background-size:500% 200%,cover;
   border-radius:50% !important;
   border:1px solid rgba(0,0,0,.06);
+  overflow:hidden;
+}
+.cat-icon-btn .food-category-photo {
+  animation:none !important;
+  transform:none !important;
+}
+.cat-icon-btn.on .food-category-photo {
+  background-color:#eef3ef !important;
+  outline:2px solid var(--green);
+  outline-offset:2px;
 }
