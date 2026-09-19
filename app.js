@@ -307,20 +307,24 @@ function tabbar(active) {
     ["profile", "profile", "Profile"],
   ];
   const count = cartCount();
-  return `<nav class="tabbar">${items.map(([id, ic, l]) =>
-    `<button class="${active === id ? "on" : ""}" data-go="${id}">
-      ${icon(ic)}${id === "cart" && count ? `<span class="cart-badge${state.bumpBadge ? " bump" : ""}">${count}</span>` : ""}
-      ${l}
+  return `<nav class="tabbar" aria-label="Primary navigation">${items.map(([id, ic, l]) =>
+    `<button class="${active === id ? "on" : ""}" data-go="${id}" aria-current="${active === id ? "page" : "false"}">
+      <span class="tab-icon">${icon(ic)}${id === "cart" && count ? `<span class="cart-badge${state.bumpBadge ? " bump" : ""}">${count}</span>` : ""}</span>
+      <span class="tab-label">${l}</span>
     </button>`
   ).join("")}</nav>`;
 }
 
 function navigateBack() {
   if (state.screen === "home") return;
-  if (history.state?.buwoomi) {
+
+  const hasParent = Array.isArray(state.navHistory) && state.navHistory.length > 0;
+  if (hasParent && history.state?.buwoomi) {
     history.back();
     return;
   }
+
+  // Deep-linked/standalone screens always have a safe in-app escape route.
   const target = state.navHistory[state.navHistory.length - 1] || state.prevScreen || "home";
   go(target, {}, "back");
 }
@@ -940,15 +944,21 @@ function views() {
   const content = (v[state.screen] || v.home)();
   const appScreens = ["home","menu","orders","cart","profile","profileDetail","details","checkout","confirmed","preparing","delivery","delivered","adminMenu","adminOrders","adminSettings"];
   if (!appScreens.includes(state.screen)) return content;
-  return `<div class="app-shell">
-    <header class="app-brand-header">
-      <button class="app-brand-back" data-global-back aria-label="Go back">
-        ${icon("back")}
-      </button>
+
+  const rootScreens = ["home","menu","orders","cart","profile"];
+  const brandRoot = state.screen === "home";
+  const needsGlobalBack = ["details","profileDetail"].includes(state.screen);
+
+  const globalHeader = (brandRoot || needsGlobalBack) ? `
+    <header class="app-brand-header ${needsGlobalBack ? "is-secondary" : "is-home"}">
+      ${needsGlobalBack ? `<button class="app-brand-back" data-global-back aria-label="Go back">${icon("back")}</button>` : ""}
       <button class="app-brand-button" data-go="home" data-home-root aria-label="Go to BUWOOMI FOODS home">
         <img src="assets/logo-transparent.png" alt="BUWOOMI FOODS" />
       </button>
-    </header>
+    </header>` : "";
+
+  return `<div class="app-shell ${rootScreens.includes(state.screen) ? "root-screen" : "child-screen"} ${state.screen === "orders" ? "orders-screen" : ""}">
+    ${globalHeader}
     ${content}
   </div>`;
 }
