@@ -2714,3 +2714,22 @@ textarea:focus {
 .tabbar button {
   touch-action:manipulation;
 }
+
+/* Correct root-page topbars: keep existing left/right actions and center
+   only the Orders title, which has no competing action. */
+.app-shell.root-screen .topbar {
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  grid-template-columns:none !important;
+}
+.app-shell.root-screen .topbar h2 {
+  text-align:left !important;
+}
+.orders-screen .topbar {
+  justify-content:center !important;
+}
+.orders-screen .topbar h2 {
+  margin:0 !important;
+  text-align:center !important;
+}
