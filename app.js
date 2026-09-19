@@ -607,7 +607,7 @@ function views() {
     splash: () => `
       <div class="splash">
         <div class="splash-logo-disc" aria-label="BUWOOMI FOODS">
-          <img src="assets/logo-transparent.png" alt="BUWOOMI FOODS LTD" />
+          <img src="assets/logo-transparent.png" width="720" height="480" alt="BUWOOMI FOODS LTD" />
         </div>
         <div class="tag">Good Food. Closer to You.</div>
         <div class="loader" role="status" aria-label="Loading"></div>
@@ -623,7 +623,7 @@ function views() {
           <div class="dots"><i class="dot on"></i><i class="dot"></i><i class="dot"></i></div>
           <button class="round-next" data-go="onb2" aria-label="Next">${icon("chevronRight")}</button>
         </div>
-        <div class="logo-foot"><div class="flash-logo-disc"><img src="assets/logo-transparent.png" alt="BUWOOMI FOODS" /></div></div>
+        <div class="logo-foot"><div class="flash-logo-disc"><img src="assets/logo-transparent.png" width="720" height="480" alt="BUWOOMI FOODS" /></div></div>
       </div>`,
 
     onb2: () => `
@@ -636,7 +636,7 @@ function views() {
           <div class="dots"><i class="dot"></i><i class="dot on"></i><i class="dot"></i></div>
           <button class="round-next" data-go="onb3" aria-label="Next">${icon("chevronRight")}</button>
         </div>
-        <div class="logo-foot"><img src="assets/logo-transparent.png" alt="" /></div>
+        <div class="logo-foot"><img src="assets/logo-transparent.png" width="720" height="480" alt="" /></div>
       </div>`,
 
     onb3: () => `
