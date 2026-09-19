@@ -703,7 +703,7 @@ function views() {
           <div class="sr"><span>Delivery Fee</span><span>${ugx(t.fee)}</span></div>
           <div class="sr total"><span>Total</span><span>${ugx(t.total)}</span></div>
         </div>
-        <div style="padding:0 16px 16px"><button class="cta" data-go="checkout">Proceed to Checkout</button></div>
+        <div class="cart-checkout-bar"><div><strong>${cartCount()} ${cartCount() === 1 ? "item" : "items"}</strong><span>${ugx(t.total)} total</span></div><button class="cta" data-go="checkout">Checkout ${icon("chevronRight")}</button></div>
         ${tabbar("cart")}
       </div>`;
     },
@@ -718,18 +718,20 @@ function views() {
       return `
       <div class="page" style="padding-bottom:24px">
         <div class="topbar"><button class="icon-btn" data-go="cart" data-back="1">${icon("back")}</button><h2>Checkout</h2><span></span></div>
-        <div class="summary">
-          <strong>${icon("mapPin")} Delivery Address</strong>
-          ${(() => { const a = state.profileData.addresses?.find((x) => x.id === state.addressId) || state.profileData.addresses?.find((x) => x.is_default); return a ? `<p style="margin-top:8px"><strong>${esc(a.label)}</strong><br>${esc(a.line1)}, ${esc(a.city)}</p>` : `<p style="margin-top:8px">No saved address selected.</p>`; })()}
-          <button class="link" data-profile-section="addresses">Change</button>
+        <div class="checkout-progress" aria-label="Checkout progress">
+          <div class="step on"><span>1</span><b>Delivery</b></div><i></i><div class="step"><span>2</span><b>Payment</b></div><i></i><div class="step"><span>3</span><b>Place order</b></div>
         </div>
-        <div class="summary">
-          <strong>${icon("clock")} Delivery Time</strong>
+        <div class="summary checkout-card">
+          <div class="checkout-card-head"><strong>${icon("mapPin")} Delivery Address</strong><button class="link" data-profile-section="addresses">Change</button></div>
+          ${(() => { const a = state.profileData.addresses?.find((x) => x.id === state.addressId) || state.profileData.addresses?.find((x) => x.is_default); return a ? `<p style="margin-top:8px"><strong>${esc(a.label)}</strong><br>${esc(a.line1)}, ${esc(a.city)}</p>` : `<p style="margin-top:8px">No saved address selected.</p>`; })()}
+        </div>
+        <div class="summary checkout-card">
+          <div class="checkout-card-head"><strong>${icon("clock")} Delivery Time</strong><span class="checkout-badge">ASAP</span></div>
           <p style="margin-top:8px;color:var(--green-2)">Deliver now (25–35 mins)</p>
           <p style="color:var(--muted);font-size:13px">Schedule for later</p>
         </div>
-        <div class="summary">
-          <strong>Payment Method</strong>
+        <div class="summary checkout-card">
+          <div class="checkout-card-head"><strong>Payment Method</strong><span class="checkout-badge">Secure</span></div>
           <div style="margin-top:10px">
             ${PAY_METHODS.map(([id, l, bg, fg, letter]) =>
               `<div class="pay-opt ${state.pay === id ? "on" : ""}" data-pay="${id}">
