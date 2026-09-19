@@ -1494,11 +1494,16 @@ function bind() {
     } catch (e) {
       state.authBusy = false;
       const msg = String(e?.message || e || "");
-      state.authError = /email not confirmed|not confirmed/i.test(msg)
+      const code = String(e?.code || "").toLowerCase();
+      state.authError = (code === "email_not_confirmed" || /email not confirmed|not confirmed/i.test(msg))
         ? "Please confirm your email address before signing in."
-        : /invalid login credentials/i.test(msg)
+        : (code === "invalid_credentials" || /invalid login credentials/i.test(msg))
           ? "Email or password is incorrect."
-          : msg || "Something went wrong. Try again.";
+          : (code === "weak_password" || /weak password/i.test(msg))
+            ? "Choose a stronger password and try again."
+            : (code === "signup_disabled")
+              ? "New account registration is currently disabled."
+              : msg || "Something went wrong. Try again.";
       render();
     }
   };
@@ -1587,6 +1592,22 @@ document.head.appendChild(styleTag);
 /* --------------------------------------------------------------------------
    Supabase auth lifecycle
    -------------------------------------------------------------------------- */
+function inspectAuthRedirectError() {
+  try {
+    const hash = window.location.hash ? window.location.hash.slice(1) : "";
+    if (!hash) return;
+    const params = new URLSearchParams(hash);
+    const code = params.get("error_code") || "";
+    const description = params.get("error_description") || "";
+    if (!code && !description) return;
+    state.authMode = "signin";
+    state.authError = code === "otp_expired"
+      ? "That confirmation or recovery link has expired. Request a new one."
+      : (description || "The authentication link could not be completed. Please try again.");
+    history.replaceState(history.state, "", window.location.pathname + window.location.search);
+  } catch (_) {}
+}
+
 function setupAuthStateListener() {
   const backend = window.BuwoomiBackend;
   if (!backend?.ready || typeof backend.onAuthStateChange !== "function") return;
@@ -1637,6 +1658,7 @@ function setupAuthStateListener() {
    Boot — restore session, then splash → onboarding → login OR straight home
    -------------------------------------------------------------------------- */
 
+inspectAuthRedirectError();
 render();
 syncMenuFromBackend();
 setupAuthStateListener();
