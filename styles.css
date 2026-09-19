@@ -302,6 +302,7 @@ button:not(:disabled):active {
 }
 
 .splash img {
+  aspect-ratio: 3 / 2;
   width: 280px;
   max-width: 82%;
   height: auto;
@@ -503,6 +504,7 @@ button:not(:disabled):active {
 }
 
 .logo-foot img {
+  aspect-ratio: 3 / 2;
   height: 70px;
   width: auto;
 }
@@ -516,6 +518,7 @@ button:not(:disabled):active {
 }
 
 .auth .logo {
+  aspect-ratio: 3 / 2;
   display: block;
   height: 120px;
   margin: 8px auto 18px;
