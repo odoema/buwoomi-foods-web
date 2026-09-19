@@ -1661,7 +1661,11 @@ function setupAuthStateListener() {
 
       if ((event === "SIGNED_IN" || event === "INITIAL_SESSION") && session) {
         state.session = session;
-        if (state.screen === "login" && state.authMode !== "recovery") {
+        if (state.authMode !== "recovery") {
+          // OAuth callbacks can arrive while the app is still on splash/onboarding.
+          // Always complete an authenticated callback into the signed-in home screen;
+          // otherwise the boot timer can send a successfully authenticated user back
+          // through onboarding/login.
           state.authMode = "signin";
           state.authError = null;
           state.authNotice = null;
