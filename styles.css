@@ -2879,3 +2879,27 @@ textarea:focus {
   width: 10px;
   height: 10px;
 }
+
+
+/* Password visibility control */
+.password-toggle {
+  position:absolute;
+  right:8px;
+  top:50%;
+  transform:translateY(-50%);
+  width:36px;
+  height:36px;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+.password-toggle:hover { color:var(--green-2); }
+.password-toggle svg { width:19px; height:19px; }
+.card-payment-form { margin-top:12px; padding:14px; border:1px solid var(--border); border-radius:14px; background:#fff; }
+.card-payment-form .field { margin-top:10px; }
+.card-payment-form .field:first-child { margin-top:0; }
