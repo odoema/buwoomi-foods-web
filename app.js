@@ -821,7 +821,7 @@ function views() {
       const items = q ? baseItems.filter(p => `${p.name} ${p.desc} ${p.cat}`.toLowerCase().includes(q)) : baseItems;
       return `
       <div class="page">
-        <div class="topbar root-topbar"><button class="icon-btn root-back" data-global-back aria-label="Go back">${icon("back")}</button><h2>Discover</h2><span></span></div>
+        <div class="topbar root-topbar"><button class="icon-btn root-back" data-global-back aria-label="Go back">${icon("back")}</button><h2>Discover</h2><button class="icon-btn" data-go="cart" aria-label="Open cart">${icon("cart")}${cartCount() ? `<span class="cart-badge">${cartCount()}</span>` : ""}</button></div>
         <div class="menu-search"><div class="search">${icon("search")}<input id="menuSearchInput" value="${esc(state.searchQuery)}" placeholder="Search for meals, cuisine..." /></div></div>
         <div class="section"><div class="cats">
           ${["All", ...CATEGORIES].map(c => `<button class="chip ${state.menuTab === c ? "on" : ""}" data-mtab="${c}">${c}</button>`).join("")}
@@ -1167,6 +1167,8 @@ async function mountPayPalButtons() {
 }
 
 function bind() {
+  const createGroupBtn = document.getElementById("createGroupBtn");
+  if (createGroupBtn) createGroupBtn.onclick = () => showToast("Group ordering is being connected to the shared-order backend next.");
   const adminBtn = $("[data-admin-menu]");
   if (adminBtn) adminBtn.onclick = openAdminMenu;
   const adminOrdersBtn = $("[data-admin-orders]");
