@@ -2689,23 +2689,29 @@ textarea:focus {
   display:none;
 }
 
-/* Make all explicit top-level page bars visually consistent. */
+/* Root-page topbars keep a single flex layout; titles and actions remain
+   aligned without a competing grid override. */
 .app-shell.root-screen .topbar {
   min-height:58px;
   box-sizing:border-box;
-  display:grid;
-  grid-template-columns:44px 1fr 44px;
-  align-items:center;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
 }
 .app-shell.root-screen .topbar h2 {
   margin:0;
-  text-align:center;
+  text-align:left !important;
   font-size:20px;
 }
 
 /* Orders is a primary destination, not a child page: no back arrow and no
    brand masthead. Its Active/Past switch remains local to Orders. */
+.orders-screen .topbar {
+  justify-content:center !important;
+}
 .orders-screen .topbar h2 {
+  margin:0 !important;
+  text-align:center !important;
   font-size:22px !important;
 }
 
@@ -2715,26 +2721,6 @@ textarea:focus {
 .tabbar button {
   touch-action:manipulation;
 }
-
-/* Correct root-page topbars: keep existing left/right actions and center
-   only the Orders title, which has no competing action. */
-.app-shell.root-screen .topbar {
-  display:flex !important;
-  align-items:center !important;
-  justify-content:space-between !important;
-  grid-template-columns:none !important;
-}
-.app-shell.root-screen .topbar h2 {
-  text-align:left !important;
-}
-.orders-screen .topbar {
-  justify-content:center !important;
-}
-.orders-screen .topbar h2 {
-  margin:0 !important;
-  text-align:center !important;
-}
-
 
 /* Restore visible back arrows on primary app screens without bringing back redundant branding. */
 .root-topbar {
