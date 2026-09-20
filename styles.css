@@ -2852,3 +2852,22 @@ textarea:focus {
     flex-basis: 190px;
   }
 }
+
+/* BUWOOMI 2.6 — onboarding (flash screen) pager: every dot is a perfect circle.
+   The active dot used to stretch to a 22x8 pill; it is now a slightly larger
+   green circle instead. */
+.dots {
+  align-items: center;
+}
+.dot,
+.dot.on {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+}
+.dot.on {
+  width: 10px;
+  height: 10px;
+}
