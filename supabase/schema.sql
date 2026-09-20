@@ -78,6 +78,46 @@ alter table public.categories enable row level security;
 create policy "categories_public_read" on public.categories for select using (true);
 
 -- ---------------------------------------------------------------------------
+-- businesses / merchants
+-- ---------------------------------------------------------------------------
+-- A menu item can exist without a business_id during the transition. This keeps
+-- the existing customer catalogue and order history intact while introducing
+-- the first-class business domain needed by Buwoomi 2.0.
+create table if not exists public.businesses (
+  id uuid primary key default gen_random_uuid(),
+  owner_user_id uuid references public.profiles(id) on delete set null,
+  name text not null,
+  slug text unique,
+  description text,
+  phone text,
+  city text not null default 'Kampala',
+  service_area text,
+  logo_url text,
+  cover_image_url text,
+  is_active boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table public.businesses enable row level security;
+create policy "businesses_public_read" on public.businesses
+  for select using (
+    is_active = true
+    or (select private.is_admin())
+    or (select auth.uid()) = owner_user_id
+  );
+create policy "businesses_owner_insert" on public.businesses
+  for insert to authenticated
+  with check ((select auth.uid()) = owner_user_id);
+create policy "businesses_owner_update" on public.businesses
+  for update to authenticated
+  using ((select auth.uid()) = owner_user_id or (select private.is_admin()))
+  with check ((select auth.uid()) = owner_user_id or (select private.is_admin()));
+
+create index if not exists idx_businesses_owner on public.businesses(owner_user_id);
+create index if not exists idx_businesses_city_active on public.businesses(city, is_active);
+
+-- ---------------------------------------------------------------------------
 -- menu_items
 -- ---------------------------------------------------------------------------
 create table if not exists public.menu_items (
@@ -86,6 +126,7 @@ create table if not exists public.menu_items (
   description text,
   price_ugx integer not null,
   category_id text references public.categories(id),
+  business_id uuid references public.businesses(id) on delete set null,
   image_url text,
   is_popular boolean not null default false,
   is_available boolean not null default true,
@@ -165,6 +206,7 @@ create policy "order_items_owner_insert" on public.order_items
 -- indexes
 -- ---------------------------------------------------------------------------
 create index if not exists idx_menu_items_category on public.menu_items(category_id);
+create index if not exists idx_menu_items_business on public.menu_items(business_id);
 create index if not exists idx_orders_user on public.orders(user_id, placed_at desc);
 create index if not exists idx_order_items_order on public.order_items(order_id);
 create index if not exists idx_addresses_user on public.addresses(user_id);
