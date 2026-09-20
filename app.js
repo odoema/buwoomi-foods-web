@@ -385,7 +385,15 @@ function bindOnboardingSwipe() {
     } else {
       if (state.screen === "onb3") go("onb2", {}, "back");
       else if (state.screen === "onb2") go("onb1", {}, "back");
-      else if (state.screen === "onb1") go("login", {}, "back");
+      else if (state.screen === "onb1") {
+        // A deliberate back-swipe from the first onboarding screen means
+        // "leave the app". Browsers may refuse script-initiated tab closing,
+        // so keep a safe fallback for normal browser tabs.
+        try { window.close(); } catch (_) {}
+        setTimeout(() => {
+          if (!window.closed && state.screen === "onb1") go("login", {}, "back");
+        }, 120);
+      }
     }
   }, { passive: true });
 }
