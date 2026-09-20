@@ -8,7 +8,7 @@ Baseline: main
 
 Buwoomi already has a functioning customer-ordering foundation, Supabase integration, authentication, address handling, checkout, order history, favourites, notifications and an admin surface. The strategic redesign should therefore be evolutionary: preserve the working transaction foundation while changing the product model from a single food-ordering experience into a multi-domain food-commerce platform.
 
-The largest structural gap is not visual. The current application is still fundamentally organised around a single catalogue and restaurant-style ordering flow. The current database has menu items and categories, but no first-class business/merchant entity, fulfilment abstraction, payment transaction model, group-order model, scheduled-order model, or meal-plan model.
+The largest structural gap is not visual. The current application is still fundamentally organised around a single catalogue and restaurant-style ordering flow. The immediate catalogue direction is deliberately local-first: matooke, posho, cassava, groundnuts, beans, nakati, dodo, cabbage, entula and other familiar Ugandan foods should define the early customer experience, with fast-food/international items remaining secondary. The live catalogue now contains a local-first set of food items and categories, but the database still has no first-class business/merchant entity, fulfilment abstraction, payment transaction model, group-order model, scheduled-order model, or meal-plan model.
 
 ## Current state vs Buwoomi 2.0
 
