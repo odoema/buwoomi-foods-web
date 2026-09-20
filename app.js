@@ -385,6 +385,7 @@ function bindOnboardingSwipe() {
     } else {
       if (state.screen === "onb3") go("onb2", {}, "back");
       else if (state.screen === "onb2") go("onb1", {}, "back");
+      else if (state.screen === "onb1") go("login", {}, "back");
     }
   }, { passive: true });
 }
