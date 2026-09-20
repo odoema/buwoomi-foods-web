@@ -785,9 +785,9 @@ function views() {
     const fallbackIcon = CATEGORY_ICON[c] || fallbackIcons[c] || "leaf";
     if (artUrl) {
       const safeArtUrl = String(artUrl).replace(/\x27/g, "%27");
-      return `<button class="cat-icon-btn \${state.cat === c ? "on" : ""}" data-cat="\${esc(c)}" aria-label="Browse \${esc(c)}"><span class="circle-ic food-category-photo" style="background-image:url(\x27\${safeArtUrl}\x27) !important;background-position:center !important;background-size:cover !important;background-repeat:no-repeat !important"></span><span>\${esc(c)}</span></button>`;
+      return `<button class="cat-icon-btn ${state.cat === c ? "on" : ""}" data-cat="${esc(c)}" aria-label="Browse ${esc(c)}"><span class="circle-ic food-category-photo" style="background-image:url(\x27${safeArtUrl}\x27) !important;background-position:center !important;background-size:cover !important;background-repeat:no-repeat !important"></span><span>${esc(c)}</span></button>`;
     }
-    return `<button class="cat-icon-btn \${state.cat === c ? "on" : ""}" data-cat="\${esc(c)}" aria-label="Browse \${esc(c)}"><span class="circle-ic category-icon-circle"><span class="i">\${icon(fallbackIcon)}</span></span><span>\${esc(c)}</span></button>`;
+    return `<button class="cat-icon-btn ${state.cat === c ? "on" : ""}" data-cat="${esc(c)}" aria-label="Browse ${esc(c)}"><span class="circle-ic category-icon-circle"><span class="i">${icon(fallbackIcon)}</span></span><span>${esc(c)}</span></button>`;
   }).join("");
 })()}</div></div>
         `}
