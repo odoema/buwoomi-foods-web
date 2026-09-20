@@ -1648,6 +1648,9 @@ function bind() {
         if (number.length < 13 || number.length > 19) { place.disabled = false; return showToast("Enter a valid card number."); }
         if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry)) { place.disabled = false; return showToast("Enter the expiry date as MM/YY."); }
         if (cvv.length < 3 || cvv.length > 4) { place.disabled = false; return showToast("Enter the card security code."); }
+        // Never send raw card credentials to the BUWOOMI API. Live charging must use a PCI-compliant hosted/tokenized gateway.
+        place.disabled = false;
+        return showToast("Visa details are valid. Secure card processing still needs to be connected to the payment gateway.");
       }
       try {
         const backendOn = !!(window.BuwoomiBackend && window.BuwoomiBackend.ready);
