@@ -2662,13 +2662,19 @@ textarea:focus {
   max-width:100%;
 }
 .tabbar .cart-badge {
-  top:-2px !important;
-  right:-2px !important;
+  top:4px !important;
+  right:auto !important;
+  left:50% !important;
+  transform:translateX(8px);
   min-width:17px !important;
   height:17px !important;
   padding:0 4px !important;
   font-size:9px !important;
+  z-index:2;
   box-shadow:0 2px 6px rgba(0,0,0,.14);
+}
+.tabbar .cart-badge.bump {
+  animation:bw-add-pop 360ms var(--ease-spring);
 }
 
 /* Give every scrollable primary page enough clearance from the persistent nav. */
@@ -2866,15 +2872,4 @@ textarea:focus {
   #screen .page > .summary { margin-left: 12px; margin-right: 12px; padding: 14px; }
 }
 
-
-/* BUWOOMI cart badge: keep the order-count badge anchored to the cart icon. */
-.tabbar button { position: relative; }
-.tabbar .cart-badge {
-  top: 4px;
-  right: auto;
-  left: 50%;
-  transform: translateX(8px);
-  z-index: 2;
-}
-.tabbar .cart-badge.bump { animation: bw-add-pop 360ms var(--ease-spring); }
 
