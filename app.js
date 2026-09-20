@@ -82,6 +82,13 @@ let MENU = [
 
 let CATEGORIES = ["Popular","Chicken","Burgers & Wraps","Beef","Veggie","Sides","Snacks","Pizza","Drinks","Desserts"];
 const CATEGORY_ICON = { Popular:"starBadge",Chicken:"drumstick","Burgers & Wraps":"burger",Beef:"steak",Veggie:"leaf",Sides:"fries",Snacks:"samosa",Pizza:"pizza",Drinks:"juice",Desserts:"cake" };
+const CATEGORY_ICON_FALLBACKS = {
+  Popular:"starBadge", Chicken:"drumstick", "Local Plates":"chefHat",
+  "Burgers & Wraps":"burger", Beef:"steak", Staples:"bag",
+  "Gnuts & Sauces":"chefHat", Sides:"fries", Veggie:"leaf",
+  "Greens & Veg":"leaf", Pizza:"pizza", Proteins:"steak",
+  Snacks:"samosa", Desserts:"cake", Drinks:"juice",
+};
 const CATEGORY_SPRITE_POS = {
   Popular:"0% 0%", Chicken:"25% 0%", "Burgers & Wraps":"50% 0%", Beef:"75% 0%", Veggie:"100% 0%",
   Sides:"0% 100%", Snacks:"25% 100%", Pizza:"50% 100%", Drinks:"75% 100%", Desserts:"100% 100%"
@@ -479,10 +486,25 @@ function esc(value) {
   return String(value ?? "").replace(/[&<>'"]/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
 }
 
+function categoryIconName(cat) {
+  return CATEGORY_ICON[cat] || CATEGORY_ICON_FALLBACKS[cat] || "leaf";
+}
+
+function categoryRepresentative(cat) {
+  const key = String(cat || "").trim().toLowerCase();
+  const candidates = cat === "Popular"
+    ? MENU.filter((m) => m.popular && m.img)
+    : MENU.filter((m) => String(m.cat || "").trim().toLowerCase() === key && m.img);
+  return candidates[0]?.img || "";
+}
+
 function foodBg(item) {
-  const url = String(item?.img || "").replace(/'/g, "%27");
-  const pos = CATEGORY_SPRITE_POS[item?.cat] || CATEGORY_SPRITE_POS.Popular || "0% 0%";
-  return "background-image:url('" + url + "'),url('assets/category-icons.webp');background-position:center," + pos + ";background-size:cover,500% 200%;background-repeat:no-repeat;";
+  const url = String(item?.img || categoryRepresentative(item?.cat) || "").replace(/'/g, "%27");
+  return url ? "background-image:url('" + url + "');background-position:center;background-size:cover;background-repeat:no-repeat;" : "";
+}
+
+function foodCardFallback(item) {
+  return item?.img || categoryRepresentative(item?.cat) ? "" : icon(categoryIconName(item?.cat));
 }
 
 function profileTitle(section) {
@@ -765,24 +787,9 @@ function views() {
             <div class="img" style="${foodBg(MENU[0])}"></div>
           </div>
           <div class="section home-category-section"><div class="section-h"><h4>Browse by category</h4><button class="link" data-go="menu">See all</button></div><div class="cat-icons">${(() => {
-  // Never borrow a photo from another category: that was causing several
-  // categories to inherit the same chicken image.
-  const fallbackIcons = {
-    Popular:"starBadge", Chicken:"drumstick", "Local Plates":"chefHat",
-    "Burgers & Wraps":"burger", Beef:"steak", Staples:"bag",
-    "Gnuts & Sauces":"chefHat", Sides:"fries", Veggie:"leaf",
-    "Greens & Veg":"leaf", Pizza:"pizza", Proteins:"steak",
-    Snacks:"samosa", Desserts:"cake", Drinks:"juice",
-  };
-  const usedImages = new Set();
-  const normalise = (value) => String(value || "").trim().toLowerCase();
-
   return CATEGORIES.map((c) => {
-    const categoryItems = MENU.filter(m => normalise(m.cat) === normalise(c) && m.img);
-    const candidates = c === "Popular" ? MENU.filter(m => m.popular && m.img) : categoryItems;
-    const artUrl = candidates.find(m => !usedImages.has(m.img))?.img || "";
-    if (artUrl) usedImages.add(artUrl);
-    const fallbackIcon = (CATEGORY_ICON[c] && CATEGORY_ICON[c] !== "leaf") ? CATEGORY_ICON[c] : (fallbackIcons[c] || "leaf");
+    const artUrl = categoryRepresentative(c);
+    const fallbackIcon = categoryIconName(c);
     if (artUrl) {
       const safeArtUrl = String(artUrl).replace(/\x27/g, "%27");
       return `<button class="cat-icon-btn ${state.cat === c ? "on" : ""}" data-cat="${esc(c)}" aria-label="Browse ${esc(c)}"><span class="circle-ic food-category-photo" style="background-image:url(\x27${safeArtUrl}\x27) !important;background-position:center !important;background-size:cover !important;background-repeat:no-repeat !important"></span><span>${esc(c)}</span></button>`;
@@ -791,7 +798,7 @@ function views() {
   }).join("");
 })()}</div></div>
         `}
-          <div class="section"><div class="section-h"><h4>Today’s picks</h4><button class="link" data-go="menu">See all</button></div><div class="picks">${visiblePicks.map((p, i) => `<article class="card stagger" style="--i:${i}" data-item="${p.id}" role="button" tabindex="0"><div class="ph" style="${p.id === state.product.id ? "view-transition-name:morph-hero;" : ""}${foodBg(p)}"></div><div class="body"><h5>${p.name}</h5><div class="desc">${p.desc.slice(0, 48)}${p.desc.length > 48 ? "…" : ""}</div><div class="price-row"><span class="price">${ugx(p.price)}</span><button class="add" data-add="${p.id}" aria-label="Add ${p.name} to cart">+</button></div></div></article>`).join("")}</div></div>
+          <div class="section"><div class="section-h"><h4>Today’s picks</h4><button class="link" data-go="menu">See all</button></div><div class="picks">${visiblePicks.map((p, i) => `<article class="card stagger" style="--i:${i}" data-item="${p.id}" role="button" tabindex="0"><div class="ph ${!p.img && !categoryRepresentative(p.cat) ? "ph-icon-fallback" : ""}" style="${p.id === state.product.id ? "view-transition-name:morph-hero;" : ""}${foodBg(p)}">${foodCardFallback(p)}</div><div class="body"><h5>${p.name}</h5><div class="desc">${p.desc.slice(0, 48)}${p.desc.length > 48 ? "…" : ""}</div><div class="price-row"><span class="price">${ugx(p.price)}</span><button class="add" data-add="${p.id}" aria-label="Add ${p.name} to cart">+</button></div></div></article>`).join("")}</div></div>
         ${cartCount() ? `<button class="home-cart-bar" data-go="cart"><span><strong>${cartCount()} ${cartCount() === 1 ? "item" : "items"}</strong><small>Ready in your cart</small></span><b>${ugx(cartTotals().total)}</b><span class="home-cart-action">View cart ${icon("chevronRight")}</span></button>` : ""}
         ${tabbar("home")}
       </div>`;
