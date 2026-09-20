@@ -10,7 +10,7 @@ Structure:
 1. location
 2. greeting
 3. intent/search input
-4. food-intent shortcuts
+4. local-food intent shortcuts
 5. order again
 6. scheduled/group activity
 7. relevant food/businesses
