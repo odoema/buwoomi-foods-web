@@ -2447,8 +2447,14 @@ textarea:focus {
   align-self:center !important;
   overflow:hidden !important;
   position:relative !important;
+  z-index:20 !important;
   transform:none !important;
   box-shadow:0 8px 20px rgba(0,0,0,.10);
+}
+
+.logo-foot img {
+  position:relative !important;
+  z-index:21 !important;
 }
 
 .logo-foot img {
