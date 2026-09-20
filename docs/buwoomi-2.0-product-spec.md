@@ -27,7 +27,7 @@ Delivery is a fulfilment mechanism, not the definition of the product.
 Discover:
 - food type
 - category
-- local food/cuisine
+- local Ugandan food/cuisine
 - price/budget
 - occasion
 - business
@@ -121,6 +121,8 @@ Cancellation and refund transitions must be explicit.
 
 The first home-screen question should be:
 What are you looking for?
+
+For the initial catalogue, the highest-salience discovery paths should be local food such as Matooke, Posho, Gnuts, Beans, Nakati, Dodo, Cabbage, Entula and Cassava.
 
 Examples:
 - Local food
