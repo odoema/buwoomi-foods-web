@@ -585,7 +585,7 @@ function adminMenuView() {
           <div class="field"><label>Name</label><input id="miName" value="${esc(editing.name)}" placeholder="Chicken Burger" /></div>
           <div class="field"><label>Price (UGX)</label><input id="miPrice" type="number" min="0" value="${esc(editing.price_ugx)}" /></div>
           <div class="field"><label>Category</label><select id="miCategory">${cats.map(c => `<option value="${esc(c.id)}" ${c.id === editing.category_id ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</select></div>
-          <div class="field"><label>Image URL</label><input id="miImage" value="${esc(editing.image_url)}" placeholder="https://..." /><input id="miImageFile" type="file" accept="image/*" style="margin-top:8px" /><small style="color:var(--muted)">Choose a file to upload to BUWOOMI Storage, or paste an image URL.</small></div>
+          <div class="field"><label>Image <span style="color:var(--danger)">*</span></label><input id="miImage" value="${esc(editing.image_url)}" placeholder="https://..." /><input id="miImageFile" type="file" accept="image/*" style="margin-top:8px" /><small style="color:var(--muted)">Required. Choose a file to upload to BUWOOMI Storage, or paste an image URL.</small></div>
           <div class="field admin-full"><label>Description</label><textarea id="miDesc" placeholder="Short description">${esc(editing.description)}</textarea></div>
         </div>
         <div class="admin-checks"><label><input id="miPopular" type="checkbox" ${editing.is_popular ? "checked" : ""}/> Popular</label><label><input id="miAvailable" type="checkbox" ${editing.is_available !== false ? "checked" : ""}/> Available to order</label></div>
@@ -1191,9 +1191,13 @@ function bind() {
       saveAdmin.disabled = true;
       const existingId = state.adminEditing.existingId;
       const id = existingId || name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") + "-" + Date.now().toString(36);
-      let imageUrl = $("#miImage")?.value.trim() || null;
+      let imageUrl = $("#miImage")?.value.trim() || "";
       const imageFile = $("#miImageFile")?.files?.[0];
       if (imageFile) imageUrl = await window.BuwoomiBackend.uploadMenuImage(imageFile, id);
+      if (!imageUrl) {
+        saveAdmin.disabled = false;
+        return showToast("Every menu item needs a food image. Upload a photo or paste an image URL.");
+      }
       await window.BuwoomiBackend.saveMenuItem({ existingId, id, name, price_ugx: price, category_id: $("#miCategory")?.value || null, image_url: imageUrl, description: $("#miDesc")?.value.trim() || null, is_popular: $("#miPopular")?.checked, is_available: $("#miAvailable")?.checked });
       state.adminEditing = null; await openAdminMenu(); showToast("Menu item saved.");
     } catch (e) { saveAdmin.disabled = false; showToast(e.message || "Could not save item."); }
