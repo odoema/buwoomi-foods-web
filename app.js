@@ -14,6 +14,7 @@ const ICON = {
   menu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>',
   orders: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l3 3v15H6z"/><path d="M9 9h6M9 13h6M9 17h3"/></svg>',
   cart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 12.2a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="9.5" cy="20.5" r="1.4"/><circle cx="17" cy="20.5" r="1.4"/></svg>',
+  users: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.3"/><path d="M3.5 19c.8-3.2 2.7-5 5.5-5s4.7 1.8 5.5 5"/><path d="M14.5 15.5c2.7-.3 4.8.9 6 3.5"/></svg>',
   profile: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.4-3.6 4.4-5.5 7.5-5.5s6.1 1.9 7.5 5.5"/></svg>',
   bell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10a6 6 0 1 1 12 0c0 4 1.5 5.5 1.5 5.5H4.5S6 14 6 10Z"/><path d="M10.3 19a1.8 1.8 0 0 0 3.4 0"/></svg>',
   eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg>',
@@ -306,15 +307,15 @@ async function ensureCheckoutReady() {
 function tabbar(active) {
   const items = [
     ["home", "home", "Home"],
-    ["menu", "menu", "Menu"],
+    ["menu", "menu", "Discover"],
+    ["groups", "users", "Groups"],
     ["orders", "orders", "Orders"],
-    ["cart", "cart", "Cart"],
-    ["profile", "profile", "Profile"],
+    ["profile", "profile", "Account"],
   ];
   const count = cartCount();
   return `<nav class="tabbar" aria-label="Primary navigation">${items.map(([id, ic, l]) =>
     `<button class="${active === id ? "on" : ""}" data-go="${id}" aria-current="${active === id ? "page" : "false"}">
-      <span class="tab-icon">${icon(ic)}${id === "cart" && count ? `<span class="cart-badge${state.bumpBadge ? " bump" : ""}">${count}</span>` : ""}</span>
+      <span class="tab-icon">${icon(ic)}${id === "menu" && count ? `<span class="cart-badge${state.bumpBadge ? " bump" : ""}">${count}</span>` : ""}</span>
       <span class="tab-label">${l}</span>
     </button>`
   ).join("")}</nav>`;
@@ -413,7 +414,7 @@ function bindNav() {
   document.querySelectorAll("[data-go]").forEach((b) => {
     b.onclick = async () => {
       let id = b.dataset.go;
-      const tabIds = ["home", "menu", "orders", "cart", "profile"];
+      const tabIds = ["home", "menu", "groups", "orders", "profile"];
 
       // Checkout requires sign-in when backend is live
       if (id === "checkout" && window.BuwoomiBackend?.ready) {
@@ -794,13 +795,33 @@ function views() {
       </div>`;
     },
 
+    groups: () => `
+      <div class="page groups-page">
+        <div class="topbar root-topbar"><h2>Groups</h2><span></span></div>
+        <div class="section">
+          <div class="summary groups-hero">
+            <span class="promo-kicker">SHARED FOOD COMMERCE</span>
+            <h3>Order together, without the back-and-forth.</h3>
+            <p>Create a shared food order for your class, office, family or event. Members can choose their own meals before the deadline.</p>
+            <button class="cta" id="createGroupBtn">Create a Group Order</button>
+          </div>
+          <div class="section-h"><h4>Your groups</h4></div>
+          <div class="empty">
+            <div class="empty-icon">${icon("users")}</div>
+            <h3>No active groups yet</h3>
+            <p>Your group orders will appear here. The first implementation will preserve this entry point while the shared-cart backend is built.</p>
+          </div>
+        </div>
+        ${tabbar("groups")}
+      </div>`,
+    
     menu: () => {
       const baseItems = state.menuTab === "All" ? MENU : filterByCat(state.menuTab);
       const q = state.searchQuery.trim().toLowerCase();
       const items = q ? baseItems.filter(p => `${p.name} ${p.desc} ${p.cat}`.toLowerCase().includes(q)) : baseItems;
       return `
       <div class="page">
-        <div class="topbar root-topbar"><button class="icon-btn root-back" data-global-back aria-label="Go back">${icon("back")}</button><h2>Menu</h2><span></span></div>
+        <div class="topbar root-topbar"><button class="icon-btn root-back" data-global-back aria-label="Go back">${icon("back")}</button><h2>Discover</h2><span></span></div>
         <div class="menu-search"><div class="search">${icon("search")}<input id="menuSearchInput" value="${esc(state.searchQuery)}" placeholder="Search for meals, cuisine..." /></div></div>
         <div class="section"><div class="cats">
           ${["All", ...CATEGORIES].map(c => `<button class="chip ${state.menuTab === c ? "on" : ""}" data-mtab="${c}">${c}</button>`).join("")}
@@ -1044,10 +1065,10 @@ function views() {
   };
 
   const content = (v[state.screen] || v.home)();
-  const appScreens = ["home","menu","orders","cart","profile","profileDetail","details","checkout","confirmed","preparing","delivery","delivered","adminMenu","adminOrders","adminSettings"];
+  const appScreens = ["home","menu","groups","orders","cart","profile","profileDetail","details","checkout","confirmed","preparing","delivery","delivered","adminMenu","adminOrders","adminSettings"];
   if (!appScreens.includes(state.screen)) return content;
 
-  const rootScreens = ["home","menu","orders","cart","profile"];
+  const rootScreens = ["home","menu","groups","orders","cart","profile"];
   const brandRoot = state.screen === "home";
   const needsGlobalBack = ["details","profileDetail"].includes(state.screen);
 
@@ -1065,6 +1086,8 @@ function views() {
   </div>`;
 }
 
+
+/* Buwoomi 2.0 navigation contract: cart remains a commerce surface and is not a primary tab. */
 function filterByCat(cat) {
   if (cat === "Popular") return MENU.filter((m) => m.popular);
   return MENU.filter((m) => m.cat === cat);
