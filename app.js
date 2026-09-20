@@ -957,7 +957,7 @@ function views() {
           <div class="empty">${icon("bag")}<h3>Your cart is waiting for something delicious.</h3>
           <p>Browse the menu and add a favourite meal.</p>
           <button class="cta" style="margin-top:18px;max-width:220px" data-go="menu">Browse Menu</button></div>
-          ${tabbar("cart")}</div>`;
+        </div>`;
       }
       const t = cartTotals();
       return `
@@ -1104,7 +1104,7 @@ function views() {
 
     orders: () => `
       <div class="page">
-        <div class="topbar root-topbar"><button class="icon-btn root-back" data-global-back aria-label="Go back">${icon("back")}</button><h2>Orders</h2><span></span></div>
+        <div class="topbar root-topbar"><h2>Orders</h2><span></span></div>
         <div class="section"><div class="cats">
           <button class="chip ${state.orderTab === "active" ? "on" : ""}" data-customer-ordertab="active">Active</button><button class="chip ${state.orderTab === "past" ? "on" : ""}" data-customer-ordertab="past">Past</button>
         </div></div>
@@ -1117,7 +1117,7 @@ function views() {
       const initial = (email || "G").charAt(0).toUpperCase();
       return `
       <div class="page">
-        <div class="topbar root-topbar"><button class="icon-btn root-back" data-global-back aria-label="Go back">${icon("back")}</button><h2>Profile</h2><span></span></div>
+        <div class="topbar root-topbar"><h2>Account</h2><span></span></div>
         <div class="profile-head">
           <div class="big-av">${initial}</div>
           <h3>${esc(state.profile?.full_name || email || "Guest")}</h3>
