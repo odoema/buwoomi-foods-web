@@ -233,12 +233,26 @@ async function deleteCategory(id) {
   if(!sb) throw new Error("Backend not configured"); const {error}=await sb.from("categories").delete().eq("id",id); if(error) throw error;
 }
 
+async function fetchBusinesses() {
+  if (!sb) return null;
+  const { data, error } = await sb
+    .from("businesses")
+    .select("id,name,slug,description,phone,city,service_area,logo_url,cover_image_url,is_active")
+    .eq("is_active", true)
+    .order("name");
+  if (error) throw error;
+  return data || [];
+}
+
 async function fetchMenuItems() {
   if (window.BuwoomiApi && window.BuwoomiApi.enabled()) {
     return window.BuwoomiApi.menu();
   }
   if (!sb) return null;
-  const { data, error } = await sb.from("menu_items").select("*").eq("is_available", true);
+  const { data, error } = await sb
+    .from("menu_items")
+    .select("*")
+    .eq("is_available", true);
   if (error) throw error;
   return data;
 }
@@ -535,6 +549,7 @@ window.BuwoomiBackend = {
   updateOrderStatus,
   saveOrderRating,
   fetchMenuItems,
+  fetchBusinesses,
   fetchExtras,
   placeOrder,
   fetchOrders,
