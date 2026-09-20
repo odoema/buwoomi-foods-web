@@ -490,11 +490,30 @@ function categoryIconName(cat) {
   return CATEGORY_ICON[cat] || CATEGORY_ICON_FALLBACKS[cat] || "leaf";
 }
 
+function normalizeCategoryName(value) {
+  return String(value || "").trim().toLowerCase().replace(/\s+/g, " ");
+}
+
+const CATEGORY_ITEM_MATCHERS = {
+  Chicken: (item) => /\bchicken\b/i.test(item?.name || ""),
+  Beef: (item) => /\bbeef\b/i.test(item?.name || ""),
+  "Burgers & Wraps": (item) => /\b(burger|wrap)\b/i.test(item?.name || ""),
+};
+
+function categoryItems(cat) {
+  const name = String(cat || "").trim();
+  if (name === "Popular") return MENU.filter((m) => m.popular);
+
+  const key = normalizeCategoryName(name);
+  const direct = MENU.filter((m) => normalizeCategoryName(m.cat) === key);
+  if (direct.length) return direct;
+
+  const matcher = CATEGORY_ITEM_MATCHERS[name];
+  return matcher ? MENU.filter(matcher) : [];
+}
+
 function categoryRepresentative(cat) {
-  const key = String(cat || "").trim().toLowerCase();
-  const candidates = cat === "Popular"
-    ? MENU.filter((m) => m.popular && m.img)
-    : MENU.filter((m) => String(m.cat || "").trim().toLowerCase() === key && m.img);
+  const candidates = categoryItems(cat).filter((m) => m.img);
   return candidates[0]?.img || "";
 }
 
@@ -765,7 +784,8 @@ function views() {
     home: () => {
       const q = state.searchQuery.trim().toLowerCase();
       const searchItems = q ? MENU.filter(p => `${p.name} ${p.desc} ${p.cat}`.toLowerCase().includes(q)) : [];
-      const visiblePicks = filterByCat(state.cat).slice(0, 4);
+      const categoryPicks = filterByCat(state.cat);
+      const visiblePicks = categoryPicks.slice(0, 4);
       return `
       <div class="home">
         <div class="home-head">
@@ -1076,8 +1096,7 @@ function views() {
 }
 
 function filterByCat(cat) {
-  if (cat === "Popular") return MENU.filter((m) => m.popular);
-  return MENU.filter((m) => m.cat === cat);
+  return categoryItems(cat);
 }
 
 function detailsLineTotal() {
@@ -1224,6 +1243,7 @@ function bind() {
     e.preventDefault();
     e.stopPropagation();
     state.cat = b.dataset.cat;
+    state.searchQuery = "";
     render(true);
   }; });
   document.querySelectorAll("[data-pay]").forEach((b) => { b.onclick = () => { state.pay = b.dataset.pay; render(); }; });
