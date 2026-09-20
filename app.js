@@ -345,7 +345,52 @@ window.addEventListener("popstate", (event) => {
   go(target, {}, "back", true);
 });
 
+function bindOnboardingSwipe() {
+  const screen = document.getElementById("screen");
+  if (!screen || screen.__buwoomiOnboardingSwipe) return;
+
+  screen.__buwoomiOnboardingSwipe = true;
+  let startX = 0;
+  let startY = 0;
+  let tracking = false;
+
+  const isOnboarding = () => ["onb1", "onb2", "onb3"].includes(state.screen);
+
+  screen.addEventListener("touchstart", (e) => {
+    if (!isOnboarding() || e.touches.length !== 1) return;
+    const touch = e.touches[0];
+    startX = touch.clientX;
+    startY = touch.clientY;
+    tracking = true;
+  }, { passive: true });
+
+  screen.addEventListener("touchend", (e) => {
+    if (!tracking || !isOnboarding() || e.changedTouches.length !== 1) {
+      tracking = false;
+      return;
+    }
+
+    const touch = e.changedTouches[0];
+    const dx = touch.clientX - startX;
+    const dy = touch.clientY - startY;
+    tracking = false;
+
+    // Only treat a deliberate horizontal gesture as a page swipe.
+    if (Math.abs(dx) < 55 || Math.abs(dx) <= Math.abs(dy) * 1.25) return;
+
+    if (dx < 0) {
+      if (state.screen === "onb1") go("onb2", {}, "forward");
+      else if (state.screen === "onb2") go("onb3", {}, "forward");
+      else if (state.screen === "onb3") go("login", {}, "forward");
+    } else {
+      if (state.screen === "onb3") go("onb2", {}, "back");
+      else if (state.screen === "onb2") go("onb1", {}, "back");
+    }
+  }, { passive: true });
+}
+
 function bindNav() {
+  bindOnboardingSwipe();
   document.querySelectorAll("[data-global-back]").forEach((b) => {
     b.onclick = (e) => {
       e.preventDefault();
