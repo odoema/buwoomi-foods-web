@@ -112,11 +112,19 @@ async function syncMenuFromBackend() {
       window.BuwoomiBackend.fetchCategories(),
       window.BuwoomiBackend.fetchSettings(),
     ]);
-    if (categories && categories.length) { CATEGORIES = ["Popular", ...categories.sort((a,b)=>a.sort_order-b.sort_order).map(c=>c.name).filter(name => name !== "Popular")]; CATEGORIES.forEach(c=>{ if(!CATEGORY_ICON[c]) CATEGORY_ICON[c]="leaf"; }); }
+    const availableItems = (items || []).filter(m => m.is_available !== false);
+    if (categories && categories.length) {
+      const availableCategoryIds = new Set(availableItems.map(m => m.category_id).filter(Boolean));
+      CATEGORIES = ["Popular", ...categories
+        .filter(c => c.name !== "Popular" && availableCategoryIds.has(c.id))
+        .sort((a,b)=>a.sort_order-b.sort_order)
+        .map(c=>c.name)];
+      CATEGORIES.forEach(c=>{ if(!CATEGORY_ICON[c]) CATEGORY_ICON[c]="leaf"; });
+    }
     if (settings) state.settings = settings;
-    if (items && items.length) {
+    if (availableItems.length) {
       const catMap = Object.fromEntries((categories||[]).map(c=>[c.id,c.name]));
-      MENU = items.map((m) => ({
+      MENU = availableItems.map((m) => ({
         id: m.id,
         name: m.name,
         price: m.price_ugx,
