@@ -250,7 +250,9 @@ grant execute on function public.handle_new_user() to postgres;
 -- ---------------------------------------------------------------------------
 -- Production operations hardening / admin controls
 -- ---------------------------------------------------------------------------
-create or replace function public.is_admin()
+create schema if not exists private;
+
+create or replace function private.is_admin()
 returns boolean
 language sql
 stable
@@ -262,8 +264,9 @@ as $ select exists (
   where id = (select auth.uid())
     and is_admin = true
 ); $;
-revoke execute on function public.is_admin() from public;
-grant execute on function public.is_admin() to authenticated;
+revoke execute on function private.is_admin() from public, anon;
+grant usage on schema private to authenticated;
+grant execute on function private.is_admin() to authenticated;
 
 -- Admin catalog/order/settings policies are applied in the production migrations.
 -- See the Supabase migration history for the canonical deployed policy definitions.
@@ -273,7 +276,7 @@ grant execute on function public.is_admin() to authenticated;
 do $
 begin
   if to_regprocedure('public.guard_customer_order_update()') is not null then
-    revoke execute on function public.guard_customer_order_update() from public;
+    revoke execute on function public.guard_customer_order_update() from public, anon, authenticated;
   end if;
   if to_regprocedure('public.place_order_secure_v2(jsonb,text,uuid,timestamptz)') is not null then
     revoke execute on function public.place_order_secure_v2(jsonb,text,uuid,timestamptz) from public;
