@@ -764,32 +764,35 @@ function views() {
             <div class="copy"><span class="promo-kicker">BUWOOMI FAVOURITES</span><h3>Good Food.<br>Closer to You.</h3><button class="btn" data-go="menu">Order Now</button></div>
             <div class="img" style="${foodBg(MENU[0])}"></div>
           </div>
-          <div class="section home-category-section"><div class="section-h"><h4>Browse by category</h4><button class="link" data-go="menu">See all</button></div><div class="cat-icons">${CATEGORIES.map(c => {
-  const fallback = c === "Popular" ? MENU[0] : (MENU.find(m => m.cat === c) || MENU[0]);
-  const fallbackUrl = String(fallback?.img || "").replace(/'/g, "%27");
-  // Category artwork is sourced from a real menu photograph instead of the
-  // fragile sprite sheet. This keeps the navigation visual even if a sprite
-  // asset is missing, cached incorrectly, or changed independently.
-  const categoryArt = {
-    Popular: MENU.find(m => m.popular)?.img,
-    Chicken: MENU.find(m => m.cat === "Chicken")?.img,
-    "Burgers & Wraps": MENU.find(m => m.cat === "Burgers & Wraps")?.img,
-    Beef: MENU.find(m => m.cat === "Beef")?.img,
-    Veggie: MENU.find(m => m.cat === "Veggie")?.img,
-    Sides: MENU.find(m => m.cat === "Sides")?.img,
-    Snacks: MENU.find(m => m.cat === "Snacks")?.img,
-    Pizza: MENU.find(m => m.cat === "Pizza")?.img,
-    Drinks: MENU.find(m => m.cat === "Drinks")?.img,
-    Desserts: MENU.find(m => m.cat === "Desserts")?.img,
+          <div class="section home-category-section"><div class="section-h"><h4>Browse by category</h4><button class="link" data-go="menu">See all</button></div><div class="cat-icons">${(() => {
+  const preferredIds = {
+    Popular: ["gcb", "ug-rolex", "ug-fried-chicken"], Chicken: ["ug-fried-chicken", "gcb", "cw"],
+    "Burgers & Wraps": ["cb", "cheeseburger", "chickenwrap"], Beef: ["bs", "beefwrap", "ug-beef-pizza"],
+    Veggie: ["vp", "veggieburger"], Sides: ["fries", "ug-chips"], Snacks: ["ug-muchomo", "samosa", "springrolls"],
+    Pizza: ["chickenpizza", "ug-pizza", "beefpizza"], Drinks: ["fj", "soda", "water"], Desserts: ["icecream", "cake"],
+    Rolex: ["ug-rolex", "ug-chicken-rolex", "ug-beef-rolex"], "Chips & Meals": ["ug-chips", "ug-chips-chicken", "ug-chips-egg"],
+    Breakfast: ["ug-mandazi", "ug-tea", "ug-egg-roll", "ug-chapati"], "Local Favourites": ["ug-matooke-beef", "ug-pilau-chicken", "ug-katogo"]
   };
-  const artUrl = categoryArt[c] || MENU.find(m => m.cat === c)?.img || MENU[0]?.img || "";
-  const safeArtUrl = String(artUrl).replace(/'/g, "%27");
-  return `<button class="cat-icon-btn ${state.cat === c ? "on" : ""}" data-cat="${c}" aria-label="Browse ${esc(c)}"><span class="circle-ic food-category-photo" style="background-image:url('${safeArtUrl}') !important;background-position:center !important;background-size:cover !important;background-repeat:no-repeat !important"></span><span>${c}</span></button>`;
-}).join("")}</div></div>
-          <div class="section"><div class="section-h"><h4>Today’s picks</h4><button class="link" data-go="menu">See all</button></div><div class="picks">${visiblePicks.map((p, i) => `<article class="card stagger" style="--i:${i}" data-item="${p.id}" role="button" tabindex="0"><div class="ph" style="${p.id === state.product.id ? "view-transition-name:morph-hero;" : ""}${foodBg(p)}"></div><div class="body"><h5>${p.name}</h5><div class="desc">${p.desc.slice(0, 48)}${p.desc.length > 48 ? "…" : ""}</div><div class="price-row"><span class="price">${ugx(p.price)}</span><button class="add" data-add="${p.id}" aria-label="Add ${p.name} to cart">+</button></div></div></article>`).join("")}</div></div>
-          ${state.orders?.length ? (() => { const last=state.orders.find(o=>o.status!=="cancelled"); return last ? `<div class="section order-again-section"><div class="section-h"><h4>Order Again</h4><button class="link" data-go="orders">View orders</button></div><div class="order-again-card"><div class="order-again-icon">${icon("orders")}</div><div><strong>${esc(last.order_no || "Recent order")}</strong><p>${esc((last.status || "Past order").replace(/_/g," "))} · ${ugx(last.total_ugx || 0)}</p></div><button class="add" data-reorder-order="${last.id}" aria-label="Order again">+</button></div></div>` : "" })() : ""}
-        `}
-        ${cartCount() ? `<button class="home-cart-bar" data-go="cart"><span><strong>${cartCount()} ${cartCount() === 1 ? "item" : "items"}</strong><small>Ready in your cart</small></span><b>${ugx(cartTotals().total)}</b><span class="home-cart-action">View cart ${icon("chevronRight")}</span></button>` : ""}
+  const norm = (v) => String(v || "").trim().toLowerCase();
+  const used = new Set();
+  const allWithImages = MENU.filter(m => m?.img);
+  const artByCategory = {};
+  CATEGORIES.forEach(c => {
+    const candidates = [];
+    for (const id of (preferredIds[c] || [])) { const item = MENU.find(m => m.id === id && m.img); if (item && !candidates.includes(item)) candidates.push(item); }
+    MENU.filter(m => norm(m.cat) === norm(c) && m.img).forEach(item => { if (!candidates.includes(item)) candidates.push(item); });
+    let chosen = candidates.find(item => !used.has(item.img));
+    if (!chosen) chosen = allWithImages.find(item => !used.has(item.img));
+    if (chosen) { artByCategory[c] = chosen.img; used.add(chosen.img); }
+  });
+  return CATEGORIES.map(c => {
+    const artUrl = String(artByCategory[c] || "").replace(/\x27/g, "%27");
+    const fallbackIcon = CATEGORY_ICON[c] || "leaf";
+    const photoStyle = artUrl ? "style=\"background-image:url(\x27" + artUrl + "\x27) !important;background-position:center !important;background-size:cover !important;background-repeat:no-repeat !important\"" : "style=\"background-image:none !important\"";
+    return "<button class=\"cat-icon-btn " + (state.cat === c ? "on" : "") + "\" data-cat=\"" + esc(c) + "\" aria-label=\"Browse " + esc(c) + "\"><span class=\"circle-ic food-category-photo " + (artUrl ? "" : "food-category-icon-fallback") + "\" " + photoStyle + ">" + (artUrl ? "" : icon(fallbackIcon)) + "</span><span>" + esc(c) + "</span></button>";
+  }).join("");
+})()}</div></div>
+        `} `<button class="home-cart-bar" data-go="cart"><span><strong>${cartCount()} ${cartCount() === 1 ? "item" : "items"}</strong><small>Ready in your cart</small></span><b>${ugx(cartTotals().total)}</b><span class="home-cart-action">View cart ${icon("chevronRight")}</span></button>` : ""}
         ${tabbar("home")}
       </div>`;
     },
