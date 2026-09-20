@@ -116,7 +116,7 @@ async function syncMenuFromBackend() {
       window.BuwoomiBackend.fetchCategories(),
       window.BuwoomiBackend.fetchSettings(),
     ]);
-    if (categories && categories.length) { CATEGORIES = ["Popular", ...categories.sort((a,b)=>a.sort_order-b.sort_order).map(c=>c.name).filter(name => name !== "Popular")]; CATEGORIES.forEach(c=>{ if(!CATEGORY_ICON[c]) CATEGORY_ICON[c]="leaf"; }); }
+    if (categories && categories.length) { CATEGORIES = ["Popular", ...categories.sort((a,b)=>a.sort_order-b.sort_order).map(c=>c.name).filter(name => name !== "Popular")]; }
     if (settings) state.settings = settings;
     if (items && items.length) {
       const catMap = Object.fromEntries((categories||[]).map(c=>[c.id,c.name]));
@@ -782,7 +782,7 @@ function views() {
     const candidates = c === "Popular" ? MENU.filter(m => m.popular && m.img) : categoryItems;
     const artUrl = candidates.find(m => !usedImages.has(m.img))?.img || "";
     if (artUrl) usedImages.add(artUrl);
-    const fallbackIcon = CATEGORY_ICON[c] || fallbackIcons[c] || "leaf";
+    const fallbackIcon = (CATEGORY_ICON[c] && CATEGORY_ICON[c] !== "leaf") ? CATEGORY_ICON[c] : (fallbackIcons[c] || "leaf");
     if (artUrl) {
       const safeArtUrl = String(artUrl).replace(/\x27/g, "%27");
       return `<button class="cat-icon-btn ${state.cat === c ? "on" : ""}" data-cat="${esc(c)}" aria-label="Browse ${esc(c)}"><span class="circle-ic food-category-photo" style="background-image:url(\x27${safeArtUrl}\x27) !important;background-position:center !important;background-size:cover !important;background-repeat:no-repeat !important"></span><span>${esc(c)}</span></button>`;
@@ -791,6 +791,7 @@ function views() {
   }).join("");
 })()}</div></div>
         `}
+          <div class="section"><div class="section-h"><h4>Today’s picks</h4><button class="link" data-go="menu">See all</button></div><div class="picks">${visiblePicks.map((p, i) => `<article class="card stagger" style="--i:${i}" data-item="${p.id}" role="button" tabindex="0"><div class="ph" style="${p.id === state.product.id ? "view-transition-name:morph-hero;" : ""}${foodBg(p)}"></div><div class="body"><h5>${p.name}</h5><div class="desc">${p.desc.slice(0, 48)}${p.desc.length > 48 ? "…" : ""}</div><div class="price-row"><span class="price">${ugx(p.price)}</span><button class="add" data-add="${p.id}" aria-label="Add ${p.name} to cart">+</button></div></div></article>`).join("")}</div></div>
         ${cartCount() ? `<button class="home-cart-bar" data-go="cart"><span><strong>${cartCount()} ${cartCount() === 1 ? "item" : "items"}</strong><small>Ready in your cart</small></span><b>${ugx(cartTotals().total)}</b><span class="home-cart-action">View cart ${icon("chevronRight")}</span></button>` : ""}
         ${tabbar("home")}
       </div>`;
