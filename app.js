@@ -53,41 +53,36 @@ function icon(name, cls) { return `<span class="i${cls ? " " + cls : ""}" aria-h
    Data
    -------------------------------------------------------------------------- */
 let MENU = [
-  { id:"gcb",name:"Fried Chicken (3 pcs)",price:18000,cat:"Chicken",popular:true,desc:"Crispy golden chicken pieces, seasoned and fried fresh.",img:"https://images.pexels.com/photos/12178045/pexels-photo-12178045.jpeg?auto=compress&cs=tinysrgb&w=900" },
-  { id:"cb",name:"Chicken Burger",price:15000,cat:"Chicken",popular:true,desc:"Crispy chicken fillet, lettuce and house mayo in a soft bun.",img:"https://images.pexels.com/photos/14710224/pexels-photo-14710224.jpeg?auto=compress&cs=tinysrgb&w=900" },
-  { id:"cw",name:"Chicken Wings",price:16000,cat:"Chicken",popular:true,desc:"Six crispy chicken wings tossed in your choice of house sauce.",img:"https://images.pexels.com/photos/8862763/pexels-photo-8862763.jpeg?auto=compress&cs=tinysrgb&w=900" },
-  { id:"bs",name:"Classic Beef Burger",price:16000,cat:"Beef",popular:true,desc:"Juicy beef patty, lettuce, tomato, onion and house sauce.",img:"https://images.pexels.com/photos/13350202/pexels-photo-13350202.jpeg?auto=compress&cs=tinysrgb&w=900" },
-  { id:"ff",name:"Fish Fingers",price:14000,cat:"Snacks",popular:false,desc:"Crispy fish fingers served with fries and a tangy dipping sauce.",img:"https://images.pexels.com/photos/2213257/pexels-photo-2213257.jpeg?auto=compress&cs=tinysrgb&w=900" },
-  { id:"vp",name:"Veggie Wrap",price:14000,cat:"Burgers & Wraps",popular:false,desc:"Fresh vegetables, lettuce, cheese and house sauce in a toasted wrap.",img:"https://images.pexels.com/photos/29535635/pexels-photo-29535635.jpeg?auto=compress&cs=tinysrgb&w=900" },
-  { id:"fj",name:"Fresh Juice",price:5000,cat:"Drinks",popular:false,desc:"Fresh seasonal fruit juice, chilled and made to order.",img:"https://images.pexels.com/photos/16557598/pexels-photo-16557598.jpeg?auto=compress&cs=tinysrgb&w=900" },
-  { id:"zinger",name:"Spicy Chicken Burger",price:18000,cat:"Chicken",popular:true,desc:"Crispy spicy chicken fillet, lettuce and mayo in a toasted bun.",img:"https://images.pexels.com/photos/8553937/pexels-photo-8553937.jpeg?auto=compress&cs=tinysrgb&w=900" },
-  { id:"nuggets",name:"Chicken Nuggets",price:14000,cat:"Chicken",popular:false,desc:"Crispy bite-sized chicken pieces with a dipping sauce.",img:"https://images.pexels.com/photos/18188572/pexels-photo-18188572.jpeg?auto=compress&cs=tinysrgb&w=900" },
-  { id:"strips",name:"Chicken Strips",price:16000,cat:"Chicken",popular:false,desc:"Crispy chicken strips served with a dipping sauce.",img:"https://images.pexels.com/photos/15682894/pexels-photo-15682894.jpeg?auto=compress&cs=tinysrgb&w=900" },
-  { id:"cheeseburger",name:"Cheese Burger",price:18000,cat:"Burgers & Wraps",popular:true,desc:"Classic beef burger topped with melted cheese, lettuce and house sauce.",img:"https://images.pexels.com/photos/13350202/pexels-photo-13350202.jpeg?auto=compress&cs=tinysrgb&w=900" },
-  { id:"chickenwrap",name:"Chicken Wrap",price:15000,cat:"Burgers & Wraps",popular:true,desc:"Grilled chicken, fresh salad and garlic mayo wrapped in a soft tortilla.",img:"https://images.pexels.com/photos/29535635/pexels-photo-29535635.jpeg?auto=compress&cs=tinysrgb&w=900" },
-  { id:"beefwrap",name:"Beef Wrap",price:16000,cat:"Beef",popular:false,desc:"Seasoned beef strips, fresh vegetables and house sauce in a warm tortilla.",img:"https://images.pexels.com/photos/36750264/pexels-photo-36750264.jpeg?auto=compress&cs=tinysrgb&w=900" },
-  { id:"fries",name:"French Fries",price:7000,cat:"Sides",popular:true,desc:"Crispy golden fries, lightly salted and served hot.",img:"https://images.pexels.com/photos/19784555/pexels-photo-19784555.jpeg?auto=compress&cs=tinysrgb&w=900" },
-  { id:"loadedfries",name:"Loaded Fries",price:12000,cat:"Sides",popular:true,desc:"Crispy fries topped with chicken, cheese and house sauce.",img:"https://images.pexels.com/photos/12946719/pexels-photo-12946719.jpeg?auto=compress&cs=tinysrgb&w=900" },
-  { id:"coleslaw",name:"Creamy Coleslaw",price:5000,cat:"Sides",popular:false,desc:"Fresh cabbage and carrot slaw in a creamy dressing.",img:"https://images.pexels.com/photos/7362673/pexels-photo-7362673.jpeg?auto=compress&cs=tinysrgb&w=900" },
-  { id:"samosa",name:"Samosas (2 pcs)",price:6000,cat:"Snacks",popular:true,desc:"Crispy pastry filled with seasoned beef or vegetables.",img:"https://images.pexels.com/photos/28075291/pexels-photo-28075291.jpeg?auto=compress&cs=tinysrgb&w=900" },
-  { id:"springrolls",name:"Spring Rolls (2 pcs)",price:6000,cat:"Snacks",popular:false,desc:"Crispy rolls filled with seasoned vegetables.",img:"https://images.pexels.com/photos/12356601/pexels-photo-12356601.jpeg?auto=compress&cs=tinysrgb&w=900" },
-  { id:"chickenpizza",name:"Chicken & Cheese Pizza",price:22000,cat:"Pizza",popular:true,desc:"Cheesy pizza topped with seasoned chicken, tomato sauce and herbs.",img:"https://images.pexels.com/photos/7813574/pexels-photo-7813574.jpeg?auto=compress&cs=tinysrgb&w=900" },
-  { id:"beefpizza",name:"Beef & Cheese Pizza",price:22000,cat:"Pizza",popular:false,desc:"Cheesy pizza topped with seasoned beef, tomato sauce and herbs.",img:"https://images.pexels.com/photos/803290/pexels-photo-803290.jpeg?auto=compress&cs=tinysrgb&w=900" },
-  { id:"soda",name:"Soda (500ml)",price:3500,cat:"Drinks",popular:false,desc:"Chilled soft drink.",img:"https://images.pexels.com/photos/28029157/pexels-photo-28029157.jpeg?auto=compress&cs=tinysrgb&w=900" },
-  { id:"water",name:"Mineral Water (500ml)",price:2500,cat:"Drinks",popular:false,desc:"Chilled bottled water.",img:"https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=900&q=85" },
-  { id:"icecream",name:"Ice Cream",price:6000,cat:"Desserts",popular:false,desc:"Two scoops of creamy ice cream.",img:"https://images.pexels.com/photos/27756720/pexels-photo-27756720.jpeg?auto=compress&cs=tinysrgb&w=900" },
-  { id:"cake",name:"Chocolate Cake",price:8000,cat:"Desserts",popular:false,desc:"Moist chocolate cake slice with rich chocolate frosting.",img:"https://images.pexels.com/photos/1028711/pexels-photo-1028711.jpeg?auto=compress&cs=tinysrgb&w=900" },
-  { id:"rolex",name:"Chicken Rolex",price:12000,cat:"Snacks",popular:true,desc:"Chapati rolled with egg, chicken strips, fresh vegetables and house sauce.",img:"https://upload.wikimedia.org/wikipedia/commons/3/3a/ROLEX2.jpg" },
-  { id:"veggieburger",name:"Veggie Burger",price:12000,cat:"Veggie",popular:false,desc:"Crispy vegetable patty with lettuce, tomato and house sauce in a toasted bun.",img:"https://images.pexels.com/photos/19709551/pexels-photo-19709551.jpeg?auto=compress&cs=tinysrgb&w=900" },
-];
-
-let CATEGORIES = ["Popular","Chicken","Burgers & Wraps","Beef","Veggie","Sides","Snacks","Pizza","Drinks","Desserts"];
-const CATEGORY_ICON = { Popular:"starBadge",Chicken:"drumstick","Burgers & Wraps":"burger",Beef:"steak",Veggie:"leaf",Sides:"fries",Snacks:"samosa",Pizza:"pizza",Drinks:"juice",Desserts:"cake" };
+  { id:"matooke",name:"Matooke",price:5000,cat:"Staples",popular:true,desc:"Steamed green bananas, soft and hearty, prepared in the Ugandan style.",img:"" },
+  { id:"posho",name:"Posho",price:3500,cat:"Staples",popular:true,desc:"Warm maize meal, a familiar Ugandan staple served with your choice of sauce.",img:"" },
+  { id:"rice",name:"Plain Rice",price:4000,cat:"Staples",popular:false,desc:"Steamed rice served as a simple base for local sauces and stews.",img:"" },
+  { id:"cassava",name:"Boiled Cassava",price:4000,cat:"Staples",popular:true,desc:"Tender cassava pieces, boiled and served warm.",img:"" },
+  { id:"sweetpotato",name:"Sweet Potatoes",price:4000,cat:"Staples",popular:false,desc:"Soft boiled sweet potatoes, naturally filling and lightly sweet.",img:"" },
+  { id:"matooke_gnuts",name:"Matooke & Gnuts",price:8500,cat:"Local Plates",popular:true,desc:"Matooke served with a rich groundnut sauce.",img:"" },
+  { id:"posho_beans",name:"Posho & Beans",price:7500,cat:"Local Plates",popular:true,desc:"Classic posho served with slow-cooked beans in a savoury sauce.",img:"" },
+  { id:"matooke_beef",name:"Matooke & Beef Stew",price:11000,cat:"Local Plates",popular:true,desc:"Soft matooke paired with tender beef in a rich local stew.",img:"" },
+  { id:"posho_greens",name:"Posho & Greens",price:6500,cat:"Local Plates",popular:false,desc:"Warm posho served with freshly cooked local greens.",img:"" },
+  { id:"gnuts",name:"Groundnut Sauce",price:5000,cat:"Gnuts & Sauces",popular:true,desc:"Creamy groundnut sauce, a classic accompaniment for local staples.",img:"" },
+  { id:"beans",name:"Beans",price:5000,cat:"Gnuts & Sauces",popular:true,desc:"Slow-cooked beans in a lightly seasoned savoury sauce.",img:"" },
+  { id:"nakati",name:"Nakati",price:3500,cat:"Greens & Veg",popular:true,desc:"Fresh nakati greens, gently cooked and seasoned.",img:"" },
+  { id:"dodo",name:"Dodo",price:3500,cat:"Greens & Veg",popular:true,desc:"Tender dodo greens, simply cooked for a homestyle taste.",img:"" },
+  { id:"cabbage",name:"Cabbage",price:3000,cat:"Greens & Veg",popular:false,desc:"Fresh cabbage, lightly cooked and seasoned.",img:"" },
+  { id:"entula",name:"Entula",price:4000,cat:"Greens & Veg",popular:true,desc:"Cooked entula, a familiar local vegetable with a gently savoury flavour.",img:"" },
+  { id:"mixedgreens",name:"Mixed Local Greens",price:4000,cat:"Greens & Veg",popular:false,desc:"A simple mix of seasonal local greens prepared fresh.",img:"" },
+  { id:"beef_stew",name:"Beef Stew",price:8500,cat:"Proteins",popular:true,desc:"Tender beef pieces simmered in a rich tomato and onion stew.",img:"" },
+  { id:"chicken_stew",name:"Chicken Stew",price:9000,cat:"Proteins",popular:true,desc:"Tender chicken pieces cooked in a savoury local-style stew.",img:"" },
+  { id:"rolex",name:"Chicken Rolex",price:10000,cat:"Snacks",popular:true,desc:"Chapati rolled with egg, chicken and fresh vegetables.",img:"" },
+  { id:"cassava_chips",name:"Cassava Chips",price:6000,cat:"Snacks",popular:false,desc:"Crispy cassava chips, cut fresh and fried until golden.",img:"" },
+  { id:"chapati",name:"Chapati",price:2500,cat:"Snacks",popular:true,desc:"Soft, layered chapati, freshly cooked and ready to pair with a meal.",img:"" },
+  { id:"fresh_juice",name:"Fresh Juice",price:5000,cat:"Drinks",popular:true,desc:"Fresh seasonal fruit juice, chilled and made to order.",img:"" },
+  { id:"water",name:"Mineral Water",price:2500,cat:"Drinks",popular:false,desc:"Chilled bottled water.",img:"" },
+];let CATEGORIES = ["Popular","Local Plates","Staples","Gnuts & Sauces","Greens & Veg","Proteins","Snacks","Drinks"];
+const CATEGORY_ICON = { Popular:"starBadge","Local Plates":"chefHat",Staples:"leaf","Gnuts & Sauces":"leaf","Greens & Veg":"leaf",Proteins:"beef",Snacks:"samosa",Drinks:"juice" };
 const CATEGORY_SPRITE_POS = {
-  Popular:"0% 0%", Chicken:"25% 0%", "Burgers & Wraps":"50% 0%", Beef:"75% 0%", Veggie:"100% 0%",
-  Sides:"0% 100%", Snacks:"25% 100%", Pizza:"50% 100%", Drinks:"75% 100%", Desserts:"100% 100%"
+  Popular:"0% 0%", "Local Plates":"25% 0%", Staples:"50% 0%", "Gnuts & Sauces":"75% 0%",
+  "Greens & Veg":"100% 0%", Proteins:"0% 100%", Snacks:"25% 100%", Drinks:"75% 100%"
 };
-const CATEGORY_ID_TO_NAME = { chicken:"Chicken",burgers_wraps:"Burgers & Wraps",beef:"Beef",sides:"Sides",snacks:"Snacks",pizza:"Pizza",drinks:"Drinks",desserts:"Desserts",popular:"Popular" };
+const CATEGORY_ID_TO_NAME = { local_plates:"Local Plates",staples:"Staples",gnuts_sauces:"Gnuts & Sauces",greens_veg:"Greens & Veg",proteins:"Proteins",snacks:"Snacks",drinks:"Drinks",popular:"Popular" };
 
 
 
@@ -765,7 +760,7 @@ function views() {
         <div class="home-search-results">
           <div class="section-h"><h4>Search results</h4><span class="result-count">${searchItems.length} ${searchItems.length === 1 ? "meal" : "meals"}</span></div>
           <div class="list home-results-list">
-            ${searchItems.map((p, i) => `<article class="row-item stagger" style="--i:${i}" data-item="${p.id}" role="button" tabindex="0"><div class="th" style="${foodBg(p)}"></div><div><h5>${p.name}</h5><div class="meta">${p.desc}</div><div class="price">${ugx(p.price)}</div></div><button class="add" data-add="${p.id}" aria-label="Add ${p.name} to cart">+</button></article>`).join("") || `<div class="search-empty"><div class="empty-icon">${icon("search")}</div><h3>No meals found</h3><p>Try “chicken”, “burger”, “fries” or “pizza”.</p></div>`}
+            ${searchItems.map((p, i) => `<article class="row-item stagger" style="--i:${i}" data-item="${p.id}" role="button" tabindex="0"><div class="th" style="${foodBg(p)}"></div><div><h5>${p.name}</h5><div class="meta">${p.desc}</div><div class="price">${ugx(p.price)}</div></div><button class="add" data-add="${p.id}" aria-label="Add ${p.name} to cart">+</button></article>`).join("") || `<div class="search-empty"><div class="empty-icon">${icon("search")}</div><h3>No meals found</h3><p>Try “matooke”, “posho”, “nakati”, “dodo” or “cassava”.</p></div>`}
           </div>
         </div>
         ${tabbar("home")}
@@ -788,15 +783,15 @@ function views() {
           <span class="home-location-action">${icon("chevronRight")}</span>
         </button>
 
-        <div class="search home-search">${icon("search")}<input id="homeSearch" type="search" autocomplete="off" enterkeyhint="search" value="${esc(state.searchQuery)}" placeholder="Search meals, burgers, chicken..." /></div>
+        <div class="search home-search">${icon("search")}<input id="homeSearch" type="search" autocomplete="off" enterkeyhint="search" value="${esc(state.searchQuery)}" placeholder="Search matooke, posho, greens..." /></div>
 
         <div class="home-intents">
           <div class="section-h"><h4>Quick choices</h4><button class="link" data-go="menu">Browse all</button></div>
           <div class="home-intent-grid">
-            <button class="home-intent-card home-intent-chicken" data-home-intent="chicken"><span class="home-intent-icon">${icon("drumstick")}</span><strong>Chicken</strong><small>Crispy &amp; fresh</small></button>
-            <button class="home-intent-card home-intent-burger" data-home-intent="burgers"><span class="home-intent-icon">${icon("burger")}</span><strong>Burgers</strong><small>Big &amp; satisfying</small></button>
-            <button class="home-intent-card home-intent-light" data-home-intent="light"><span class="home-intent-icon">${icon("leaf")}</span><strong>Something light</strong><small>Fresh choices</small></button>
-            <button class="home-intent-card home-intent-snacks" data-home-intent="snacks"><span class="home-intent-icon">${icon("fries")}</span><strong>Snacks &amp; sides</strong><small>Easy to share</small></button>
+            <button class="home-intent-card home-intent-chicken" data-home-intent="local"><span class="home-intent-icon">${icon("chefHat")}</span><strong>Local plates</strong><small>Matooke, posho &amp; more</small></button>
+            <button class="home-intent-card home-intent-burger" data-home-intent="staples"><span class="home-intent-icon">${icon("leaf")}</span><strong>Staples</strong><small>Matooke, posho, cassava</small></button>
+            <button class="home-intent-card home-intent-light" data-home-intent="greens"><span class="home-intent-icon">${icon("leaf")}</span><strong>Greens &amp; veg</strong><small>Nakati, dodo, cabbage</small></button>
+            <button class="home-intent-card home-intent-snacks" data-home-intent="snacks"><span class="home-intent-icon">${icon("samosa")}</span><strong>Snacks</strong><small>Chapati, Rolex &amp; more</small></button>
           </div>
         </div>
 
@@ -874,17 +869,17 @@ function views() {
           <div>
             <span class="home-eyebrow">DISCOVER</span>
             <h1>Find something you'll enjoy</h1>
-            <p>Search, browse a category, or start with what's popular.</p>
+            <p>Search local dishes, browse a category, or start with what's popular.</p>
           </div>
           <button class="icon-btn" data-go="cart" aria-label="Open cart">${icon("cart")}${cartCount() ? `<span class="cart-badge">${cartCount()}</span>` : ""}</button>
         </div>
 
         <div class="menu-search discover-search">
-          <div class="search">${icon("search")}<input id="menuSearchInput" value="${esc(state.searchQuery)}" placeholder="Search meals, cuisine..." autocomplete="off" /></div>
+          <div class="search">${icon("search")}<input id="menuSearchInput" value="${esc(state.searchQuery)}" placeholder="Search matooke, posho, greens..." autocomplete="off" /></div>
         </div>
 
         <section class="discover-section">
-          <div class="section-h"><h4>Start with a craving</h4><button class="link" data-discover-filter="Popular">Popular</button></div>
+          <div class="section-h"><h4>Start with a local favourite</h4><button class="link" data-discover-filter="Popular">Popular</button></div>
           <div class="discover-category-row">
             ${categories.map(c => `<button class="discover-category ${filter === c ? "on" : ""}" data-discover-filter="${c}">
               <span class="discover-category-icon">${icon(CATEGORY_ICON[c] || "leaf")}</span><span>${esc(c)}</span>
@@ -1578,9 +1573,9 @@ function bind() {
     b.onclick = () => {
       const intent = b.dataset.homeIntent;
       const map = {
-        chicken: "Chicken",
-        burgers: "Burgers & Wraps",
-        light: "Veggie",
+        local: "Local Plates",
+        staples: "Staples",
+        greens: "Greens & Veg",
         snacks: "Snacks",
       };
       state.searchQuery = "";
