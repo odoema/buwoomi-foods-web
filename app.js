@@ -94,6 +94,7 @@ const PAY_METHODS = [
   ["mtn", "MTN Mobile Money", "#FFC700", "#212121", "M"],
   ["airtel", "Airtel Money", "#E4002B", "#fff", "A"],
   ["card", "Visa / Mastercard", "#1A1F71", "#fff", "V"],
+  ["paypal", "PayPal", "#003087", "#fff", "P"],
   ["cash", "Cash on Delivery", "#2E7D32", "#fff", "$"],
 ];
 
@@ -927,6 +928,11 @@ function views() {
                 <span class="pay-badge" style="background:${bg};color:${fg}">${letter}</span>${l}
               </div>`).join("")}
           </div>
+          ${state.pay === "paypal" ? `<div class="paypal-payment-panel" style="margin-top:12px;padding:14px;border:1px solid var(--border);border-radius:14px;background:#fafcf9">
+            <strong style="display:block;margin-bottom:6px">PayPal checkout</strong>
+            <p style="margin:0;color:var(--muted);font-size:12px">Pay securely with PayPal or an eligible card through PayPal.</p>
+            <div id="paypal-button-container" style="margin-top:12px"></div>
+          </div>` : ""}
           <div class="sr total"><span>Total</span><span>${ugx(t.total)}</span></div>
         </div>
         <div style="padding:0 16px"><button class="cta" id="place">Place Order</button></div>
@@ -1096,6 +1102,47 @@ function addToCart(id, opts = {}) {
   showToast(`${p.name} added to cart`);
 }
 
+const PAYPAL_CLIENT_ID = window.BUWOOMI_PAYPAL_CLIENT_ID || "";
+let paypalSdkPromise = null;
+function loadPayPalSdk() {
+  if (window.paypal) return Promise.resolve(window.paypal);
+  if (!PAYPAL_CLIENT_ID) return Promise.resolve(null);
+  if (paypalSdkPromise) return paypalSdkPromise;
+  paypalSdkPromise = new Promise((resolve, reject) => {
+    const existing = document.querySelector('script[data-buwoomi-paypal]');
+    if (existing) { existing.addEventListener("load", () => resolve(window.paypal)); existing.addEventListener("error", reject); return; }
+    const script = document.createElement("script");
+    script.src = "https://www.paypal.com/sdk/js?client-id=" + encodeURIComponent(PAYPAL_CLIENT_ID) + "&currency=USD&components=buttons";
+    script.async = true;
+    script.dataset.buwoomiPaypal = "1";
+    script.onload = () => resolve(window.paypal || null);
+    script.onerror = () => reject(new Error("PayPal SDK could not be loaded."));
+    document.head.appendChild(script);
+  });
+  return paypalSdkPromise;
+}
+async function mountPayPalButtons() {
+  const host = document.querySelector("#paypal-button-container");
+  if (!host || state.pay !== "paypal") return;
+  if (!PAYPAL_CLIENT_ID) {
+    host.innerHTML = '<p style="margin:0;color:var(--muted);font-size:12px">PayPal is selected. Add the PayPal Client ID to enable checkout.</p>';
+    return;
+  }
+  try {
+    const paypal = await loadPayPalSdk();
+    if (!paypal || !paypal.Buttons || !document.body.contains(host)) return;
+    host.innerHTML = "";
+    paypal.Buttons({
+      style: { layout: "vertical", shape: "rect", label: "paypal", height: 44 },
+      createOrder() { return Promise.reject(new Error("BUWOOMI PayPal server checkout is not connected yet.")); },
+      onError(err) { console.error("PayPal:", err); showToast("PayPal checkout is not connected yet."); }
+    }).render(host);
+  } catch (e) {
+    console.error("PayPal SDK:", e);
+    host.innerHTML = '<p style="margin:0;color:var(--muted);font-size:12px">PayPal could not be loaded. Please try another payment method.</p>';
+  }
+}
+
 function bind() {
   const adminBtn = $("[data-admin-menu]");
   if (adminBtn) adminBtn.onclick = openAdminMenu;
@@ -1170,6 +1217,7 @@ function bind() {
     render(true);
   }; });
   document.querySelectorAll("[data-pay]").forEach((b) => { b.onclick = () => { state.pay = b.dataset.pay; render(); }; });
+  if (state.screen === "checkout" && state.pay === "paypal") mountPayPalButtons();
   const cardNumber = $("#cardNumber");
   if (cardNumber) cardNumber.oninput = () => { const digits = cardNumber.value.replace(/\D/g, "").slice(0, 19); cardNumber.value = digits.replace(/(\d{4})(?=\d)/g, "$1 ").trim(); };
   const cardExpiry = $("#cardExpiry");
