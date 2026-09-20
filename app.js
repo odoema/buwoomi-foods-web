@@ -174,6 +174,7 @@ const state = {
   product: MENU[0],
   cat: "Popular",
   menuTab: "All",
+  discoverFilter: "All",
   pay: "mtn",
   orderNo: null,
   orderId: null,
@@ -855,28 +856,64 @@ function views() {
       </div>`,
     
     menu: () => {
-      const baseItems = state.menuTab === "All" ? MENU : filterByCat(state.menuTab);
       const q = state.searchQuery.trim().toLowerCase();
-      const items = q ? baseItems.filter(p => `${p.name} ${p.desc} ${p.cat}`.toLowerCase().includes(q)) : baseItems;
+      const filter = state.discoverFilter || "All";
+      let items = filter === "All"
+        ? MENU
+        : filter === "Popular"
+          ? MENU.filter(p => p.popular)
+          : filterByCat(filter);
+      if (q) items = items.filter(p => `${p.name} ${p.desc} ${p.cat}`.toLowerCase().includes(q));
+
+      const featured = MENU.filter(p => p.popular).slice(0, 6);
+      const categories = CATEGORIES.filter(c => c !== "Popular");
+
       return `
-      <div class="page">
-        <div class="topbar root-topbar"><button class="icon-btn root-back" data-global-back aria-label="Go back">${icon("back")}</button><h2>Discover</h2><button class="icon-btn" data-go="cart" aria-label="Open cart">${icon("cart")}${cartCount() ? `<span class="cart-badge">${cartCount()}</span>` : ""}</button></div>
-        <div class="menu-search"><div class="search">${icon("search")}<input id="menuSearchInput" value="${esc(state.searchQuery)}" placeholder="Search for meals, cuisine..." /></div></div>
-        <div class="section"><div class="cats">
-          ${["All", ...CATEGORIES].map(c => `<button class="chip ${state.menuTab === c ? "on" : ""}" data-mtab="${c}">${c}</button>`).join("")}
-        </div></div>
-        <div class="list">
-          ${items.map((p, i) => `
-            <article class="row-item stagger" style="--i:${i}" data-item="${p.id}" role="button" tabindex="0">
-              <div class="th" style="${p.id === state.product.id ? "view-transition-name:morph-hero;" : ""}${foodBg(p)}"></div>
-              <div>
-                <h5>${p.name}</h5>
-                <div class="meta">${p.desc}</div>
-                <div class="price">${ugx(p.price)}</div>
-              </div>
-              <button class="add" data-add="${p.id}" aria-label="Add ${p.name} to cart">+</button>
-            </article>`).join("") || `<p style="color:var(--muted);font-size:13px;padding:12px">Nothing here yet.</p>`}
+      <div class="page discover-page">
+        <div class="discover-head">
+          <div>
+            <span class="home-eyebrow">DISCOVER</span>
+            <h1>Find something you'll enjoy</h1>
+            <p>Search, browse a category, or start with what's popular.</p>
+          </div>
+          <button class="icon-btn" data-go="cart" aria-label="Open cart">${icon("cart")}${cartCount() ? `<span class="cart-badge">${cartCount()}</span>` : ""}</button>
         </div>
+
+        <div class="menu-search discover-search">
+          <div class="search">${icon("search")}<input id="menuSearchInput" value="${esc(state.searchQuery)}" placeholder="Search meals, cuisine..." autocomplete="off" /></div>
+        </div>
+
+        <section class="discover-section">
+          <div class="section-h"><h4>Start with a craving</h4><button class="link" data-discover-filter="Popular">Popular</button></div>
+          <div class="discover-category-row">
+            ${categories.map(c => `<button class="discover-category ${filter === c ? "on" : ""}" data-discover-filter="${c}">
+              <span class="discover-category-icon">${icon(CATEGORY_ICON[c] || "leaf")}</span><span>${esc(c)}</span>
+            </button>`).join("")}
+          </div>
+        </section>
+
+        ${!q && filter === "All" ? `
+        <section class="discover-section">
+          <div class="section-h"><h4>Popular right now</h4><span class="section-note">Fresh picks</span></div>
+          <div class="discover-featured">
+            ${featured.map((p,i) => `<article class="discover-food-card stagger" style="--i:${i}" data-item="${p.id}" role="button" tabindex="0">
+              <div class="discover-food-image" style="${foodBg(p)}"><span class="discover-popular">${icon("flame")} Popular</span></div>
+              <div class="discover-food-body"><h5>${esc(p.name)}</h5><p>${esc(p.desc)}</p><div class="discover-food-foot"><strong>${ugx(p.price)}</strong><button class="add" data-add="${p.id}" aria-label="Add ${esc(p.name)} to cart">+</button></div></div>
+            </article>`).join("")}
+          </div>
+        </section>` : ""}
+
+        <section class="discover-section discover-results">
+          <div class="section-h"><h4>${q ? "Search results" : filter === "All" ? "Browse all meals" : filter}</h4><span class="result-count">${items.length} ${items.length === 1 ? "meal" : "meals"}</span></div>
+          <div class="list">
+            ${items.map((p,i) => `
+              <article class="row-item stagger" style="--i:${i}" data-item="${p.id}" role="button" tabindex="0">
+                <div class="th" style="${foodBg(p)}"></div>
+                <div><h5>${esc(p.name)}</h5><div class="meta">${esc(p.desc)}</div><div class="price">${ugx(p.price)}</div></div>
+                <button class="add" data-add="${p.id}" aria-label="Add ${esc(p.name)} to cart">+</button>
+              </article>`).join("") || `<div class="search-empty"><div class="empty-icon">${icon("search")}</div><h3>No meals found</h3><p>Try another search or category.</p><button class="link" data-discover-filter="All">Show all meals</button></div>`}
+          </div>
+        </section>
         ${tabbar("menu")}
       </div>`;
     },
@@ -1270,6 +1307,15 @@ function bind() {
       addToCart(b.dataset.add);
       b.classList.add("pop");
       render();
+    };
+  });
+
+  document.querySelectorAll("[data-discover-filter]").forEach((b) => {
+    b.onclick = () => {
+      state.discoverFilter = b.dataset.discoverFilter || "All";
+      state.menuTab = state.discoverFilter;
+      state.searchQuery = "";
+      render(true);
     };
   });
 
