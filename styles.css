@@ -2386,7 +2386,7 @@ textarea:focus {
   .app-brand-button img { max-width:250px; }
 }
 
-/* BUWOOMI 2.3 — realistic full-logo flash screens */
+/* BUWOOMI 2.3 — flash screens and onboarding brand marks */
 .splash {
   min-height:100%;
   box-sizing:border-box;
@@ -2397,8 +2397,9 @@ textarea:focus {
   text-align:center;
   padding:24px 20px;
 }
-.splash-logo-disc,
-.flash-logo-disc {
+
+/* Main splash logo: large circular presentation. */
+.splash-logo-disc {
   width:220px;
   height:220px;
   flex:0 0 220px;
@@ -2412,9 +2413,11 @@ textarea:focus {
   box-shadow:0 18px 42px rgba(0,0,0,.16);
   border:1px solid rgba(0,0,0,.06);
   overflow:hidden;
+  margin-left:auto;
+  margin-right:auto;
 }
-.splash-logo-disc img,
-.flash-logo-disc img {
+
+.splash-logo-disc img {
   width:176px;
   height:117px;
   max-width:100%;
@@ -2425,77 +2428,87 @@ textarea:focus {
   margin:0 auto;
   flex:0 0 auto;
 }
-.splash-logo-disc {
-  margin-left:auto;
-  margin-right:auto;
-}
-.flash-logo-disc {
-  margin-left:auto;
-  margin-right:auto;
-}
+
 .splash .tag {
   margin-top:22px;
   text-align:center;
 }
+
 .splash .loader {
   margin-top:18px;
 }
+
+/*
+ * Onboarding flash-screen logo badge.
+ * This is the ONLY authoritative .flash-logo-disc rule.
+ * The badge is deliberately locked to a square and clipped to a circle so
+ * mobile flex sizing cannot turn it into an oval.
+ */
 .logo-foot {
+  width:100%;
+  height:108px;
+  flex:0 0 108px;
   display:flex;
   align-items:center;
   justify-content:center;
-  width:100%;
   margin-top:12px;
+  overflow:visible;
 }
-/* Flash-screen brand mark: a true circular badge with a centred logo.
-   Keep the badge and logo dimensions explicit so neither can become oval
-   from flex sizing or inherited image rules. */
+
 .flash-logo-disc {
-  /* Never let the onboarding brand badge participate in width stretching.
-     Lock both axes and the aspect ratio so mobile browsers cannot render it
-     as an oval. */
   width:96px !important;
   height:96px !important;
   min-width:96px !important;
   min-height:96px !important;
   max-width:96px !important;
   max-height:96px !important;
-  aspect-ratio:1 / 1 !important;
   flex:0 0 96px !important;
-  flex-grow:0 !important;
-  flex-shrink:0 !important;
-  align-self:center !important;
+  aspect-ratio:1 / 1 !important;
+  box-sizing:border-box !important;
   padding:14px !important;
-  margin-left:auto !important;
-  margin-right:auto !important;
+  margin:0 auto !important;
+  border:1px solid rgba(0,0,0,.06) !important;
   border-radius:50% !important;
+  -webkit-border-radius:50% !important;
   clip-path:circle(50% at 50% 50%) !important;
   -webkit-clip-path:circle(50% at 50% 50%) !important;
   background:#fff !important;
   display:flex !important;
   align-items:center !important;
   justify-content:center !important;
-  box-sizing:border-box !important;
   overflow:hidden !important;
   position:relative !important;
   transform:none !important;
   box-shadow:0 8px 20px rgba(0,0,0,.10);
 }
+
 .flash-logo-disc img {
   width:68px !important;
   height:45px !important;
-  max-width:68px !important;
-  max-height:45px !important;
   min-width:0 !important;
   min-height:0 !important;
+  max-width:68px !important;
+  max-height:45px !important;
   flex:0 0 auto !important;
   display:block !important;
+  margin:0 !important;
   object-fit:contain !important;
   object-position:center center !important;
-  margin:0 !important;
 }
+
+/* Small phones: same geometry, just scaled down. */
 @media (max-width:380px) {
-  .splash-logo-disc { width:190px; height:190px; padding:20px; }
+  .splash-logo-disc {
+    width:190px;
+    height:190px;
+    padding:20px;
+  }
+
+  .logo-foot {
+    height:100px;
+    flex-basis:100px;
+  }
+
   .flash-logo-disc {
     width:88px !important;
     height:88px !important;
@@ -2503,13 +2516,10 @@ textarea:focus {
     min-height:88px !important;
     max-width:88px !important;
     max-height:88px !important;
-    aspect-ratio:1 / 1 !important;
     flex:0 0 88px !important;
-    flex-grow:0 !important;
-    flex-shrink:0 !important;
-    align-self:center !important;
     padding:12px !important;
   }
+
   .flash-logo-disc img {
     width:62px !important;
     height:41px !important;
