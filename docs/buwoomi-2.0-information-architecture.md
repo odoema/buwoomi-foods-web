@@ -6,10 +6,10 @@ Status: Initial implementation IA
 ## Primary navigation
 
 ### Home
-Intent, recommendations, active plans and quick actions.
+Intent, local-food discovery, recommendations, active plans and quick actions.
 
 ### Discover
-Search and browse the food-commerce catalogue.
+Search and browse the food-commerce catalogue, with local Ugandan food as the initial anchor.
 
 ### Groups
 Create and manage shared food commerce.
