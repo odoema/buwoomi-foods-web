@@ -724,7 +724,7 @@ function views() {
         <p class="lead">${backendOn ? (isSignup ? "Sign up to get started" : "Sign in to continue") : "Demo mode — no backend connected yet"}</p>
         ${isSignup ? `<div class="field"><label>Full Name</label><input id="authName" autocomplete="name" placeholder="Your name" /></div>` : ""}
         <div class="field"><label>Email</label><input id="authEmail" type="email" autocomplete="email" placeholder="you@email.com" value="${esc(state.authPendingEmail || "")}" /></div>
-        <div class="field"><label>Password</label><input id="authPassword" type="password" autocomplete="${isSignup ? "new-password" : "current-password"}" placeholder="${isSignup ? "At least 8 characters" : "Your password"}" /></div>
+        <div class="field"><label for="authPassword">Password</label><div style="position:relative"><input id="authPassword" type="password" autocomplete="${isSignup ? "new-password" : "current-password"}" placeholder="${isSignup ? "At least 8 characters" : "Your password"}" style="padding-right:48px" /><button type="button" class="password-toggle" data-password-toggle="authPassword" aria-label="Show password" aria-pressed="false">${icon("eye")}</button></div></div>
         ${!isSignup ? `<div class="row-between"><span></span><button class="link" id="forgotPasswordBtn">Forgot password?</button></div>` : ""}
         ${state.authError ? `<p style="color:var(--danger);font-size:13px;margin-top:8px">${esc(state.authError)}</p>` : ""}
         ${state.authNotice ? `<div class="summary" style="margin-top:10px"><p style="margin:0;color:var(--muted);font-size:13px">${esc(state.authNotice)}</p></div>` : ""}
@@ -1528,6 +1528,17 @@ function bind() {
       render();
     }
   };
+
+  document.querySelectorAll("[data-password-toggle]").forEach((b) => {
+    b.onclick = () => {
+      const input = document.getElementById(b.dataset.passwordToggle);
+      if (!input) return;
+      const show = input.type === "password";
+      input.type = show ? "text" : "password";
+      b.setAttribute("aria-label", show ? "Hide password" : "Show password");
+      b.setAttribute("aria-pressed", show ? "true" : "false");
+    };
+  });
 
   const authSubmit = $("#authSubmit");
   if (authSubmit) authSubmit.onclick = async () => {
