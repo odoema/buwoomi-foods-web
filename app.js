@@ -881,6 +881,14 @@ function views() {
         <div class="summary">
           <div class="sr"><span>Subtotal</span><span>${ugx(t.sub)}</span></div>
           <div class="sr"><span>Delivery Fee</span><span>${ugx(t.fee)}</span></div>
+          ${state.pay === "card" ? `
+            <div class="card-payment-form" aria-label="Visa card payment details">
+              <div class="field"><label for="cardName">Name on card</label><input id="cardName" autocomplete="cc-name" placeholder="Full name as shown on card" /></div>
+              <div class="field"><label for="cardNumber">Card number</label><input id="cardNumber" autocomplete="cc-number" inputmode="numeric" maxlength="19" placeholder="1234 5678 9012 3456" /></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="field"><label for="cardExpiry">Expiry date</label><input id="cardExpiry" autocomplete="cc-exp" inputmode="numeric" maxlength="5" placeholder="MM/YY" /></div><div class="field"><label for="cardCvv">CVV</label><input id="cardCvv" autocomplete="cc-csc" inputmode="numeric" maxlength="4" placeholder="123" /></div></div>
+              <p style="margin:2px 0 0;color:var(--muted);font-size:12px">Card details are used for this payment and are not saved in your BUWOOMI account.</p>
+            </div>
+          ` : ""}
           <div class="sr total"><span>Total</span><span>${ugx(t.total)}</span></div>
         </div>
         <div class="cart-checkout-bar"><div><strong>${cartCount()} ${cartCount() === 1 ? "item" : "items"}</strong><span>${ugx(t.total)} total</span></div><button class="cta" data-go="checkout">Checkout ${icon("chevronRight")}</button></div>
@@ -1161,6 +1169,12 @@ function bind() {
     render(true);
   }; });
   document.querySelectorAll("[data-pay]").forEach((b) => { b.onclick = () => { state.pay = b.dataset.pay; render(); }; });
+  const cardNumber = $("#cardNumber");
+  if (cardNumber) cardNumber.oninput = () => { const digits = cardNumber.value.replace(/\D/g, "").slice(0, 19); cardNumber.value = digits.replace(/(\d{4})(?=\d)/g, "$1 ").trim(); };
+  const cardExpiry = $("#cardExpiry");
+  if (cardExpiry) cardExpiry.oninput = () => { const digits = cardExpiry.value.replace(/\D/g, "").slice(0, 4); cardExpiry.value = digits.length > 2 ? digits.slice(0, 2) + "/" + digits.slice(2) : digits; };
+  const cardCvv = $("#cardCvv");
+  if (cardCvv) cardCvv.oninput = () => { cardCvv.value = cardCvv.value.replace(/\D/g, "").slice(0, 4); };
   document.querySelectorAll("[data-sizebtn]").forEach((b) => { b.onclick = () => { state.size = b.dataset.sizebtn; render(); }; });
   document.querySelectorAll("[data-ex]").forEach((b) => { b.onchange = () => { state.extras[b.dataset.ex] = b.checked; render(); }; });
 
@@ -1613,6 +1627,16 @@ function bind() {
       if (!state.addressId && state.session) {
         place.disabled = false;
         return showToast("Please select a delivery address first.");
+      }
+      if (state.pay === "card") {
+        const name = $("#cardName")?.value.trim() || "";
+        const number = ($("#cardNumber")?.value || "").replace(/\D/g, "");
+        const expiry = ($("#cardExpiry")?.value || "").trim();
+        const cvv = ($("#cardCvv")?.value || "").replace(/\D/g, "");
+        if (!name) { place.disabled = false; return showToast("Enter the name on the card."); }
+        if (number.length < 13 || number.length > 19) { place.disabled = false; return showToast("Enter a valid card number."); }
+        if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry)) { place.disabled = false; return showToast("Enter the expiry date as MM/YY."); }
+        if (cvv.length < 3 || cvv.length > 4) { place.disabled = false; return showToast("Enter the card security code."); }
       }
       try {
         const backendOn = !!(window.BuwoomiBackend && window.BuwoomiBackend.ready);
