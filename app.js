@@ -711,8 +711,8 @@ function views() {
         '<img class="logo" src="assets/logo-transparent.png" alt="BUWOOMI FOODS LTD" />' +
         '<h2>Set a new password</h2>' +
         '<p class="lead">Choose a new password for your BUWOOMI account.</p>' +
-        '<div class="field"><label>New Password</label><input id="recoveryPassword" type="password" autocomplete="new-password" placeholder="At least 8 characters" /></div>' +
-        '<div class="field"><label>Confirm Password</label><input id="recoveryPasswordConfirm" type="password" autocomplete="new-password" placeholder="Repeat your new password" /></div>' +
+        '<div class="field"><label for="recoveryPassword">New Password</label><div style="position:relative"><input id="recoveryPassword" type="password" autocomplete="new-password" placeholder="At least 8 characters" style="padding-right:48px" /><button type="button" class="password-toggle" data-password-toggle="recoveryPassword" aria-label="Show password" aria-pressed="false">' + icon("eye") + '</button></div></div>' +
+        '<div class="field"><label for="recoveryPasswordConfirm">Confirm Password</label><div style="position:relative"><input id="recoveryPasswordConfirm" type="password" autocomplete="new-password" placeholder="Repeat your new password" style="padding-right:48px" /><button type="button" class="password-toggle" data-password-toggle="recoveryPasswordConfirm" aria-label="Show password" aria-pressed="false">' + icon("eye") + '</button></div></div>' +
         (state.authError ? '<p style="color:var(--danger);font-size:13px;margin-top:8px">' + esc(state.authError) + '</p>' : '') +
         '<button class="cta" id="recoverySubmit" style="margin-top:16px" ' + (state.authBusy ? 'disabled' : '') + '>' + (state.authBusy ? 'Saving…' : 'Update Password') + '</button>' +
         '</div>';
