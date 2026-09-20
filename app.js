@@ -82,13 +82,6 @@ let MENU = [
 
 let CATEGORIES = ["Popular","Chicken","Burgers & Wraps","Beef","Veggie","Sides","Snacks","Pizza","Drinks","Desserts"];
 const CATEGORY_ICON = { Popular:"starBadge",Chicken:"drumstick","Burgers & Wraps":"burger",Beef:"steak",Veggie:"leaf",Sides:"fries",Snacks:"samosa",Pizza:"pizza",Drinks:"juice",Desserts:"cake" };
-const CATEGORY_ICON_FALLBACKS = {
-  Popular:"starBadge", Chicken:"drumstick", "Local Plates":"chefHat",
-  "Burgers & Wraps":"burger", Beef:"steak", Staples:"bag",
-  "Gnuts & Sauces":"chefHat", Sides:"fries", Veggie:"leaf",
-  "Greens & Veg":"leaf", Pizza:"pizza", Proteins:"steak",
-  Snacks:"samosa", Desserts:"cake", Drinks:"juice",
-};
 const CATEGORY_SPRITE_POS = {
   Popular:"0% 0%", Chicken:"25% 0%", "Burgers & Wraps":"50% 0%", Beef:"75% 0%", Veggie:"100% 0%",
   Sides:"0% 100%", Snacks:"25% 100%", Pizza:"50% 100%", Drinks:"75% 100%", Desserts:"100% 100%"
@@ -123,7 +116,7 @@ async function syncMenuFromBackend() {
       window.BuwoomiBackend.fetchCategories(),
       window.BuwoomiBackend.fetchSettings(),
     ]);
-    if (categories && categories.length) { CATEGORIES = ["Popular", ...categories.sort((a,b)=>a.sort_order-b.sort_order).map(c=>c.name).filter(name => name !== "Popular")]; }
+    if (categories && categories.length) { CATEGORIES = ["Popular", ...categories.sort((a,b)=>a.sort_order-b.sort_order).map(c=>c.name).filter(name => name !== "Popular")]; CATEGORIES.forEach(c=>{ if(!CATEGORY_ICON[c]) CATEGORY_ICON[c]="leaf"; }); }
     if (settings) state.settings = settings;
     if (items && items.length) {
       const catMap = Object.fromEntries((categories||[]).map(c=>[c.id,c.name]));
@@ -486,44 +479,10 @@ function esc(value) {
   return String(value ?? "").replace(/[&<>'"]/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
 }
 
-function categoryIconName(cat) {
-  return CATEGORY_ICON[cat] || CATEGORY_ICON_FALLBACKS[cat] || "leaf";
-}
-
-function normalizeCategoryName(value) {
-  return String(value || "").trim().toLowerCase().replace(/\s+/g, " ");
-}
-
-const CATEGORY_ITEM_MATCHERS = {
-  Chicken: (item) => /\bchicken\b/i.test(item?.name || ""),
-  Beef: (item) => /\bbeef\b/i.test(item?.name || ""),
-  "Burgers & Wraps": (item) => /\b(burger|wrap)\b/i.test(item?.name || ""),
-};
-
-function categoryItems(cat) {
-  const name = String(cat || "").trim();
-  if (name === "Popular") return MENU.filter((m) => m.popular);
-
-  const key = normalizeCategoryName(name);
-  const direct = MENU.filter((m) => normalizeCategoryName(m.cat) === key);
-  if (direct.length) return direct;
-
-  const matcher = CATEGORY_ITEM_MATCHERS[name];
-  return matcher ? MENU.filter(matcher) : [];
-}
-
-function categoryRepresentative(cat) {
-  const candidates = categoryItems(cat).filter((m) => m.img);
-  return candidates[0]?.img || "";
-}
-
 function foodBg(item) {
-  const url = String(item?.img || categoryRepresentative(item?.cat) || "").replace(/'/g, "%27");
-  return url ? "background-image:url('" + url + "');background-position:center;background-size:cover;background-repeat:no-repeat;" : "";
-}
-
-function foodCardFallback(item) {
-  return item?.img || categoryRepresentative(item?.cat) ? "" : icon(categoryIconName(item?.cat));
+  const url = String(item?.img || "").replace(/'/g, "%27");
+  const pos = CATEGORY_SPRITE_POS[item?.cat] || CATEGORY_SPRITE_POS.Popular || "0% 0%";
+  return "background-image:url('" + url + "'),url('assets/category-icons.webp');background-position:center," + pos + ";background-size:cover,500% 200%;background-repeat:no-repeat;";
 }
 
 function profileTitle(section) {
@@ -585,7 +544,7 @@ function adminMenuView() {
           <div class="field"><label>Name</label><input id="miName" value="${esc(editing.name)}" placeholder="Chicken Burger" /></div>
           <div class="field"><label>Price (UGX)</label><input id="miPrice" type="number" min="0" value="${esc(editing.price_ugx)}" /></div>
           <div class="field"><label>Category</label><select id="miCategory">${cats.map(c => `<option value="${esc(c.id)}" ${c.id === editing.category_id ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</select></div>
-          <div class="field"><label>Image <span style="color:var(--danger)">*</span></label><input id="miImage" value="${esc(editing.image_url)}" placeholder="https://..." /><input id="miImageFile" type="file" accept="image/*" style="margin-top:8px" /><small style="color:var(--muted)">Required. Choose a file to upload to BUWOOMI Storage, or paste an image URL.</small></div>
+          <div class="field"><label>Image URL</label><input id="miImage" value="${esc(editing.image_url)}" placeholder="https://..." /><input id="miImageFile" type="file" accept="image/*" style="margin-top:8px" /><small style="color:var(--muted)">Choose a file to upload to BUWOOMI Storage, or paste an image URL.</small></div>
           <div class="field admin-full"><label>Description</label><textarea id="miDesc" placeholder="Short description">${esc(editing.description)}</textarea></div>
         </div>
         <div class="admin-checks"><label><input id="miPopular" type="checkbox" ${editing.is_popular ? "checked" : ""}/> Popular</label><label><input id="miAvailable" type="checkbox" ${editing.is_available !== false ? "checked" : ""}/> Available to order</label></div>
@@ -784,8 +743,7 @@ function views() {
     home: () => {
       const q = state.searchQuery.trim().toLowerCase();
       const searchItems = q ? MENU.filter(p => `${p.name} ${p.desc} ${p.cat}`.toLowerCase().includes(q)) : [];
-      const categoryPicks = filterByCat(state.cat);
-      const visiblePicks = categoryPicks.slice(0, 4);
+      const visiblePicks = filterByCat(state.cat).slice(0, 4);
       return `
       <div class="home">
         <div class="home-head">
@@ -806,19 +764,31 @@ function views() {
             <div class="copy"><span class="promo-kicker">BUWOOMI FAVOURITES</span><h3>Good Food.<br>Closer to You.</h3><button class="btn" data-go="menu">Order Now</button></div>
             <div class="img" style="${foodBg(MENU[0])}"></div>
           </div>
-          <div class="section home-category-section"><div class="section-h"><h4>Browse by category</h4><button class="link" data-go="menu">See all</button></div><div class="cat-icons">${(() => {
-  return CATEGORIES.map((c) => {
-    const artUrl = categoryRepresentative(c);
-    const fallbackIcon = categoryIconName(c);
-    if (artUrl) {
-      const safeArtUrl = String(artUrl).replace(/\x27/g, "%27");
-      return `<button class="cat-icon-btn ${state.cat === c ? "on" : ""}" data-cat="${esc(c)}" aria-label="Browse ${esc(c)}"><span class="circle-ic food-category-photo" style="background-image:url(\x27${safeArtUrl}\x27) !important;background-position:center !important;background-size:cover !important;background-repeat:no-repeat !important"></span><span>${esc(c)}</span></button>`;
-    }
-    return `<button class="cat-icon-btn ${state.cat === c ? "on" : ""}" data-cat="${esc(c)}" aria-label="Browse ${esc(c)}"><span class="circle-ic category-icon-circle"><span class="i">${icon(fallbackIcon)}</span></span><span>${esc(c)}</span></button>`;
-  }).join("");
-})()}</div></div>
+          <div class="section home-category-section"><div class="section-h"><h4>Browse by category</h4><button class="link" data-go="menu">See all</button></div><div class="cat-icons">${CATEGORIES.map(c => {
+  const fallback = c === "Popular" ? MENU[0] : (MENU.find(m => m.cat === c) || MENU[0]);
+  const fallbackUrl = String(fallback?.img || "").replace(/'/g, "%27");
+  // Category artwork is sourced from a real menu photograph instead of the
+  // fragile sprite sheet. This keeps the navigation visual even if a sprite
+  // asset is missing, cached incorrectly, or changed independently.
+  const categoryArt = {
+    Popular: MENU.find(m => m.popular)?.img,
+    Chicken: MENU.find(m => m.cat === "Chicken")?.img,
+    "Burgers & Wraps": MENU.find(m => m.cat === "Burgers & Wraps")?.img,
+    Beef: MENU.find(m => m.cat === "Beef")?.img,
+    Veggie: MENU.find(m => m.cat === "Veggie")?.img,
+    Sides: MENU.find(m => m.cat === "Sides")?.img,
+    Snacks: MENU.find(m => m.cat === "Snacks")?.img,
+    Pizza: MENU.find(m => m.cat === "Pizza")?.img,
+    Drinks: MENU.find(m => m.cat === "Drinks")?.img,
+    Desserts: MENU.find(m => m.cat === "Desserts")?.img,
+  };
+  const artUrl = categoryArt[c] || MENU.find(m => m.cat === c)?.img || MENU[0]?.img || "";
+  const safeArtUrl = String(artUrl).replace(/'/g, "%27");
+  return `<button class="cat-icon-btn ${state.cat === c ? "on" : ""}" data-cat="${c}" aria-label="Browse ${esc(c)}"><span class="circle-ic food-category-photo" style="background-image:url('${safeArtUrl}') !important;background-position:center !important;background-size:cover !important;background-repeat:no-repeat !important"></span><span>${c}</span></button>`;
+}).join("")}</div></div>
+          <div class="section"><div class="section-h"><h4>Today’s picks</h4><button class="link" data-go="menu">See all</button></div><div class="picks">${visiblePicks.map((p, i) => `<article class="card stagger" style="--i:${i}" data-item="${p.id}" role="button" tabindex="0"><div class="ph" style="${p.id === state.product.id ? "view-transition-name:morph-hero;" : ""}${foodBg(p)}"></div><div class="body"><h5>${p.name}</h5><div class="desc">${p.desc.slice(0, 48)}${p.desc.length > 48 ? "…" : ""}</div><div class="price-row"><span class="price">${ugx(p.price)}</span><button class="add" data-add="${p.id}" aria-label="Add ${p.name} to cart">+</button></div></div></article>`).join("")}</div></div>
+          ${state.orders?.length ? (() => { const last=state.orders.find(o=>o.status!=="cancelled"); return last ? `<div class="section order-again-section"><div class="section-h"><h4>Order Again</h4><button class="link" data-go="orders">View orders</button></div><div class="order-again-card"><div class="order-again-icon">${icon("orders")}</div><div><strong>${esc(last.order_no || "Recent order")}</strong><p>${esc((last.status || "Past order").replace(/_/g," "))} · ${ugx(last.total_ugx || 0)}</p></div><button class="add" data-reorder-order="${last.id}" aria-label="Order again">+</button></div></div>` : "" })() : ""}
         `}
-          <div class="section"><div class="section-h"><h4>${esc(state.cat)} meals</h4><button class="link" data-go="menu">See all</button></div><div class="picks">${visiblePicks.map((p, i) => `<article class="card stagger" style="--i:${i}" data-item="${p.id}" role="button" tabindex="0"><div class="ph ${!p.img && !categoryRepresentative(p.cat) ? "ph-icon-fallback" : ""}" style="${p.id === state.product.id ? "view-transition-name:morph-hero;" : ""}${foodBg(p)}">${foodCardFallback(p)}</div><div class="body"><h5>${p.name}</h5><div class="desc">${p.desc.slice(0, 48)}${p.desc.length > 48 ? "…" : ""}</div><div class="price-row"><span class="price">${ugx(p.price)}</span><button class="add" data-add="${p.id}" aria-label="Add ${p.name} to cart">+</button></div></div></article>`).join("") || `<div class="category-empty"><div class="empty-icon">${icon(categoryIconName(state.cat))}</div><h3>No ${esc(state.cat)} meals available</h3><p>This category has no currently available meals.</p></div>`}</div></div>
         ${cartCount() ? `<button class="home-cart-bar" data-go="cart"><span><strong>${cartCount()} ${cartCount() === 1 ? "item" : "items"}</strong><small>Ready in your cart</small></span><b>${ugx(cartTotals().total)}</b><span class="home-cart-action">View cart ${icon("chevronRight")}</span></button>` : ""}
         ${tabbar("home")}
       </div>`;
@@ -1096,7 +1066,8 @@ function views() {
 }
 
 function filterByCat(cat) {
-  return categoryItems(cat);
+  if (cat === "Popular") return MENU.filter((m) => m.popular);
+  return MENU.filter((m) => m.cat === cat);
 }
 
 function detailsLineTotal() {
@@ -1247,7 +1218,6 @@ function bind() {
     e.preventDefault();
     e.stopPropagation();
     state.cat = b.dataset.cat;
-    state.searchQuery = "";
     render(true);
   }; });
   document.querySelectorAll("[data-pay]").forEach((b) => { b.onclick = () => { state.pay = b.dataset.pay; render(); }; });
