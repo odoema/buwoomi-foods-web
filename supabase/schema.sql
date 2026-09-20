@@ -334,3 +334,8 @@ drop policy if exists profiles_select_own on public.profiles;
 create policy profiles_select on public.profiles
   for select to authenticated
   using ((select private.is_admin()) or (select auth.uid()) = id);
+
+
+-- Foreign-key indexes added for production query/planner performance.
+create index if not exists idx_app_settings_updated_by on public.app_settings(updated_by);
+create index if not exists idx_favorites_menu_item on public.favorites(menu_item_id);
