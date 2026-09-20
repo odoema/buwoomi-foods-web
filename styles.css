@@ -2903,3 +2903,64 @@ textarea:focus {
 .card-payment-form { margin-top:12px; padding:14px; border:1px solid var(--border); border-radius:14px; background:#fff; }
 .card-payment-form .field { margin-top:10px; }
 .card-payment-form .field:first-child { margin-top:0; }
+
+
+/* ========================================================================
+   Consolidated UI fixes — moved from standalone patch stylesheets.
+   Keep future visual fixes here so the production app has one CSS source.
+   ======================================================================== */
+
+/* BUWOOMI saved-address UI: keep address actions grouped and easy to tap. */
+.address-actions-fix {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+.address-actions-fix .cta {
+  min-height: 42px;
+  margin: 0;
+  padding: 9px 10px;
+  font-size: 12px;
+  line-height: 1.2;
+}
+.address-return-banner {
+  margin: 10px 16px 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: #fff;
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 3px;
+}
+.address-return-banner strong { font-size: 13px; }
+.address-return-banner span { color: var(--muted); font-size: 12px; line-height: 1.4; }
+@media (max-width: 420px) {
+  .address-actions-fix { grid-template-columns: 1fr; }
+}
+
+
+/* BUWOOMI checkout alignment: keep each checkout block visually consistent. */
+#screen .page > .summary { margin-left: 16px; margin-right: 16px; }
+#screen .page > .summary > strong { display: flex; align-items: center; gap: 7px; line-height: 1.35; }
+#screen .page > .summary > strong .i { display: inline-flex; flex: 0 0 auto; }
+#screen .page > .summary > .link { display: inline-block; margin-top: 6px; padding-left: 0; }
+#screen .pay-opt { min-height: 50px; }
+#screen #place { margin-top: 4px; }
+@media (max-width: 420px) {
+  #screen .page > .summary { margin-left: 12px; margin-right: 12px; padding: 14px; }
+}
+
+
+/* BUWOOMI cart badge: keep the order-count badge anchored to the cart icon. */
+.tabbar button { position: relative; }
+.tabbar .cart-badge {
+  top: 4px;
+  right: auto;
+  left: 50%;
+  transform: translateX(8px);
+  z-index: 2;
+}
+.tabbar .cart-badge.bump { animation: bw-add-pop 360ms var(--ease-spring); }
+
