@@ -871,22 +871,6 @@ button:not(:disabled):active {
   background: #ddd center/cover no-repeat;
 }
 
-.card .ph.ph-icon-fallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #eef4f0;
-  color: var(--green);
-}
-.card .ph.ph-icon-fallback .i {
-  width: 46px;
-  height: 46px;
-}
-.card .ph.ph-icon-fallback .i svg {
-  width: 100%;
-  height: 100%;
-}
-
 .card .body {
   padding: 10px 12px 12px;
 }
