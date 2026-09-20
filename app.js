@@ -744,52 +744,91 @@ function views() {
     home: () => {
       const q = state.searchQuery.trim().toLowerCase();
       const searchItems = q ? MENU.filter(p => `${p.name} ${p.desc} ${p.cat}`.toLowerCase().includes(q)) : [];
-      const visiblePicks = filterByCat(state.cat).slice(0, 4);
-      return `
+      const popularItems = MENU.filter(p => p.popular).slice(0, 4);
+      const lastOrder = state.orders?.find(o => o.status !== "cancelled") || null;
+      const defaultAddress = state.profileData?.addresses?.find(a => a.is_default || a.isDefault) || state.profileData?.addresses?.[0] || null;
+      const firstName = String(state.profile?.full_name || "").trim().split(/\\s+/)[0];
+      const locationLabel = defaultAddress?.line1 || defaultAddress?.label || "Add a delivery location";
+
+      if (q) {
+        return `
       <div class="home">
-        <div class="home-head">
-          <div class="home-search-row">
-            <div class="search home-search">${icon("search")}<input id="homeSearch" type="search" autocomplete="off" enterkeyhint="search" value="${esc(state.searchQuery)}" placeholder="What are you craving today?" /></div>
-            <button class="icon-btn" aria-label="Notifications" id="homeNotifications">${icon("bell")}</button>
+        <div class="home-intent-head">
+          <div>
+            <span class="home-eyebrow">SEARCH</span>
+            <h1>Find your next meal</h1>
+          </div>
+          <button class="icon-btn" aria-label="Notifications" id="homeNotifications">${icon("bell")}</button>
+        </div>
+        <div class="search home-search home-search-focus">${icon("search")}<input id="homeSearch" type="search" autocomplete="off" enterkeyhint="search" value="${esc(state.searchQuery)}" placeholder="What are you craving today?" /></div>
+        <div class="home-search-results">
+          <div class="section-h"><h4>Search results</h4><span class="result-count">${searchItems.length} ${searchItems.length === 1 ? "meal" : "meals"}</span></div>
+          <div class="list home-results-list">
+            ${searchItems.map((p, i) => `<article class="row-item stagger" style="--i:${i}" data-item="${p.id}" role="button" tabindex="0"><div class="th" style="${foodBg(p)}"></div><div><h5>${p.name}</h5><div class="meta">${p.desc}</div><div class="price">${ugx(p.price)}</div></div><button class="add" data-add="${p.id}" aria-label="Add ${p.name} to cart">+</button></article>`).join("") || `<div class="search-empty"><div class="empty-icon">${icon("search")}</div><h3>No meals found</h3><p>Try “chicken”, “burger”, “fries” or “pizza”.</p></div>`}
           </div>
         </div>
-        ${q ? `
-          <div class="home-search-results">
-            <div class="section-h"><h4>Search results</h4><span class="result-count">${searchItems.length} ${searchItems.length === 1 ? "meal" : "meals"}</span></div>
-            <div class="list home-results-list">
-              ${searchItems.map((p, i) => `<article class="row-item stagger" style="--i:${i}" data-item="${p.id}" role="button" tabindex="0"><div class="th" style="${foodBg(p)}"></div><div><h5>${p.name}</h5><div class="meta">${p.desc}</div><div class="price">${ugx(p.price)}</div></div><button class="add" data-add="${p.id}" aria-label="Add ${p.name} to cart">+</button></article>`).join("") || `<div class="search-empty"><div class="empty-icon">${icon("search")}</div><h3>No meals found</h3><p>Try “chicken”, “burger”, “fries” or “pizza”.</p></div>`}
-            </div>
+        ${tabbar("home")}
+      </div>`;
+      }
+
+      return `
+      <div class="home home-v2">
+        <div class="home-intent-head">
+          <div>
+            <span class="home-eyebrow">${firstName ? `WELCOME BACK, ${esc(firstName.toUpperCase())}` : "BUWOOMI FOODS"}</span>
+            <h1>What are you looking for?</h1>
           </div>
-        ` : `
-          <div class="promo">
-            <div class="copy"><span class="promo-kicker">BUWOOMI FAVOURITES</span><h3>Good Food.<br>Closer to You.</h3><button class="btn" data-go="menu">Order Now</button></div>
-            <div class="img" style="${foodBg(MENU[0])}"></div>
+          <button class="icon-btn" aria-label="Notifications" id="homeNotifications">${icon("bell")}</button>
+        </div>
+
+        <button class="home-location" id="homeLocation" type="button">
+          <span class="home-location-icon">${icon("mapPin")}</span>
+          <span class="home-location-copy"><small>Deliver to</small><strong>${esc(locationLabel)}</strong></span>
+          <span class="home-location-action">${icon("chevronRight")}</span>
+        </button>
+
+        <div class="search home-search">${icon("search")}<input id="homeSearch" type="search" autocomplete="off" enterkeyhint="search" value="${esc(state.searchQuery)}" placeholder="Search meals, burgers, chicken..." /></div>
+
+        <div class="home-intents">
+          <div class="section-h"><h4>Quick choices</h4><button class="link" data-go="menu">Browse all</button></div>
+          <div class="home-intent-grid">
+            <button class="home-intent-card home-intent-chicken" data-home-intent="chicken"><span class="home-intent-icon">${icon("drumstick")}</span><strong>Chicken</strong><small>Crispy &amp; fresh</small></button>
+            <button class="home-intent-card home-intent-burger" data-home-intent="burgers"><span class="home-intent-icon">${icon("burger")}</span><strong>Burgers</strong><small>Big &amp; satisfying</small></button>
+            <button class="home-intent-card home-intent-light" data-home-intent="light"><span class="home-intent-icon">${icon("leaf")}</span><strong>Something light</strong><small>Fresh choices</small></button>
+            <button class="home-intent-card home-intent-snacks" data-home-intent="snacks"><span class="home-intent-icon">${icon("fries")}</span><strong>Snacks &amp; sides</strong><small>Easy to share</small></button>
           </div>
-          <div class="section home-category-section"><div class="section-h"><h4>Browse by category</h4><button class="link" data-go="menu">See all</button></div><div class="cat-icons">${CATEGORIES.map(c => {
-  const fallback = c === "Popular" ? MENU[0] : (MENU.find(m => m.cat === c) || MENU[0]);
-  const fallbackUrl = String(fallback?.img || "").replace(/'/g, "%27");
-  // Category artwork is sourced from a real menu photograph instead of the
-  // fragile sprite sheet. This keeps the navigation visual even if a sprite
-  // asset is missing, cached incorrectly, or changed independently.
-  const categoryArt = {
-    Popular: MENU.find(m => m.popular)?.img,
-    Chicken: MENU.find(m => m.cat === "Chicken")?.img,
-    "Burgers & Wraps": MENU.find(m => m.cat === "Burgers & Wraps")?.img,
-    Beef: MENU.find(m => m.cat === "Beef")?.img,
-    Veggie: MENU.find(m => m.cat === "Veggie")?.img,
-    Sides: MENU.find(m => m.cat === "Sides")?.img,
-    Snacks: MENU.find(m => m.cat === "Snacks")?.img,
-    Pizza: MENU.find(m => m.cat === "Pizza")?.img,
-    Drinks: MENU.find(m => m.cat === "Drinks")?.img,
-    Desserts: MENU.find(m => m.cat === "Desserts")?.img,
-  };
-  const artUrl = categoryArt[c] || MENU.find(m => m.cat === c)?.img || MENU[0]?.img || "";
-  const safeArtUrl = String(artUrl).replace(/'/g, "%27");
-  return `<button class="cat-icon-btn ${state.cat === c ? "on" : ""}" data-cat="${c}" aria-label="Browse ${esc(c)}"><span class="circle-ic food-category-photo" style="background-image:url('${safeArtUrl}') !important;background-position:center !important;background-size:cover !important;background-repeat:no-repeat !important"></span><span>${c}</span></button>`;
-}).join("")}</div></div>
-          <div class="section"><div class="section-h"><h4>Today’s picks</h4><button class="link" data-go="menu">See all</button></div><div class="picks">${visiblePicks.map((p, i) => `<article class="card stagger" style="--i:${i}" data-item="${p.id}" role="button" tabindex="0"><div class="ph" style="${p.id === state.product.id ? "view-transition-name:morph-hero;" : ""}${foodBg(p)}"></div><div class="body"><h5>${p.name}</h5><div class="desc">${p.desc.slice(0, 48)}${p.desc.length > 48 ? "…" : ""}</div><div class="price-row"><span class="price">${ugx(p.price)}</span><button class="add" data-add="${p.id}" aria-label="Add ${p.name} to cart">+</button></div></div></article>`).join("")}</div></div>
-          ${state.orders?.length ? (() => { const last=state.orders.find(o=>o.status!=="cancelled"); return last ? `<div class="section order-again-section"><div class="section-h"><h4>Order Again</h4><button class="link" data-go="orders">View orders</button></div><div class="order-again-card"><div class="order-again-icon">${icon("orders")}</div><div><strong>${esc(last.order_no || "Recent order")}</strong><p>${esc((last.status || "Past order").replace(/_/g," "))} · ${ugx(last.total_ugx || 0)}</p></div><button class="add" data-reorder-order="${last.id}" aria-label="Order again">+</button></div></div>` : "" })() : ""}
-        `}
+        </div>
+
+        ${lastOrder ? `
+        <div class="home-section-block">
+          <div class="section-h"><h4>Order Again</h4><button class="link" data-go="orders">View orders</button></div>
+          <button class="home-order-again" data-reorder-order="${lastOrder.id}">
+            <span class="home-order-icon">${icon("orders")}</span>
+            <span class="home-order-copy"><strong>${esc(lastOrder.order_no || "Recent order")}</strong><small>${esc((lastOrder.status || "Past order").replace(/_/g, " "))} · ${ugx(lastOrder.total_ugx || 0)}</small></span>
+            <span class="home-order-action">Order again ${icon("chevronRight")}</span>
+          </button>
+        </div>` : ""}
+
+        <div class="home-plan-groups">
+          <button class="home-plan-card" data-home-action="plan">
+            <span class="home-plan-icon">${icon("clock")}</span>
+            <span><strong>Plan ahead</strong><small>Choose your meal before you need it.</small></span>
+            <span class="home-plan-arrow">${icon("chevronRight")}</span>
+          </button>
+          <button class="home-plan-card" data-go="groups">
+            <span class="home-plan-icon">${icon("users")}</span>
+            <span><strong>Order with a group</strong><small>Let everyone choose their own meal.</small></span>
+            <span class="home-plan-arrow">${icon("chevronRight")}</span>
+          </button>
+        </div>
+
+        <div class="home-section-block">
+          <div class="section-h"><h4>Popular right now</h4><button class="link" data-go="menu">See all</button></div>
+          <div class="picks home-popular-picks">
+            ${popularItems.map((p, i) => `<article class="card stagger" style="--i:${i}" data-item="${p.id}" role="button" tabindex="0"><div class="ph" style="${foodBg(p)}"></div><div class="body"><h5>${p.name}</h5><div class="desc">${p.desc.slice(0, 48)}${p.desc.length > 48 ? "…" : ""}</div><div class="price-row"><span class="price">${ugx(p.price)}</span><button class="add" data-add="${p.id}" aria-label="Add ${p.name} to cart">+</button></div></div></article>`).join("")}
+          </div>
+        </div>
+
         ${cartCount() ? `<button class="home-cart-bar" data-go="cart"><span><strong>${cartCount()} ${cartCount() === 1 ? "item" : "items"}</strong><small>Ready in your cart</small></span><b>${ugx(cartTotals().total)}</b><span class="home-cart-action">View cart ${icon("chevronRight")}</span></button>` : ""}
         ${tabbar("home")}
       </div>`;
@@ -1489,6 +1528,36 @@ function bind() {
       showToast(e.message || "Could not resend confirmation email.");
     }
   };
+
+  document.querySelectorAll("[data-home-intent]").forEach((b) => {
+    b.onclick = () => {
+      const intent = b.dataset.homeIntent;
+      const map = {
+        chicken: "Chicken",
+        burgers: "Burgers & Wraps",
+        light: "Veggie",
+        snacks: "Snacks",
+      };
+      state.searchQuery = "";
+      state.menuTab = map[intent] || "All";
+      go("menu", {}, "forward");
+    };
+  });
+
+  const homeLocation = $("#homeLocation");
+  if (homeLocation) homeLocation.onclick = () => {
+    if (!window.BuwoomiBackend?.ready || !state.session) {
+      showToast("Sign in to save and manage delivery locations.");
+      return;
+    }
+    openProfileSection("addresses");
+  };
+
+  const homePlan = $("[data-home-action='plan']");
+  if (homePlan) homePlan.onclick = () => {
+    showToast("Plan-ahead ordering is being connected next.");
+  };
+
   const homeNotifications=$("#homeNotifications");
   if(homeNotifications) homeNotifications.onclick=()=>openProfileSection("notifications");
   const homeSearch=$("#homeSearch");
