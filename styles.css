@@ -2451,11 +2451,20 @@ textarea:focus {
    Keep the badge and logo dimensions explicit so neither can become oval
    from flex sizing or inherited image rules. */
 .flash-logo-disc {
+  /* Never let the onboarding brand badge participate in width stretching.
+     Lock both axes and the aspect ratio so mobile browsers cannot render it
+     as an oval. */
   width:96px !important;
   height:96px !important;
   min-width:96px !important;
   min-height:96px !important;
+  max-width:96px !important;
+  max-height:96px !important;
+  aspect-ratio:1 / 1 !important;
   flex:0 0 96px !important;
+  flex-grow:0 !important;
+  flex-shrink:0 !important;
+  align-self:center !important;
   padding:14px !important;
   margin-left:auto !important;
   margin-right:auto !important;
@@ -2466,6 +2475,8 @@ textarea:focus {
   justify-content:center !important;
   box-sizing:border-box !important;
   overflow:hidden !important;
+  position:relative !important;
+  transform:none !important;
   box-shadow:0 8px 20px rgba(0,0,0,.10);
 }
 .flash-logo-disc img {
@@ -2488,7 +2499,13 @@ textarea:focus {
     height:88px !important;
     min-width:88px !important;
     min-height:88px !important;
-    flex-basis:88px !important;
+    max-width:88px !important;
+    max-height:88px !important;
+    aspect-ratio:1 / 1 !important;
+    flex:0 0 88px !important;
+    flex-grow:0 !important;
+    flex-shrink:0 !important;
+    align-self:center !important;
     padding:12px !important;
   }
   .flash-logo-disc img {
