@@ -82,8 +82,19 @@ function onAuthStateChange(callback) {
 
 async function signInOAuth(provider) {
   if (!sb) throw new Error("Backend not configured");
-  const { data, error } = await sb.auth.signInWithOAuth({ provider, options: { redirectTo: authRedirectUrl() } });
-  if (error) throw error; return data;
+  const { data, error } = await sb.auth.signInWithOAuth({
+    provider,
+    options: { redirectTo: authRedirectUrl() },
+  });
+  if (error) throw error;
+
+  // Mobile browsers can be stricter about programmatic redirects. Supabase
+  // returns the provider URL; explicitly navigating to it makes the Google
+  // button reliable on phones as well as desktop browsers.
+  if (data?.url && window.location.href !== data.url) {
+    window.location.assign(data.url);
+  }
+  return data;
 }
 
 async function resetPassword(email) {
