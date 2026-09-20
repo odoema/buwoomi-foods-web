@@ -991,7 +991,6 @@ function views() {
           <div class="sr total"><span>Total</span><span>${ugx(t.total)}</span></div>
         </div>
         <div class="cart-checkout-bar"><div><strong>${cartCount()} ${cartCount() === 1 ? "item" : "items"}</strong><span>${ugx(t.total)} total</span></div><button class="cta" data-go="checkout">Checkout ${icon("chevronRight")}</button></div>
-        ${tabbar("cart")}
       </div>`;
     },
 
