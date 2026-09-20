@@ -3322,3 +3322,248 @@ textarea:focus {
     transition:none;
   }
 }
+
+
+/* BUWOOMI 2.0 — Discover */
+.discover-page {
+  padding-bottom: 104px !important;
+  background:#fbfcfa;
+}
+
+.discover-head {
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  padding:16px 16px 8px;
+}
+
+.discover-head h1 {
+  margin:0;
+  color:#17221c;
+  font-size:22px;
+  line-height:1.18;
+  letter-spacing:-.025em;
+}
+
+.discover-head p {
+  margin:6px 0 0;
+  max-width:290px;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.45;
+}
+
+.discover-head .icon-btn {
+  flex:0 0 44px;
+  width:44px;
+  height:44px;
+  border:1px solid rgba(11,77,42,.1);
+  background:#fff;
+  box-shadow:0 5px 14px rgba(11,77,42,.06);
+}
+
+.discover-search {
+  margin:8px 16px 14px;
+}
+
+.discover-search .search {
+  min-height:52px;
+  border:1px solid rgba(11,77,42,.12);
+  background:#fff;
+  box-shadow:0 7px 18px rgba(11,77,42,.06);
+}
+
+.discover-section {
+  margin:0 16px 20px;
+}
+
+.discover-section .section-h {
+  margin-bottom:9px;
+}
+
+.section-note,
+.result-count {
+  color:var(--muted);
+  font-size:10px;
+  font-weight:600;
+}
+
+.discover-category-row {
+  display:flex;
+  gap:9px;
+  overflow-x:auto;
+  padding:2px 1px 7px;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+
+.discover-category-row::-webkit-scrollbar { display:none; }
+
+.discover-category {
+  min-width:78px;
+  padding:10px 8px;
+  border:1px solid rgba(11,77,42,.08);
+  border-radius:15px;
+  background:#fff;
+  color:#27332c;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:7px;
+  box-shadow:0 4px 12px rgba(11,77,42,.035);
+  cursor:pointer;
+  transition:transform .18s ease,border-color .18s ease,background .18s ease;
+}
+
+.discover-category.on {
+  border-color:rgba(11,77,42,.35);
+  background:#edf5ef;
+  color:var(--green);
+}
+
+.discover-category:active { transform:scale(.97); }
+
+.discover-category-icon {
+  width:34px;
+  height:34px;
+  border-radius:10px;
+  background:#f0f5f1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.discover-category-icon .i,
+.discover-category-icon .i svg {
+  width:18px;
+  height:18px;
+}
+
+.discover-category > span:last-child {
+  font-size:9px;
+  font-weight:700;
+  line-height:1.15;
+  white-space:nowrap;
+}
+
+.discover-featured {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+
+.discover-food-card {
+  min-width:0;
+  overflow:hidden;
+  border:1px solid rgba(11,77,42,.08);
+  border-radius:17px;
+  background:#fff;
+  box-shadow:0 7px 18px rgba(11,77,42,.045);
+  cursor:pointer;
+}
+
+.discover-food-image {
+  position:relative;
+  height:126px;
+  background-color:#edf1ee;
+  background-position:center;
+  background-size:cover;
+  background-repeat:no-repeat;
+}
+
+.discover-popular {
+  position:absolute;
+  top:8px;
+  left:8px;
+  display:flex;
+  align-items:center;
+  gap:3px;
+  padding:5px 7px;
+  border-radius:999px;
+  background:rgba(255,255,255,.93);
+  color:var(--green);
+  font-size:8px;
+  font-weight:800;
+  box-shadow:0 3px 9px rgba(0,0,0,.08);
+}
+
+.discover-popular .i svg {
+  width:11px;
+  height:11px;
+}
+
+.discover-food-body {
+  padding:9px;
+}
+
+.discover-food-body h5 {
+  margin:0;
+  font-size:11px;
+  line-height:1.25;
+}
+
+.discover-food-body p {
+  margin:4px 0 8px;
+  min-height:25px;
+  color:var(--muted);
+  font-size:9px;
+  line-height:1.35;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  overflow:hidden;
+}
+
+.discover-food-foot {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+
+.discover-food-foot strong {
+  color:var(--green);
+  font-size:11px;
+}
+
+.discover-food-foot .add {
+  width:30px;
+  height:30px;
+}
+
+.discover-results .list {
+  margin-top:0;
+}
+
+.discover-results .row-item {
+  margin-bottom:8px;
+}
+
+@media (min-width:700px) {
+  .discover-featured {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+
+  .discover-food-image {
+    height:150px;
+  }
+}
+
+@media (max-width:380px) {
+  .discover-category {
+    min-width:72px;
+  }
+
+  .discover-food-image {
+    height:112px;
+  }
+
+  .discover-head h1 {
+    font-size:20px;
+  }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .discover-category { transition:none; }
+}
