@@ -2383,7 +2383,8 @@ textarea:focus {
 .splash-logo-disc {
   width:220px;
   height:220px;
-  flex:0 0 220px;
+  flex:0 0 auto;
+  aspect-ratio:1 / 1;
   border-radius:50%;
   background:#fff;
   display:flex;
