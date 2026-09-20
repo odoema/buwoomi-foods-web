@@ -106,12 +106,15 @@ let EXTRAS = [
 async function syncMenuFromBackend() {
   if (!window.BuwoomiBackend || !window.BuwoomiBackend.ready) return;
   try {
-    const [items, extras, categories, settings] = await Promise.all([
+    const [items, extras, categories, settings, businesses] = await Promise.all([
       window.BuwoomiBackend.fetchMenuItems(),
       window.BuwoomiBackend.fetchExtras(),
       window.BuwoomiBackend.fetchCategories(),
       window.BuwoomiBackend.fetchSettings(),
+      window.BuwoomiBackend.fetchBusinesses?.() || Promise.resolve([]),
     ]);
+    state.businesses = Array.isArray(businesses) ? businesses : [];
+    const businessMap = Object.fromEntries(state.businesses.map(b => [b.id, b]));
     const availableItems = (items || []).filter(m => m.is_available !== false);
     if (categories && categories.length) {
       const availableCategoryIds = new Set(availableItems.map(m => m.category_id).filter(Boolean));
@@ -132,6 +135,8 @@ async function syncMenuFromBackend() {
         popular: !!m.is_popular,
         desc: m.description || "",
         img: m.image_url || "",
+        businessId: m.business_id || null,
+        business: m.business_id ? (businessMap[m.business_id] || null) : null,
       }));
       state.product = MENU[0];
     }
@@ -195,6 +200,7 @@ const state = {
   profileSection: null,
   profileLoading: false,
   profileData: { addresses: [], payments: [], favorites: [], notifications: [], orders: [] },
+  businesses: [],
   settings: { delivery_fee_ugx: 5000, minimum_order_ugx: 0, estimated_delivery_min: 25, estimated_delivery_max: 35, service_area: "Kampala", support_email: "support@buwoomifoods.online" },
   addressId: null,
   profile: null,
