@@ -679,7 +679,7 @@ function views() {
         </button>
         ${((!isSignup && state.authError && /confirm|verify|not confirmed/i.test(state.authError)) || (isSignup && state.authNotice)) ? `<button class="link" id="resendConfirmationBtn" style="margin-top:12px">Resend confirmation email</button>` : ""}
         <p class="or">or continue with</p>
-        <div class="socials"><button id="googleAuth">${icon("google")} Google</button><button id="appleAuth">${icon("apple")} Apple</button></div>
+        <div class="socials"><button type="button" id="googleAuth">${icon("google")} Google</button><button type="button" id="appleAuth">${icon("apple")} Apple</button></div>
         <p class="signup-line">${isSignup ? "Already have an account?" : "Don't have an account?"} <button class="link" id="authToggle">${isSignup ? "Sign In" : "Sign Up"}</button></p>
       </div>`;
     },
