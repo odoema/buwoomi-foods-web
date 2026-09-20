@@ -307,3 +307,30 @@ create index if not exists idx_orders_status_placed on public.orders(status, pla
 -- extras, delivery fee and minimum order before inserting the order.
 revoke execute on function public.place_order_secure(jsonb, text, uuid) from public;
 grant execute on function public.place_order_secure(jsonb, text, uuid) to authenticated;
+
+-- Canonical admin/customer RLS policies for production. Admin access is combined
+-- with owner access to avoid multiple permissive policies for the same action.
+drop policy if exists notifications_admin_insert on public.notifications;
+drop policy if exists notifications_owner_insert on public.notifications;
+create policy notifications_insert on public.notifications
+  for insert to authenticated
+  with check ((select private.is_admin()) or (select auth.uid()) = user_id);
+
+drop policy if exists orders_admin_select on public.orders;
+drop policy if exists orders_owner_select on public.orders;
+create policy orders_select on public.orders
+  for select to authenticated
+  using ((select private.is_admin()) or (select auth.uid()) = user_id);
+
+drop policy if exists orders_admin_update on public.orders;
+drop policy if exists orders_owner_update on public.orders;
+create policy orders_update on public.orders
+  for update to authenticated
+  using ((select private.is_admin()) or (select auth.uid()) = user_id)
+  with check ((select private.is_admin()) or (select auth.uid()) = user_id);
+
+drop policy if exists profiles_admin_select on public.profiles;
+drop policy if exists profiles_select_own on public.profiles;
+create policy profiles_select on public.profiles
+  for select to authenticated
+  using ((select private.is_admin()) or (select auth.uid()) = id);
