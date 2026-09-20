@@ -783,7 +783,8 @@ function views() {
     Desserts: MENU.find(m => m.cat === "Desserts")?.img,
   };
   const candidates = [categoryArt[c], ...MENU.filter(m => m.cat === c && m.img).map(m => m.img), ...MENU.map(m => m.img)].filter(Boolean);
-  const artUrl = candidates.find(url => !usedCategoryImages.has(url)) || candidates[0] || "";\n  if (artUrl) usedCategoryImages.add(artUrl);
+  const artUrl = candidates.find(url => !usedCategoryImages.has(url)) || candidates[0] || "";
+  if (artUrl) usedCategoryImages.add(artUrl);
   const safeArtUrl = String(artUrl).replace(/'/g, "%27");
   return `<button class="cat-icon-btn ${state.cat === c ? "on" : ""}" data-cat="${c}" aria-label="Browse ${esc(c)}"><span class="circle-ic food-category-photo" style="background-image:url('${safeArtUrl}') !important;background-position:center !important;background-size:cover !important;background-repeat:no-repeat !important"></span><span>${c}</span></button>`;
 }).join(""); })()}</div></div>
