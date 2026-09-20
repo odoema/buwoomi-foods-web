@@ -2131,41 +2131,6 @@ textarea:focus {
 }
 
 
-/* Balanced logo header: equal vertical breathing room above and below the mark */
-.app-brand-header {
-  min-height: 92px;
-  height: 92px;
-  box-sizing: border-box;
-  padding: 10px 16px;
-  background: #fff;
-  display: flex;
-  align-items: center;
-}
-.app-brand-button {
-  height: 72px;
-  display: flex;
-  align-items: center;
-}
-.app-brand-button img {
-  display: block;
-  height: 72px;
-  max-width: 300px;
-  width: auto;
-  object-fit: contain;
-}
-.home-head {
-  padding-top: 0 !important;
-  margin-top: -2px !important;
-}
-.home .promo {
-  margin-top: 4px !important;
-}
-@media (max-width: 380px) {
-  .app-brand-header { min-height: 88px; height: 88px; padding: 10px 14px; }
-  .app-brand-button { height: 68px; }
-  .app-brand-button img { height: 68px; max-width: 285px; }
-}
-
 /* BUWOOMI 2.0 — discovery, search and cart hierarchy */
 .home-search input:focus { outline: none; border-color: var(--green-2); background: #fff; box-shadow: 0 0 0 3px rgba(46,125,50,.08); }
 .home-search-results { background: var(--bg); padding: 18px 20px 110px; min-height: 55vh; }
@@ -2501,44 +2466,7 @@ textarea:focus {
   }
 }
 
-/* BUWOOMI 2.4 — maximum logo presence without increasing header height */
-.app-brand-header {
-  min-height:92px !important;
-  height:92px !important;
-  padding:2px 16px !important;
-  box-sizing:border-box !important;
-}
-.app-brand-button {
-  height:88px !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-}
-.app-brand-button img {
-  height:88px !important;
-  max-width:330px !important;
-  width:auto !important;
-  object-fit:contain !important;
-  display:block !important;
-}
-.app-brand-header .app-brand-back {
-  left:12px;
-  z-index:5;
-}
-@media (max-width:380px) {
-  .app-brand-header {
-    min-height:88px !important;
-    height:88px !important;
-    padding:1px 12px !important;
-  }
-  .app-brand-button {
-    height:84px !important;
-  }
-  .app-brand-button img {
-    height:84px !important;
-    max-width:285px !important;
-  }
-}
+/* Canonical brand-header sizing is defined above. Do not add another header override here. */
 
 /* Category artwork: preserve each category's exact sprite position. */
 .food-category-photo {
